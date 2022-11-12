@@ -1,4 +1,17 @@
 <resources>
     <string name="app_name">AMazeByShamsullahAhmadzai</string>
     <string name="app_title">THE MAZE</string>
+    <string name="titlebg_desc">Title Screen background</string>
+    <string name="title_heading">Take Your Shot At Death</string>
+    <string name="difficulty_title">Difficulty:</string>
+    <string name="gen_title">Generation Method:</string>
+    <string name="room_title">Rooms in Maze:</string>
+    <string name="title_btn1">Load Old Maze</string>
+    <string name="title_btn2">Load New Maze</string>
+
+    <string-array name="gen_methods">
+        <item>DFS</item>
+        <item>Prim\'s</item>
+        <item>Boruvka\'s</item>
+    </string-array>
 </resources>

@@ -5,13 +5,13 @@
     android:id="@+id/ToolBar"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".AMazeActivity">
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/materialToolbar"
         android:layout_width="0dp"
         android:layout_height="53dp"
-        android:background="#3B3B3B"
+        android:background="#303030"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme"
         app:layout_constraintEnd_toEndOf="parent"
@@ -71,7 +71,7 @@
             android:id="@+id/textView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="35dp"
+            android:layout_marginTop="75dp"
             android:layout_marginStart="15dp"
             android:fontFamily="sans-serif-black"
             android:text="@string/difficulty_title"
@@ -109,8 +109,8 @@
             android:id="@+id/textView3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
             android:layout_marginStart="15dp"
+            android:layout_marginTop="65dp"
             android:fontFamily="sans-serif-black"
             android:text="@string/gen_title"
             android:textColor="@color/white"
@@ -120,14 +120,104 @@
 
         <Spinner
             android:id="@+id/genmethod_spinner"
-            android:layout_width="match_parent"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
+            android:background="@drawable/spinner_bg"
+            android:gravity="center"
             android:minHeight="48dp"
+            android:spinnerMode="dropdown"
+            android:textAlignment="center"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView3"
             tools:ignore="SpeakableTextPresentCheck" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="65dp"
+            android:fontFamily="sans-serif-black"
+            android:text="@string/room_title"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/genmethod_spinner" />
+
+        <RadioGroup
+            android:id="@+id/radioGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView4">
+
+            <RadioButton
+                android:id="@+id/radio_yes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="50dp"
+                android:fontFamily="sans-serif-black"
+                android:onClick="onRadioButtonClicked"
+                android:text="@string/room_choice1"
+                android:textColor="#FFF"
+                android:textSize="18sp" />
+
+            <RadioButton
+                android:id="@+id/radio_no"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-black"
+                android:onClick="onRadioButtonClicked"
+                android:text="@string/room_choice2"
+                android:textColor="#FFF"
+                android:textSize="18sp" />
+        </RadioGroup>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="65dp"
+            android:layout_marginBottom="100dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/radioGroup">
+
+            <Button
+                android:id="@+id/title_btn1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:backgroundTint="#303030"
+                android:text="@string/title_btn1"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                android:id="@+id/title_btn2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="30dp"
+                android:layout_marginBottom="10dp"
+                android:backgroundTint="#303030"
+                android:text="@string/title_btn2"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

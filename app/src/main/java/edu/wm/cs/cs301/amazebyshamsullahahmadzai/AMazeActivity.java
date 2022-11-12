@@ -9,15 +9,15 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class AMazeActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.title_layout);
 
         Spinner spinner = findViewById(R.id.genmethod_spinner);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.gen_methods, android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.gen_methods, R.layout.custom_spinner);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
@@ -32,5 +32,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
 
+    }
+
+    public void onRadioButtonClicked(View view) {
+        Toast.makeText(view.getContext(), "Checkbox has been clicked", Toast.LENGTH_SHORT).show();
     }
 }

@@ -1,11 +1,15 @@
 <resources>
     <string name="app_name">AMazeByShamsullahAhmadzai</string>
+
+    <!-- AMazeActivity Strings -->
     <string name="app_title">THE MAZE</string>
     <string name="titlebg_desc">Title Screen background</string>
     <string name="title_heading">Take Your Shot At Death</string>
     <string name="difficulty_title">Difficulty:</string>
     <string name="gen_title">Generation Method:</string>
     <string name="room_title">Rooms in Maze:</string>
+    <string name="room_choice1">Yes</string>
+    <string name="room_choice2">No</string>
     <string name="title_btn1">Load Old Maze</string>
     <string name="title_btn2">Load New Maze</string>
 
@@ -14,4 +18,5 @@
         <item>Prim\'s</item>
         <item>Boruvka\'s</item>
     </string-array>
+    <!-- END AMazeActivity Strings -->
 </resources>

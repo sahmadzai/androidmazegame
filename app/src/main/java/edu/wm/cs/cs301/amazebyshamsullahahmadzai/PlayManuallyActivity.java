@@ -10,5 +10,7 @@ public class PlayManuallyActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play_manually);
+
+        CustomView maze_view = new CustomView(this);
     }
 }

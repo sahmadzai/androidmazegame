@@ -11,10 +11,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AMazeByShamsullahAhmadzai"
-        tools:targetApi="32"
-        tools:ignore="ObsoleteSdkInt">
+        tools:ignore="ObsoleteSdkInt"
+        tools:targetApi="32">
+        <!-- Declaring the state title activity -->
         <activity
-            android:name=".AMazeActivity"
+            android:name=".gui.AMazeActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,6 +23,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity> <!-- Declaring the generating activity -->
+        <activity android:name=".gui.GeneratingActivity">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity> <!-- Declaring the play manually activity -->
+        <activity
+            android:name=".PlayManuallyActivity"
+            android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />

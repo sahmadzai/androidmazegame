@@ -1,13 +1,17 @@
-package edu.wm.cs.cs301.amazebyshamsullahahmadzai;
+package edu.wm.cs.cs301.amazebyshamsullahahmadzai.gui;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import edu.wm.cs.cs301.amazebyshamsullahahmadzai.R;
 
 public class AMazeActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
@@ -21,6 +25,20 @@ public class AMazeActivity extends AppCompatActivity implements AdapterView.OnIt
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
+
+        // Setting up the NewMazeButton and adding a click listener
+        Button newMazeBtn = findViewById(R.id.newmazebtn);
+        newMazeBtn.setOnClickListener(view -> {
+            Intent intent = new Intent(this, GeneratingActivity.class);
+            startActivity(intent);
+        });
+
+        // Setting up the OldMazeButton and adding a click listener
+        Button oldMazeBtn = findViewById(R.id.oldmazebtn);
+        oldMazeBtn.setOnClickListener(view -> {
+            Intent intent = new Intent(this, GeneratingActivity.class);
+            startActivity(intent);
+        });
     }
 
     @Override

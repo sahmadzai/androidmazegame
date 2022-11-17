@@ -61,10 +61,25 @@
     <!-- PlayManuallyActivity Strings END -->
 
 
-    <!-- PlayAnimationActivity -->
+    <!-- PlayAnimationActivity Strings START -->
     <string name="sensor_title">Sensor States (F,L,R,B):</string>
     <string name="animPause_text">Pause</string>
+    <!-- PlayAnimationActivity Strings END -->
 
+    <!-- WinningActivity & LosingActivity Strings START -->
+    <string name="winbg_desc">Background Image of the Winning Screen</string>
+    <string name="win_title">Congratulations.</string>
+    <string name="win_phrase">You made it out alive.</string>
 
+    <string name="losebg_desc">Background Image of the losing screen</string>
+    <string name="lose_title">You Lost!</string>
+    <string name="lose_phrase">Robot ran out of energy or crashed to its death.</string>
+
+    <string name="energy_consum">Total Energy Consumption: 135</string>
+    <string name="path_len">Total Path Length: 45</string>
+    <string name="shortest_path">Shortest Path Length: 25</string>
+    <string name="plyagain_btn">Play Again</string>
+    <string name="plyagain_btn_desc">Press this button to play again.</string>
+    <!-- WinningActivity & LosingActivity Strings END -->
 
 </resources>

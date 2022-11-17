@@ -13,8 +13,20 @@
         android:theme="@style/Theme.AMazeByShamsullahAhmadzai"
         tools:ignore="ObsoleteSdkInt"
         tools:targetApi="32">
-
-        <!-- Declaring the state title activity -->
+        <activity
+            android:name=".gui.LosingActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".gui.WinningActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity> <!-- Declaring the state title activity -->
         <activity
             android:name=".gui.AMazeActivity"
             android:exported="true">

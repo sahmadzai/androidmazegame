@@ -13,6 +13,7 @@
         android:theme="@style/Theme.AMazeByShamsullahAhmadzai"
         tools:ignore="ObsoleteSdkInt"
         tools:targetApi="32">
+
         <!-- Declaring the state title activity -->
         <activity
             android:name=".gui.AMazeActivity"
@@ -33,7 +34,14 @@
                 android:value="" />
         </activity> <!-- Declaring the play manually activity -->
         <activity
-            android:name=".PlayManuallyActivity"
+            android:name=".gui.PlayManuallyActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity> <!-- Declaring the play animation activity -->
+        <activity
+            android:name=".gui.PlayAnimationActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"

@@ -55,8 +55,16 @@
     <string name="rightBtn_desc">Move Right</string>
     <string name="rmng_energy">Remaining Energy:</string>s
     <string name="jumptowin_btn">JP2W</string>
-    <string name="jumptowin_desc">Jump To Win or Losing Screen</string>
+    <string name="jumptowin_desc">Jump To Winning Screen</string>
+    <string name="jumptolose_btn">JP2L</string>
+    <string name="jumptolose_desc">Jump To Losing Screen</string>
     <!-- PlayManuallyActivity Strings END -->
+
+
+    <!-- PlayAnimationActivity -->
+    <string name="sensor_title">Sensor States (F,L,R,B):</string>
+    <string name="animPause_text">Pause</string>
+
 
 
 </resources>

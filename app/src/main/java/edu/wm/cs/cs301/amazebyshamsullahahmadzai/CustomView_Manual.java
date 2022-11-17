@@ -11,25 +11,24 @@ import android.view.View;
 
 import androidx.annotation.Nullable;
 
-public class CustomView extends View {
+public class CustomView_Manual extends View {
 
     private Rect maze_rect;
     private RectF circle;
     private Paint maze_rect_paint;
 
-    public CustomView(Context context) {
+    public CustomView_Manual(Context context) {
         super(context);
-
         init(null);
     }
 
-    public CustomView(Context context, @Nullable AttributeSet attrs) {
+    public CustomView_Manual(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
 
         init(null);
     }
 
-    public CustomView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public CustomView_Manual(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
         init(null);
@@ -61,8 +60,5 @@ public class CustomView extends View {
         circle.bottom   = (float) getHeight()/2 + circle.height()/2;
         maze_rect_paint.setColor(Color.RED);
         canvas.drawOval(circle, maze_rect_paint);
-
-
-
     }
 }

@@ -11,6 +11,8 @@ import android.widget.Spinner;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.snackbar.Snackbar;
+
 import edu.wm.cs.cs301.amazebyshamsullahahmadzai.R;
 
 public class GeneratingActivity extends AppCompatActivity {
@@ -19,6 +21,7 @@ public class GeneratingActivity extends AppCompatActivity {
     private String  robotReliability;
     private Boolean driveModeSelected = false;
     private Boolean robotReliabilitySelected = false;
+    private Boolean mazeGenComplete = false;
     private final int LENGTH_SHORT = 800;
     private final String LOG_TAG = "GeneratingActivity";
     private Thread thread;
@@ -27,6 +30,9 @@ public class GeneratingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.generating_layout);
+
+        // Get the data passed in from AMazeActivity and print it in log
+
 
         // Initialize and start listeners for the drive method & skill spinners
         initSpinners();
@@ -60,6 +66,10 @@ public class GeneratingActivity extends AppCompatActivity {
                     driveMode = text;
                     driveModeSelected = true;
                     Log.v(LOG_TAG, "User selected driving method: " + text);
+                    if (mazeGenComplete)
+                        Snackbar.make(view, "The game will start shortly.", Snackbar.LENGTH_SHORT).setDuration(LENGTH_SHORT).show();
+                    else
+                        Snackbar.make(view, "A driver type needs to be selected in order to play.", Snackbar.LENGTH_SHORT).setDuration(LENGTH_SHORT).show();
                 }
             }
 
@@ -103,6 +113,7 @@ public class GeneratingActivity extends AppCompatActivity {
                     i++;
                     Thread.sleep(50);
                 }
+                mazeGenComplete = true;
                 // Check if user has selected choices for method and reliability and move accordingly
                 hasUserSelected(Thread.currentThread());
 

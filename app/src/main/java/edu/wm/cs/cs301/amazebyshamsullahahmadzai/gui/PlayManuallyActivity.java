@@ -16,6 +16,7 @@ import edu.wm.cs.cs301.amazebyshamsullahahmadzai.R;
 
 public class PlayManuallyActivity extends AppCompatActivity {
 
+    private int distanceTravelled;
     private final int LENGTH_SHORT = 800;
     private final String LOG_TAG = "PlayManuallyActivity";
 
@@ -40,17 +41,19 @@ public class PlayManuallyActivity extends AppCompatActivity {
 
     private void setUpButtons() {
         // Setting up the NewMazeButton and adding a click listener
-        Button newMazeBtn = findViewById(R.id.jumpToLose);
-        newMazeBtn.setOnClickListener(view -> {
+        Button jumpToLose = findViewById(R.id.jumpToLose);
+        jumpToLose.setOnClickListener(view -> {
             Intent intent = new Intent(this, LosingActivity.class);
+            intent.putExtra("distance", distanceTravelled);
             Log.v(LOG_TAG, "Jumping to the losing screen.");
             startActivity(intent);
         });
 
         // Setting up the OldMazeButton and adding a click listener
-        Button oldMazeBtn = findViewById(R.id.jumpToWin);
-        oldMazeBtn.setOnClickListener(view -> {
+        Button jumpToWin = findViewById(R.id.jumpToWin);
+        jumpToWin.setOnClickListener(view -> {
             Intent intent = new Intent(this, WinningActivity.class);
+            intent.putExtra("distance", distanceTravelled);
             Log.v(LOG_TAG, "Jumping to the winning screen.");
             startActivity(intent);
         });
@@ -135,14 +138,17 @@ public class PlayManuallyActivity extends AppCompatActivity {
         moveForward.setOnClickListener(view -> {
             Snackbar.make(view, "Moving Forward", Snackbar.LENGTH_SHORT).setDuration(LENGTH_SHORT).show();
             Log.v(LOG_TAG, "User pressed the move forward button.");
+            distanceTravelled++;
         });
         turnLeft.setOnClickListener(view -> {
             Snackbar.make(view, "Turning Left", Snackbar.LENGTH_SHORT).setDuration(LENGTH_SHORT).show();
             Log.v(LOG_TAG, "User pressed the turn left button.");
+            distanceTravelled++;
         });
         turnRight.setOnClickListener(view -> {
             Snackbar.make(view, "Turning Right", Snackbar.LENGTH_SHORT).setDuration(LENGTH_SHORT).show();
             Log.v(LOG_TAG, "User pressed the turn right button.");
+            distanceTravelled++;
         });
     }
 

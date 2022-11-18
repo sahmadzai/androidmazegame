@@ -54,10 +54,10 @@ public class CustomView_Manual extends View {
         maze_rect_paint.setColor(Color.BLACK);
         canvas.drawRect(maze_rect, maze_rect_paint);
 
-        circle.top      = (float) getHeight()/2 - circle.height()/2;
-        circle.left     = (float) getWidth()/2  - circle.width()/2;
-        circle.right    = (float) getWidth()/2  + circle.width()/2;
-        circle.bottom   = (float) getHeight()/2 + circle.height()/2;
+        circle.top    = (float) getHeight()/2 - 50;
+        circle.left   = (float) getWidth()/2 - 50;
+        circle.right  = (float) getWidth()/2 + 50;
+        circle.bottom = (float) getHeight()/2 + 50;
         maze_rect_paint.setColor(Color.RED);
         canvas.drawOval(circle, maze_rect_paint);
     }

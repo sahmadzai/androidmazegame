@@ -8,18 +8,39 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import edu.wm.cs.cs301.amazebyshamsullahahmadzai.R;
 
 public class GeneratingActivity extends AppCompatActivity {
+
+    private String  driveMode;
+    private String  robotReliability;
+    private Boolean driveModeSelected = false;
+    private Boolean robotReliabilitySelected = false;
+    private final int LENGTH_SHORT = 800;
+    private final String LOG_TAG = "GeneratingActivity";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.generating_layout);
 
+        // Initialize and start listeners for the drive method & skill spinners
+        initSpinners();
+
+        updateProgressBar();
+    }
+
+    @Override
+    public void onBackPressed() {
+        // Handle the back button event by going back to the title page
+        Intent intent = new Intent(GeneratingActivity.this, AMazeActivity.class);
+        startActivity(intent);
+    }
+
+    private void initSpinners() {
         Spinner dmethodSpinner = findViewById(R.id.dmethod_spinner);
         Spinner dskillSpinner  = findViewById(R.id.dskill_spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.dmethods, R.layout.custom_spinner);
@@ -30,14 +51,19 @@ public class GeneratingActivity extends AppCompatActivity {
         dmethodSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                String text = adapterView.getItemAtPosition(i).toString();
-                Toast.makeText(adapterView.getContext(),text,Toast.LENGTH_SHORT).show();
-                Log.v("USER INPUT:", "User selected driving method: " + text);
+                if (i == 0)
+                    driveModeSelected = false;
+                else {
+                    String text = adapterView.getItemAtPosition(i).toString();
+                    driveMode = text;
+                    driveModeSelected = true;
+                    Log.v(LOG_TAG, "User selected driving method: " + text);
+                }
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-
+                driveModeSelected = false;
             }
         });
 
@@ -48,23 +74,25 @@ public class GeneratingActivity extends AppCompatActivity {
         dskillSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l)  {
-                String text = adapterView.getItemAtPosition(i).toString();
-                Toast.makeText(adapterView.getContext(),text,Toast.LENGTH_SHORT).show();
-                Log.v("USER INPUT:", "User selected skill level: " + text);
+                if (i == 0)
+                    robotReliabilitySelected = false;
+                else {
+                    String text = adapterView.getItemAtPosition(i).toString();
+                    robotReliability = text;
+                    robotReliabilitySelected = true;
+                    Log.v(LOG_TAG, "User selected skill level: " + text);
+                }
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-
+                robotReliabilitySelected = false;
             }
         });
-
-        updateProgressBar();
     }
 
     private void updateProgressBar() {
         ProgressBar genProgress = findViewById(R.id.gen_progress);
-
         Thread thread = new Thread(() -> {
             try {
                 int i = 1;
@@ -73,13 +101,33 @@ public class GeneratingActivity extends AppCompatActivity {
                     i++;
                     Thread.sleep(50);
                 }
-                Intent intent = new Intent(GeneratingActivity.this, PlayAnimationActivity.class);
-                startActivity(intent);
+                // Check if user has selected choices for method and reliability and move accordingly
+                hasUserSelected(Thread.currentThread());
+
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         });
         thread.start();
+    }
+
+    private void hasUserSelected(Thread thread) {
+        if (driveModeSelected && robotReliabilitySelected) {
+            Intent intent;
+            if (driveMode.equals("Manual"))
+                intent = new Intent(GeneratingActivity.this, PlayManuallyActivity.class);
+            else
+                intent = new Intent(GeneratingActivity.this, PlayAnimationActivity.class);
+            startActivity(intent);
+        } else {
+            Log.v(LOG_TAG, "User needs to select an option for driving method and skill.");
+            try {
+                thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            hasUserSelected(thread);
+        }
     }
 
 

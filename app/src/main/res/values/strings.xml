@@ -14,6 +14,7 @@
     <string name="title_btn2">Load New Maze</string>
 
     <string-array name="gen_methods">
+        <item/>
         <item>DFS</item>
         <item>Prim\'s</item>
         <item>Boruvka\'s</item>
@@ -28,12 +29,14 @@
     <string name="dskill_title">Driver Skill Level:</string>
 
     <string-array name="dmethods">
+        <item/>
         <item>Manual</item>
         <item>WallFollower</item>
         <item>Wizard</item>
     </string-array>
 
     <string-array name="dskills">
+        <item/>
         <item>Premium</item>
         <item>Mediocre</item>
         <item>Soso</item>

@@ -69,11 +69,11 @@ public class CustomView_Anim extends View {
         maze_rect_paint.setColor(Color.YELLOW);
         canvas.drawRect(maze_rect, maze_rect_paint);
 
-        // Draw the red dot in middle
-        circle.top      = (float) getHeight()/2 - circle.height()/2;
-        circle.left     = (float) getWidth()/2  - circle.width() - 30;
-        circle.right    = (float) getWidth()/2  + circle.width()/2 + 90;
-        circle.bottom   = (float) getHeight()/2 + circle.height()/2;
+        // Draw the red dot and center it in the custom view
+        circle.top    = (float) getHeight()/2 - 50;
+        circle.left   = (float) getWidth()/2 - 50;
+        circle.right  = (float) getWidth()/2 + 50;
+        circle.bottom = (float) getHeight()/2 + 50;
         maze_rect_paint.setColor(Color.RED);
         canvas.drawOval(circle, maze_rect_paint);
     }

@@ -119,6 +119,7 @@ public class GeneratingActivity extends AppCompatActivity {
                     Thread.sleep(50);
                 }
                 mazeGenComplete = true;
+                checkForSelection(genProgress);
                 // Check if user has selected choices for method and reliability and move accordingly
                 hasUserSelected(Thread.currentThread());
 
@@ -149,5 +150,11 @@ public class GeneratingActivity extends AppCompatActivity {
         }
     }
 
+    private void checkForSelection(View view) {
+        if (driveModeSelected)
+            Snackbar.make(view, "The game will start shortly.", Snackbar.LENGTH_SHORT).setDuration(LENGTH_SHORT).show();
+        else
+            Snackbar.make(view, "A driver type needs to be selected in order to play.", Snackbar.LENGTH_SHORT).setDuration(LENGTH_SHORT).show();
+    }
 
 }

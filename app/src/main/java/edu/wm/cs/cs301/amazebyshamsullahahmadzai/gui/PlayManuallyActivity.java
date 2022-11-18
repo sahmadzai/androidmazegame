@@ -132,6 +132,7 @@ public class PlayManuallyActivity extends AppCompatActivity {
 
     private void setUpMoveButtons() {
         Button moveForward = findViewById(R.id.move_up);
+        Button jump        = findViewById(R.id.jump_btn);
         Button turnLeft    = findViewById(R.id.move_left);
         Button turnRight   = findViewById(R.id.move_right);
 
@@ -140,15 +141,18 @@ public class PlayManuallyActivity extends AppCompatActivity {
             Log.v(LOG_TAG, "User pressed the move forward button.");
             distanceTravelled++;
         });
+        jump.setOnClickListener(view -> {
+            Snackbar.make(view, "Jumping", Snackbar.LENGTH_SHORT).setDuration(LENGTH_SHORT).show();
+            Log.v(LOG_TAG, "User pressed the jump button.");
+            distanceTravelled++;
+        });
         turnLeft.setOnClickListener(view -> {
             Snackbar.make(view, "Turning Left", Snackbar.LENGTH_SHORT).setDuration(LENGTH_SHORT).show();
             Log.v(LOG_TAG, "User pressed the turn left button.");
-            distanceTravelled++;
         });
         turnRight.setOnClickListener(view -> {
             Snackbar.make(view, "Turning Right", Snackbar.LENGTH_SHORT).setDuration(LENGTH_SHORT).show();
             Log.v(LOG_TAG, "User pressed the turn right button.");
-            distanceTravelled++;
         });
     }
 

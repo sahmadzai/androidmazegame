@@ -236,7 +236,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_marginTop="10dp">
 
                 <Button
                     android:id="@+id/move_left"
@@ -248,6 +249,16 @@
                     app:icon="@drawable/chevron_left"
                     app:iconPadding="0dp"
                     app:iconTint="#FFEB3B" />
+
+                <Button
+                    android:id="@+id/jump_btn"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/leftBtn_desc"
+                    app:icon="@drawable/jump_small_removebg_preview"
+                    app:iconPadding="0dp"
+                    app:iconTint="#FEEA3B" />
 
                 <Button
                     android:id="@+id/move_right"

@@ -20,9 +20,9 @@ import edu.wm.cs.cs301.amazebyshamsullahahmadzai.R;
 
 public class AMazeActivity extends AppCompatActivity {
 
-    private String gen_method;
-    private int skill_level;
-    private boolean rooms;
+    private String gen_method = "DFS";
+    private int skill_level = 0;
+    private boolean rooms = true;
     private int seed;
     private final int LENGTH_SHORT = 800;
     private final String LOG_TAG = "AMazeActivity";
@@ -48,6 +48,8 @@ public class AMazeActivity extends AppCompatActivity {
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 skill_level = i;
                 Log.v(LOG_TAG, "Difficulty is now: " + skill_level);
+                String text = "Difficulty is now: " + skill_level;
+                Snackbar.make(seekBar, text, Snackbar.LENGTH_SHORT).setDuration(LENGTH_SHORT).show();
             }
 
             @Override

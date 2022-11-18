@@ -66,7 +66,8 @@
 
     <!-- PlayAnimationActivity Strings START -->
     <string name="sensor_title">Sensor States (F,L,R,B):</string>
-    <string name="animPause_text">Pause</string>
+    <string name="state_pause">Pause</string>
+    <string name="state_play">Play</string>
     <!-- PlayAnimationActivity Strings END -->
 
     <!-- WinningActivity & LosingActivity Strings START -->

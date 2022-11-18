@@ -9,11 +9,14 @@ import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import com.google.android.material.snackbar.Snackbar;
+
 import edu.wm.cs.cs301.amazebyshamsullahahmadzai.CustomView_Anim;
 import edu.wm.cs.cs301.amazebyshamsullahahmadzai.R;
 
 public class PlayAnimationActivity extends AppCompatActivity {
 
+    private final int LENGTH_SHORT = 800;
     private final String LOG_TAG = "PlayAnimationActivity";
 
     @Override
@@ -62,10 +65,12 @@ public class PlayAnimationActivity extends AppCompatActivity {
                 showWalls.setText(R.string.state_off);
                 showWalls.setBackgroundColor(ContextCompat.getColor(this, R.color.dark_gray));
                 showWalls.setTextColor(Color.WHITE);
+                Snackbar.make(view, "Walls Hidden", Snackbar.LENGTH_SHORT).setDuration(LENGTH_SHORT).show();
             } else {
                 showWalls.setText(R.string.state_on);
                 showWalls.setBackgroundColor(ContextCompat.getColor(this, R.color.light_gray));
                 showWalls.setTextColor(Color.BLACK);
+                Snackbar.make(view, "Walls Visible", Snackbar.LENGTH_SHORT).setDuration(LENGTH_SHORT).show();
             }
         });
 
@@ -76,10 +81,12 @@ public class PlayAnimationActivity extends AppCompatActivity {
                 showSolution.setText(R.string.state_off);
                 showSolution.setBackgroundColor(ContextCompat.getColor(this, R.color.dark_gray));
                 showSolution.setTextColor(Color.WHITE);
+                Snackbar.make(view, "Solution Hidden", Snackbar.LENGTH_SHORT).setDuration(LENGTH_SHORT).show();
             } else {
                 showSolution.setText(R.string.state_on);
                 showSolution.setBackgroundColor(ContextCompat.getColor(this, R.color.light_gray));
                 showSolution.setTextColor(Color.BLACK);
+                Snackbar.make(view, "Solution Visible", Snackbar.LENGTH_SHORT).setDuration(LENGTH_SHORT).show();
             }
         });
 
@@ -90,10 +97,28 @@ public class PlayAnimationActivity extends AppCompatActivity {
                 showMaze.setText(R.string.state_off);
                 showMaze.setBackgroundColor(ContextCompat.getColor(this, R.color.dark_gray));
                 showMaze.setTextColor(Color.WHITE);
+                Snackbar.make(view, "Maze Hidden", Snackbar.LENGTH_SHORT).setDuration(LENGTH_SHORT).show();
             } else {
                 showMaze.setText(R.string.state_on);
                 showMaze.setBackgroundColor(ContextCompat.getColor(this, R.color.light_gray));
                 showMaze.setTextColor(Color.BLACK);
+                Snackbar.make(view, "Maze Visible", Snackbar.LENGTH_SHORT).setDuration(LENGTH_SHORT).show();
+            }
+        });
+
+        Button pauseAnim = findViewById(R.id.animPause);
+        pauseAnim.setOnClickListener(view -> {
+            // Set the button text to play or pause depending on the current state and change the color to light gray or dark gray
+            if (pauseAnim.getText().equals("Play")) {
+                pauseAnim.setText(R.string.state_pause);
+                pauseAnim.setBackgroundColor(ContextCompat.getColor(this, R.color.dark_gray));
+                pauseAnim.setTextColor(Color.WHITE);
+                Snackbar.make(view, "Animation Playing", Snackbar.LENGTH_SHORT).setDuration(LENGTH_SHORT).show();
+            } else {
+                pauseAnim.setText(R.string.state_play);
+                pauseAnim.setBackgroundColor(ContextCompat.getColor(this, R.color.light_gray));
+                pauseAnim.setTextColor(Color.BLACK);
+                Snackbar.make(view, "Animation Paused", Snackbar.LENGTH_SHORT).setDuration(LENGTH_SHORT).show();
             }
         });
     }

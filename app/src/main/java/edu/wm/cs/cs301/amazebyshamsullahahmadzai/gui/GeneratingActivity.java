@@ -21,6 +21,7 @@ public class GeneratingActivity extends AppCompatActivity {
     private Boolean robotReliabilitySelected = false;
     private final int LENGTH_SHORT = 800;
     private final String LOG_TAG = "GeneratingActivity";
+    private Thread thread;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +38,7 @@ public class GeneratingActivity extends AppCompatActivity {
     public void onBackPressed() {
         // Handle the back button event by going back to the title page
         Intent intent = new Intent(GeneratingActivity.this, AMazeActivity.class);
+        thread.interrupt();
         startActivity(intent);
     }
 
@@ -93,7 +95,7 @@ public class GeneratingActivity extends AppCompatActivity {
 
     private void updateProgressBar() {
         ProgressBar genProgress = findViewById(R.id.gen_progress);
-        Thread thread = new Thread(() -> {
+        thread = new Thread(() -> {
             try {
                 int i = 1;
                 while(genProgress.getProgress() < 100) {
@@ -119,6 +121,7 @@ public class GeneratingActivity extends AppCompatActivity {
             else
                 intent = new Intent(GeneratingActivity.this, PlayAnimationActivity.class);
             startActivity(intent);
+            thread.interrupt();
         } else {
             Log.v(LOG_TAG, "User needs to select an option for driving method and skill.");
             try {

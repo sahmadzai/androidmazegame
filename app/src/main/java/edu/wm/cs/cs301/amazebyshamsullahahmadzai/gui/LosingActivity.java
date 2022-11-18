@@ -3,6 +3,7 @@ package edu.wm.cs.cs301.amazebyshamsullahahmadzai.gui;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -13,6 +14,7 @@ import edu.wm.cs.cs301.amazebyshamsullahahmadzai.R;
 
 public class LosingActivity extends AppCompatActivity {
 
+    MediaPlayer mp;
     private int distanceTraveled;
     private final String LOG_TAG = "LosingActivity";
 
@@ -20,6 +22,9 @@ public class LosingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_losing);
+
+        mp = MediaPlayer.create(this, R.raw.losing_laugh);
+        mp.start();
 
         Intent intent = getIntent();
         distanceTraveled = intent.getIntExtra("distance", 0);

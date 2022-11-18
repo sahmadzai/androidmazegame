@@ -68,6 +68,10 @@
     <string name="sensor_title">Sensor States (F,L,R,B):</string>
     <string name="state_pause">Pause</string>
     <string name="state_play">Play</string>
+    <string name="animSpeed">Animation Speed:</string>
+    <string name="speed_0">Slow</string>
+    <string name="speed_2">Normal</string>
+    <string name="speed_4">Fast</string>
     <!-- PlayAnimationActivity Strings END -->
 
     <!-- WinningActivity & LosingActivity Strings START -->

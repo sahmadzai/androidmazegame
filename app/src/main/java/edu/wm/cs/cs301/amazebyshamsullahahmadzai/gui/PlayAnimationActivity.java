@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.SeekBar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -16,6 +17,7 @@ import edu.wm.cs.cs301.amazebyshamsullahahmadzai.R;
 
 public class PlayAnimationActivity extends AppCompatActivity {
 
+    private int animSpeed;
     private final int LENGTH_SHORT = 800;
     private final String LOG_TAG = "PlayAnimationActivity";
 
@@ -29,6 +31,8 @@ public class PlayAnimationActivity extends AppCompatActivity {
         setUpButtons();
 
         setUpToggleButtons();
+
+        setUpAnimationSpeed();
     }
 
     @Override
@@ -119,6 +123,27 @@ public class PlayAnimationActivity extends AppCompatActivity {
                 pauseAnim.setBackgroundColor(ContextCompat.getColor(this, R.color.light_gray));
                 pauseAnim.setTextColor(Color.BLACK);
                 Snackbar.make(view, "Animation Paused", Snackbar.LENGTH_SHORT).setDuration(LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void setUpAnimationSpeed() {
+        SeekBar animSpeedSlider = findViewById(R.id.animSpeed);
+        animSpeedSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                animSpeed = i;
+                Log.v(LOG_TAG, "Animation speed is now: " + (animSpeed+1));
+                String text = "Animation speed is now: " + (animSpeed+1);
+                Snackbar.make(seekBar, text, Snackbar.LENGTH_SHORT).setDuration(LENGTH_SHORT).show();
+            }
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
             }
         });
     }

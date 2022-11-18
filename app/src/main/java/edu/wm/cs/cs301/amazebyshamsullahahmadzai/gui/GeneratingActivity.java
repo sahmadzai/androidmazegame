@@ -32,7 +32,12 @@ public class GeneratingActivity extends AppCompatActivity {
         setContentView(R.layout.generating_layout);
 
         // Get the data passed in from AMazeActivity and print it in log
-
+        Intent intent = getIntent();
+        Bundle data = intent.getExtras();
+        Log.v(LOG_TAG, "The difficulty level is: " + data.getInt("skill_level", 0));
+        Log.v(LOG_TAG, "The maze gen method is: " + data.getString("gen_method"));
+        Log.v(LOG_TAG, "Will rooms be generated? " + data.getBoolean("gen_rooms"));
+        Log.v(LOG_TAG, "The maze seed is: " + data.getInt("seed"));
 
         // Initialize and start listeners for the drive method & skill spinners
         initSpinners();

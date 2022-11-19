@@ -1,7 +1,5 @@
 package edu.wm.cs.cs301.amazebyshamsullahahmadzai.gui;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,14 +10,31 @@ import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.SeekBar;
 import android.widget.Spinner;
-import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.snackbar.Snackbar;
 
 import edu.wm.cs.cs301.amazebyshamsullahahmadzai.R;
 
+/**
+ * This activity represents the title screen of the maze app. It has welcome text, a SeekBar to
+ * select the skill level for the maze, a Spinner to select the maze generation method and some radio
+ * buttons to choose whether rooms should be generated or not.
+ *  
+ * The user presses either the "Load Old Maze" button or the "Load New Maze" button to proceed.
+ * Based on their choice, the activity starts a new activity, GeneratingActivity, which generates
+ * the maze and shows the progress of the generation.
+ * 
+ * @author Shamsullah Ahmadzai
+ *
+ */
 public class AMazeActivity extends AppCompatActivity {
 
+    /**
+     * Class variables that are used to store the different values that are selected by the user
+     * and some other constant values.
+     */
     private String gen_method = "DFS";
     private int skill_level = 0;
     private boolean rooms = true;
@@ -40,6 +55,10 @@ public class AMazeActivity extends AppCompatActivity {
         setUpButtons();
     }
 
+    /**
+     * Method that sets up the seekbar and starts the listener for it.
+     * The listener updates the skill level variable when the user changes the value of the seekbar.
+     */
     private void initSeekBar() {
         // Initialize seekbar
         SeekBar skillSeekBar = findViewById(R.id.difficulty);
@@ -64,6 +83,11 @@ public class AMazeActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * This method sets up the spinner and fills in the values for the different generation methods from strings.xml.
+     * It also sets up the listener for the spinner and updates the gen_method variable when the user selects a new
+     * generation method.
+     */
     private void initSpinner() {
         Spinner spinner = findViewById(R.id.genmethod_spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.gen_methods, R.layout.custom_spinner);
@@ -90,19 +114,27 @@ public class AMazeActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * This method sets up the buttons for the maze and starts the listeners for them.
+     * The listeners start the GeneratingActivity when the user presses either the "Load Old Maze" or
+     * the "Load New Maze" button. Based on the button that was pressed, the GeneratingActivity will
+     * either load the old maze or generate a new maze.
+     * 
+     * The data is passed to the GeneratingActivity through a Bundle object using the Intent.putExtras() method.
+     */
     private void setUpButtons() {
         // Setting up the NewMazeButton and adding a click listener
         Button newMazeBtn = findViewById(R.id.newmazebtn);
         newMazeBtn.setOnClickListener(view -> {
-            Intent intent = new Intent(this, GeneratingActivity.class);
-            Log.v(LOG_TAG, "Generating a NEW Maze.");
-            Bundle extras = new Bundle();
-            extras.putInt("skill_level", skill_level);
-            extras.putString("gen_method", gen_method);
-            extras.putBoolean("gen_rooms", rooms);
-            extras.putInt("seed", seed);
-            intent.putExtras(extras);
-            startActivity(intent);
+            Intent intent = new Intent(this, GeneratingActivity.class);     // Create new intent
+            Log.v(LOG_TAG, "Generating a NEW Maze.");                       // Log the event
+            Bundle extras = new Bundle();                                   // Create a new bundle
+            extras.putInt("skill_level", skill_level);                      // Add the skill level to the bundle  
+            extras.putString("gen_method", gen_method);                     // Add the generation method to the bundle
+            extras.putBoolean("gen_rooms", rooms);                          // Add the rooms boolean to the bundle
+            extras.putInt("seed", seed);                                    // Add the seed to the bundle   
+            intent.putExtras(extras);                                       // Add the bundle to the intent    
+            startActivity(intent);                                          // Start the GeneratingActivity
         });
 
         // Setting up the OldMazeButton and adding a click listener
@@ -120,17 +152,24 @@ public class AMazeActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * This method is called when the user presses an option from radio group.
+     * It updates the rooms variable to true if the user selects the "Yes" 
+     * option and false if the user selects the "No" option.
+     * 
+     * @param view The view that was clicked.
+     */
     public void onRoomChoice(View view) {
-        RadioButton radio_yes = findViewById(R.id.radio_yes);
+        RadioButton radio_yes = findViewById(R.id.radio_yes);                                                   // Get the "Yes" radio button   
 
-        if (radio_yes.isChecked()) {
-            rooms = true;
-            Log.v(LOG_TAG, "User selected YES for room generation.");
-            Snackbar.make(view, "Rooms enabled", Snackbar.LENGTH_SHORT).setDuration(LENGTH_SHORT).show();
+        if (radio_yes.isChecked()) {                                                                            // If the "Yes" radio button is checked
+            rooms = true;                                                                                       // Set the rooms variable to true
+            Log.v(LOG_TAG, "User selected YES for room generation.");                                           // Log the event
+            Snackbar.make(view, "Rooms enabled", Snackbar.LENGTH_SHORT).setDuration(LENGTH_SHORT).show();       // Show a snackbar that says "Rooms enabled"
         } else {
-            rooms = false;
-            Log.v(LOG_TAG, "User selected NO for room generation.");
-            Snackbar.make(view, "Rooms disabled", Snackbar.LENGTH_SHORT).setDuration(LENGTH_SHORT).show();
+            rooms = false;                                                                                       // Set the rooms variable to false                    
+            Log.v(LOG_TAG, "User selected NO for room generation.");                                             // Log the event
+            Snackbar.make(view, "Rooms disabled", Snackbar.LENGTH_SHORT).setDuration(LENGTH_SHORT).show();       // Show a snackbar that says "Rooms disabled"
         }
     }
 }

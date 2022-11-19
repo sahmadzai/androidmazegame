@@ -15,6 +15,17 @@ import com.google.android.material.snackbar.Snackbar;
 import edu.wm.cs.cs301.amazebyshamsullahahmadzai.CustomView_Anim;
 import edu.wm.cs.cs301.amazebyshamsullahahmadzai.R;
 
+/**
+ * This class is responsible for the automatic robot moving through the maze. It has a seekbar that
+ * allows the user to control the speed of the animation/robot. It also has toggle buttons that allow
+ * the user to show the solution path, full map of the maze, or the walls of the maze.
+ * 
+ * It also contains visual indicators for the robot's sensor states.
+ * 
+ * @author Shamsullah Ahmadzai
+ * 
+ */
+
 public class PlayAnimationActivity extends AppCompatActivity {
 
     private int animSpeed;
@@ -26,15 +37,16 @@ public class PlayAnimationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play_animation);
 
-        CustomView_Anim maze_view = new CustomView_Anim(this);
-
-        setUpButtons();
-
-        setUpToggleButtons();
-
-        setUpAnimationSpeed();
+        CustomView_Anim maze_view = new CustomView_Anim(this);                      // Creating a new CustomView_Anim object to display the maze
+        setUpButtons();                                                             // Setting up the seekbar and adding a change listener
+        setUpToggleButtons();                                                       // Setting up the toggle buttons and adding a click listener
+        setUpAnimationSpeed();                                                      // Setting up the animation speed and adding a change listener
     }
 
+    /**
+     * This method overrides the default back button behavior to take the user 
+     * back to the title screen instead of the previous activity.
+     */
     @Override
     public void onBackPressed() {
         // Handle the back button event by going back to the title page
@@ -42,25 +54,34 @@ public class PlayAnimationActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    /**
+     * This method sets up the buttons that allow the user to jump to the winning or losing screen.
+     * It also sets up a click listener for each button that takes the user to the appropriate screen
+     * through an intent and also logs the event.
+     */
     private void setUpButtons() {
-        // Setting up the NewMazeButton and adding a click listener
-        Button newMazeBtn = findViewById(R.id.jumpToLose);
-        newMazeBtn.setOnClickListener(view -> {
+        // Setting up the JumpToLose button and adding a click listener
+        Button jumpToLose = findViewById(R.id.jumpToLose);
+        jumpToLose.setOnClickListener(view -> {
             Intent intent = new Intent(this, LosingActivity.class);
             Log.v(LOG_TAG, "Jumping to the losing screen.");
             startActivity(intent);
         });
 
-        // Setting up the OldMazeButton and adding a click listener
-        Button oldMazeBtn = findViewById(R.id.jumpToWin);
-        oldMazeBtn.setOnClickListener(view -> {
+        // Setting up the JumpToWin button and adding a click listener
+        Button jumpToWin = findViewById(R.id.jumpToWin);
+        jumpToWin.setOnClickListener(view -> {
             Intent intent = new Intent(this, WinningActivity.class);
             Log.v(LOG_TAG, "Jumping to the winning screen.");
             startActivity(intent);
         });
     }
 
-    // Sets up the buttons that toggle the visibility of the solution and the maze
+    /**
+     * This method sets up the toggle buttons that allow the user to show the solution path, full map
+     * of the maze, or the walls of the maze. It also sets up a click listener for each button that
+     * logs the event and shows a snackbar to the user.
+     */
     private void setUpToggleButtons() {
         Button showWalls = findViewById(R.id.shw_walls);
         showWalls.setOnClickListener(view -> {
@@ -127,24 +148,26 @@ public class PlayAnimationActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * This method sets up the seek bar that allows the user to change the animation speed. It also
+     * sets up a change listener for the seek bar that logs the event and shows a snackbar to the user
+     * with the new animation speed.
+     */
     private void setUpAnimationSpeed() {
-        SeekBar animSpeedSlider = findViewById(R.id.animSpeed);
-        animSpeedSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        SeekBar animSpeedSlider = findViewById(R.id.animSpeed);                                         // Get the seek bar from the layout
+        animSpeedSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {              // Set up a change listener for the seek bar
+            
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                animSpeed = i;
-                Log.v(LOG_TAG, "Animation speed is now: " + (animSpeed+1));
-                String text = "Animation speed is now: " + (animSpeed+1);
-                Snackbar.make(seekBar, text, Snackbar.LENGTH_SHORT).setDuration(LENGTH_SHORT).show();
+                animSpeed = i;                                                                          // Set the animation speed to the value of the seek bar
+                Log.v(LOG_TAG, "Animation speed is now: " + (animSpeed+1));                             // Log the new animation speed
+                String text = "Animation speed is now: " + (animSpeed+1);                               // Create a string to show in the snackbar
+                Snackbar.make(seekBar, text, Snackbar.LENGTH_SHORT).setDuration(LENGTH_SHORT).show();   // Show a snackbar with the new animation speed
             }
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
+            public void onStartTrackingTouch(SeekBar seekBar) {}
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
+            public void onStopTrackingTouch(SeekBar seekBar) {}
         });
     }
 }

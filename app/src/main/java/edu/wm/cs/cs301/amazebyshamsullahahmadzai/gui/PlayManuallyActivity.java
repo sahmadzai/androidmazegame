@@ -14,6 +14,15 @@ import com.google.android.material.snackbar.Snackbar;
 import edu.wm.cs.cs301.amazebyshamsullahahmadzai.CustomView_Manual;
 import edu.wm.cs.cs301.amazebyshamsullahahmadzai.R;
 
+/**
+ * This class is responsible for the manual robot moving through the maze. It has toggle buttons that allow
+ * the user to show the solution path, full map of the maze, or the walls of the maze. It also contains
+ * buttons that allow the user to rotate the robot, move the robot forward, or make the robot jump.
+ * 
+ * @author Shamsullah Ahmadzai
+ * 
+ */
+
 public class PlayManuallyActivity extends AppCompatActivity {
 
     private int distanceTravelled;
@@ -25,13 +34,16 @@ public class PlayManuallyActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play_manually);
 
-        CustomView_Manual maze_view = new CustomView_Manual(this);
-
-        setUpButtons();
-        setUpToggleButtons();
-        setUpMoveButtons();
+        CustomView_Manual maze_view = new CustomView_Manual(this);              // Creating a new CustomView_Manual object to display the maze
+        setUpButtons();                                                         // Setting up the buttons and adding a click listener
+        setUpToggleButtons();                                                   // Setting up the toggle buttons and adding a click listener
+        setUpMoveButtons();                                                     // Setting up the move buttons and adding a click listener
     }
 
+    /**
+     * This method overrides the default back button behavior to take the user 
+     * back to the title screen instead of the previous activity.
+     */
     @Override
     public void onBackPressed() {
         // Handle the back button event by going back to the title page
@@ -39,8 +51,13 @@ public class PlayManuallyActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    /**
+     * This method sets up the buttons that allow the user to jump to the winning or losing screen.
+     * It also sets up a click listener for each button that takes the user to the appropriate screen
+     * through an intent and also logs the event.
+     */
     private void setUpButtons() {
-        // Setting up the NewMazeButton and adding a click listener
+        // Setting up the jumpToLose button and adding a click listener
         Button jumpToLose = findViewById(R.id.jumpToLose);
         jumpToLose.setOnClickListener(view -> {
             Intent intent = new Intent(this, LosingActivity.class);
@@ -49,7 +66,7 @@ public class PlayManuallyActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        // Setting up the OldMazeButton and adding a click listener
+        // Setting up the jumpToWin and adding a click listener
         Button jumpToWin = findViewById(R.id.jumpToWin);
         jumpToWin.setOnClickListener(view -> {
             Intent intent = new Intent(this, WinningActivity.class);
@@ -73,7 +90,11 @@ public class PlayManuallyActivity extends AppCompatActivity {
         });
     }
 
-    // Sets up the buttons that toggle the visibility of the solution and the maze
+    /**
+     * This method sets up the toggle buttons that allow the user to show the solution path, full map
+     * of the maze, or the walls of the maze. It also sets up a click listener for each button that
+     * logs the event and shows a snackbar to the user.
+     */
     private void setUpToggleButtons() {
         Button showWalls = findViewById(R.id.shw_walls);
         showWalls.setOnClickListener(view -> {
@@ -130,6 +151,12 @@ public class PlayManuallyActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * This method sets up the movement buttons that allow the user to move the robot forward, rotate
+     * the robot left, rotate the robot right, or make the robot jump. It also sets up a click listener
+     * for each button that logs the event and shows a snackbar to the user. It also updates the distance
+     * travelled by the robot which will be passed to the winning or losing activity.
+     */
     private void setUpMoveButtons() {
         Button moveForward = findViewById(R.id.move_up);
         Button jump        = findViewById(R.id.jump_btn);

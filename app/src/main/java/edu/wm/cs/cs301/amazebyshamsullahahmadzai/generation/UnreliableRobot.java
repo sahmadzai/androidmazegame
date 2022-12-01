@@ -14,54 +14,14 @@ package edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation;
  * @author Shamsullah Ahmadzai
  */
 public class UnreliableRobot extends ReliableRobot {
-	
-	/**
-     * A constructor takes in a controller, maze, and boolean values for which sensors that are unreliable.
-     * It then calls the appropriate methods to set the controller, maze, and sensors in 
-     * the robot object.
-     * @param controller
-     * @param maze
-     * @param unreliableSensors
-     */
-	
-	/**
-	 * Provides the robot with a reference to the controller to cooperate with.
-	 * The robot memorizes the controller such that this method is most likely called only once
-	 * and for initialization purposes. The controller serves as the main source of information
-	 * for the robot about the current position, the presence of walls, the reaching of an exit.
-	 * The controller is assumed to be in the playing state.
-	 * @param controller is the communication partner for robot
-	 * @throws IllegalArgumentException if controller is null, 
-	 * or if controller is not in playing state, or if controller does not have a maze
-	 */
-	@Override
-	public void setController(Control controller) {
-		/*
-		 * Initalize a controller object that can be used to get the different states and move the robot around.
-		 */
-		if (controller == null) {
-			throw new IllegalArgumentException("Controller cannot be null");
-		}
-		if (controller.getMaze() == null) {
-			throw new IllegalArgumentException("Controller must have a maze");
-		}
-		this.control = controller;
-		state = control.currentState;
-		this.batteryLevel[0] = 3500;
-		this.odometer = 0;
-		this.stopped = false;
-		this.x = controller.getCurrentPosition()[0];
-		this.y = controller.getCurrentPosition()[1];
-	}
-
 
     /**
      * This method takes in a boolean array of unreliable sensors and then sets the sensors
      * in the robot object to be unreliable. The order of the sensors in the array is 
      * Forward, Left, Right, Backward.
-     * @param boolean[] unreliableSensors 
+     * @param unreliableSensors
      */
-    public void setUnreliableSensors(boolean[] unreliableSensors) {
+    public void setUnreliableSensors(boolean[] unreliableSensors, Maze maze) {
         /**
          * If the array is null or the array is not of length 4, throw an IllegalArgumentException.
          * If the array is not null then loop through the array and check that the value at each index
@@ -75,30 +35,30 @@ public class UnreliableRobot extends ReliableRobot {
         for (int i = 0; i < unreliableSensors.length; i++) {
             if (unreliableSensors[i]) {
                 if (i == 0) {
-                	forward = new UnreliableSensor(control.getMaze(), Direction.FORWARD);
+                	forward = new UnreliableSensor(maze, Direction.FORWARD);
                     super.addDistanceSensor(forward, Direction.FORWARD);
                 } else if (i == 1) {
-                	left = new UnreliableSensor(control.getMaze(), Direction.LEFT);
+                	left = new UnreliableSensor(maze, Direction.LEFT);
                     super.addDistanceSensor(left, Direction.LEFT);
                 } else if (i == 2) {
-                	right = new UnreliableSensor(control.getMaze(), Direction.RIGHT);
+                	right = new UnreliableSensor(maze, Direction.RIGHT);
                     super.addDistanceSensor(right, Direction.RIGHT);
                 } else if (i == 3) {
-                	backward = new UnreliableSensor(control.getMaze(), Direction.BACKWARD);
+                	backward = new UnreliableSensor(maze, Direction.BACKWARD);
                     super.addDistanceSensor(backward, Direction.BACKWARD);
                 }
             } else {
             	if (i == 0) {
-                	forward = new ReliableSensor(control.getMaze(), Direction.FORWARD);
+                	forward = new ReliableSensor(maze, Direction.FORWARD);
                     super.addDistanceSensor(forward, Direction.FORWARD);
                 } else if (i == 1) {
-                	left = new ReliableSensor(control.getMaze(), Direction.LEFT);
+                	left = new ReliableSensor(maze, Direction.LEFT);
                     super.addDistanceSensor(left, Direction.LEFT);
                 } else if (i == 2) {
-                	right = new ReliableSensor(control.getMaze(), Direction.RIGHT);
+                	right = new ReliableSensor(maze, Direction.RIGHT);
                     super.addDistanceSensor(right, Direction.RIGHT);
                 } else if (i == 3) {
-                	backward = new ReliableSensor(control.getMaze(), Direction.BACKWARD);
+                	backward = new ReliableSensor(maze, Direction.BACKWARD);
                     super.addDistanceSensor(backward, Direction.BACKWARD);
                 }
             }

@@ -1,6 +1,18 @@
-package edu.wm.cs.cs301.amazebyshamsullahahmadzai.gui;
+package edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation;
+
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.RectF;
 
 public class MazePanel implements P7PanelF22 {
+
+	private Canvas canvas;
+	private Rect maze_rect;
+	private RectF circle;
+	private Paint paint;
+
 	/**
 	 * Commits all accumulated drawings to the UI.
 	 * Substitute for MazePanel.update method.
@@ -33,7 +45,7 @@ public class MazePanel implements P7PanelF22 {
 	 */
 	@Override
 	public void setColor(int argb) {
-
+		paint.setColor(Color.parseColor(String.valueOf(argb)));
 	}
 
 	/**
@@ -43,7 +55,7 @@ public class MazePanel implements P7PanelF22 {
 	 */
 	@Override
 	public int getColor() {
-		return 0;
+		return Color.toArgb(paint.getColor());
 	}
 
 	/**
@@ -58,7 +70,17 @@ public class MazePanel implements P7PanelF22 {
 	 */
 	@Override
 	public void addBackground(float percentToExit) {
+		maze_rect.top = 0;                                  // top of the rectangle is at the origin 0
+		maze_rect.left = canvas.getWidth();                        // left of the rectangle is at the width of the screen
+		maze_rect.bottom = canvas.getHeight()/2;                   // bottom of the rectangle is at the height of the screen divided by 2
+		paint.setColor(Color.GRAY);               // set the color of the rectangle to gray
+		canvas.drawRect(maze_rect, paint);        // draw the rectangle onto the canvas
 
+		maze_rect.top = canvas.getHeight()/2;                      // top is 1/2 of the height
+		maze_rect.left = canvas.getWidth();                        // left is the width
+		maze_rect.bottom = canvas.getHeight();                     // bottom stops at the rectangle height
+		paint.setColor(Color.BLACK);              // set the color to black
+		canvas.drawRect(maze_rect, paint);
 	}
 
 	/**
@@ -75,7 +97,7 @@ public class MazePanel implements P7PanelF22 {
 	 */
 	@Override
 	public void addFilledRectangle(int x, int y, int width, int height) {
-
+		canvas.drawRect(x, y, x + width, y + height, paint);
 	}
 
 	/**
@@ -95,7 +117,11 @@ public class MazePanel implements P7PanelF22 {
 	 */
 	@Override
 	public void addFilledPolygon(int[] xPoints, int[] yPoints, int nPoints) {
-
+		for (int x: xPoints) {
+			for (int y: yPoints) {
+				canvas.drawPoint(x, y, paint);
+			}
+		}
 	}
 
 	/**
@@ -116,7 +142,11 @@ public class MazePanel implements P7PanelF22 {
 	 */
 	@Override
 	public void addPolygon(int[] xPoints, int[] yPoints, int nPoints) {
-
+		for (int x: xPoints) {
+			for (int y: yPoints) {
+				canvas.drawPoint(x, y, paint);
+			}
+		}
 	}
 
 	/**
@@ -132,7 +162,7 @@ public class MazePanel implements P7PanelF22 {
 	 */
 	@Override
 	public void addLine(int startX, int startY, int endX, int endY) {
-
+		canvas.drawLine(startX, startY, endX, endY, paint);
 	}
 
 	/**
@@ -150,7 +180,7 @@ public class MazePanel implements P7PanelF22 {
 	 */
 	@Override
 	public void addFilledOval(int x, int y, int width, int height) {
-
+		canvas.drawOval(x, y, x + width, y + height, paint);
 	}
 
 	/**
@@ -181,7 +211,7 @@ public class MazePanel implements P7PanelF22 {
 	 */
 	@Override
 	public void addArc(int x, int y, int width, int height, int startAngle, int arcAngle) {
-
+		canvas.drawArc(x, y, x + width, y + height, startAngle, arcAngle, false, paint);
 	}
 
 	/**
@@ -194,7 +224,7 @@ public class MazePanel implements P7PanelF22 {
 	 */
 	@Override
 	public void addMarker(float x, float y, String str) {
-
+		canvas.drawText(str, x, y, paint);
 	}
 
 	/**
@@ -217,4 +247,6 @@ public class MazePanel implements P7PanelF22 {
 	public void setRenderingHint(P7RenderingHints hintKey, P7RenderingHints hintValue) {
 
 	}
+
+
 }

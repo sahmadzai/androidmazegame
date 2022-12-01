@@ -128,19 +128,19 @@ public class Map {
 	 * @param showSolution if true shows a path to the exit as a yellow line,
 	 * otherwise path is not shown.
 	 */
-	public void draw(MazePanel panel, int x, int y, int angle, int walkStep,
-			boolean showMaze, boolean showSolution) {
-		Graphics g = panel.getBufferGraphics() ;
-        // viewers draw on the buffer graphics
-        if (null == g) {
-        	LOGGER.warning("Can't get graphics object to draw on, mitigate this by skipping draw operation") ;
-            return;
-        }
-        final int viewDX = getViewDX(angle); 
-        final int viewDY = getViewDY(angle);
-        drawMap(g, x, y, walkStep, viewDX, viewDY, showMaze, showSolution) ;
-        drawCurrentLocation(g, viewDX, viewDY) ;
-	}
+//	public void draw(MazePanel panel, int x, int y, int angle, int walkStep,
+//			boolean showMaze, boolean showSolution) {
+//		Graphics g = panel.getBufferGraphics() ;
+//        // viewers draw on the buffer graphics
+//        if (null == g) {
+//        	LOGGER.warning("Can't get graphics object to draw on, mitigate this by skipping draw operation") ;
+//            return;
+//        }
+//        final int viewDX = getViewDX(angle);
+//        final int viewDY = getViewDY(angle);
+//        drawMap(g, x, y, walkStep, viewDX, viewDY, showMaze, showSolution) ;
+//        drawCurrentLocation(g, viewDX, viewDY) ;
+//	}
 	//////////////////////////////// private, internal methods //////////////////////////////
 	/**
 	 * Computes the x coordinate for the viewing direction for the given angle
@@ -177,13 +177,13 @@ public class Map {
 	 * @param showMaze is the flag to show the walls
 	 * @param showSolution  is the flag to show the solution, the yellow line to the exit
 	 */
-	private void drawMap(Graphics g, int px, int py, int walkStep, 
+	private void drawMap(GraphicsWrapper g, int px, int py, int walkStep,
 			int viewDX, int viewDY, boolean showMaze, boolean showSolution) {
 		// dimensions of the maze in terms of cell ids
 		final int mazeWidth = maze.getWidth() ;
 		final int mazeHeight = maze.getHeight() ;
 		
-		g.setColor(ColorTheme.getColor(ColorTheme.MazeColors.MAP_DEFAULT));
+		g.setColor(String.valueOf(ColorTheme.MazeColors.MAP_DEFAULT));
 		
 		// note: 1/2 of width and height is the center of the screen
 		// the whole map is centered at the current position
@@ -228,12 +228,12 @@ public class Map {
 	 * @param startX the x coordinate for drawing
 	 * @param startY the y coordinate for drawing
 	 */
-	private void drawVerticalLine(Graphics g, boolean showMaze, int x, int y, int startX, int startY) {
+	private void drawVerticalLine(GraphicsWrapper g, boolean showMaze, int x, int y, int startX, int startY) {
 		if (hasAVerticalWall(x, y) && 
 				(seenWalls.hasWall(x, y, CardinalDirection.West) || showMaze)) {
-			g.setColor(seenWalls.hasWall(x, y, CardinalDirection.West) ? 
-					ColorTheme.getColor(MazeColors.MAP_WALL_SEENBEFORE) : 
-						ColorTheme.getColor(MazeColors.MAP_WALL_DEFAULT));
+			g.setColor(String.valueOf(seenWalls.hasWall(x, y, CardinalDirection.West) ?
+					ColorTheme.getColor(ColorTheme.MazeColors.MAP_WALL_SEENBEFORE) :
+						ColorTheme.getColor(ColorTheme.MazeColors.MAP_WALL_DEFAULT)));
 			g.drawLine(startX, startY, startX, startY - mapScale); 
 		}
 	}
@@ -259,12 +259,12 @@ public class Map {
 	 * @param startX the x coordinate for drawing
 	 * @param startY the y coordinate for drawing
 	 */
-	private void drawHorizontalLine(Graphics g, boolean showMaze, int x, int y, int startX,
+	private void drawHorizontalLine(GraphicsWrapper g, boolean showMaze, int x, int y, int startX,
 			int startY) {
 		if (hasAHorizontalWall(x, y) && (seenWalls.hasWall(x,y, CardinalDirection.North) || showMaze) ) {
-			g.setColor(seenWalls.hasWall(x,y, CardinalDirection.North) ? 
-					ColorTheme.getColor(MazeColors.MAP_WALL_SEENBEFORE) : 
-						ColorTheme.getColor(MazeColors.MAP_WALL_DEFAULT));
+			g.setColor(String.valueOf(seenWalls.hasWall(x,y, CardinalDirection.North) ?
+					ColorTheme.getColor(ColorTheme.MazeColors.MAP_WALL_SEENBEFORE) :
+						ColorTheme.getColor(ColorTheme.MazeColors.MAP_WALL_DEFAULT)));
 			g.drawLine(startX, startY, startX + mapScale, startY); 
 		}
 	}
@@ -391,8 +391,8 @@ public class Map {
 	 * @param viewDX is the current viewing direction, x coordinate
 	 * @param viewDY is the current viewing direction, y coordinate
 	 */
-	private void drawCurrentLocation(Graphics gc, int viewDX, int viewDY) {
-		gc.setColor(ColorTheme.getColor(MazeColors.MAP_CURRENTLOCATION));
+	private void drawCurrentLocation(GraphicsWrapper gc, int viewDX, int viewDY) {
+		gc.setColor(String.valueOf(ColorTheme.MazeColors.MAP_CURRENTLOCATION));
 		// draw oval of appropriate size at the center of the screen
 		int centerX = viewWidth/2; // center x
 		int centerY = viewHeight/2; // center y
@@ -414,7 +414,7 @@ public class Map {
 	 * @param startX is the x coordinate of the starting point
 	 * @param startY is the y coordinate of the starting point
 	 */
-	private void drawArrow(Graphics gc, int viewDX, int viewDY, 
+	private void drawArrow(GraphicsWrapper gc, int viewDX, int viewDY,
 			final int startX, final int startY) {
 		// calculate length and coordinates for main line
 		final int arrowLength = mapScale*7/16; // arrow length, about 1/2 map_scale
@@ -455,7 +455,7 @@ public class Map {
 	 * @param px is the current position, an index x for a cell
 	 * @param py is the current position, an index y for a cell
 	 */
-	private void drawSolution(Graphics gc, int offsetX, int offsetY, int px, int py) {
+	private void drawSolution(GraphicsWrapper gc, int offsetX, int offsetY, int px, int py) {
 
 		if (!maze.isValidPosition(px, py)) {
 			LOGGER.warning("Parameter error: position out of bounds: (" + px + "," + 
@@ -468,7 +468,7 @@ public class Map {
 		int sy = py;
 		int distance = maze.getDistanceToExit(sx, sy);
 		
-		gc.setColor(ColorTheme.getColor(MazeColors.MAP_SOLUTION));
+		gc.setColor(String.valueOf(ColorTheme.MazeColors.MAP_SOLUTION));
 		
 		// while we are more than 1 step away from the final position
 		while (distance > 1) {

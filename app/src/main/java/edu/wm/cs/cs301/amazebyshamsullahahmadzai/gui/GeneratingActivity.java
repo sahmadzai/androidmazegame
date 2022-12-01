@@ -16,8 +16,6 @@ import com.google.android.material.snackbar.Snackbar;
 import edu.wm.cs.cs301.amazebyshamsullahahmadzai.R;
 import edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation.DefaultOrder;
 import edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation.Maze;
-import edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation.MazeBuilder;
-import edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation.MazeContainer;
 import edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation.MazeFactory;
 import edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation.MazeFileReader;
 import edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation.Order;
@@ -105,7 +103,9 @@ public class GeneratingActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         Intent intent = new Intent(GeneratingActivity.this, AMazeActivity.class);           // Create an intent to start the title screen
-        thread.interrupt();                                                                              // Interrupt the thread to stop the maze generation
+        thread.interrupt();                                                                          // Interrupt the thread to stop the maze generation
+        driveModeSelected = true;
+        robotReliabilitySelected = true;
         startActivity(intent);                                                                           // Start the title screen activity
     }
 

@@ -360,8 +360,13 @@ public class ColorTheme {
      * @return the rgb value for the color of the wall
      */
     public static int getWallColor(int distance, int cc, int extensionX) {
-    	return Color.parseColor("#" + getColorSettings().getWallColor(distance,cc,extensionX));
-    }
+    	int r = (int) getColorSettings().getWallColor(distance,cc,extensionX).red();
+		int g = (int) getColorSettings().getWallColor(distance, cc, extensionX).green();
+		int b = (int) getColorSettings().getWallColor(distance, cc, extensionX).blue();
+		return Integer.parseInt(String.valueOf(r + g + b));
+
+    };
+
 
 
 }

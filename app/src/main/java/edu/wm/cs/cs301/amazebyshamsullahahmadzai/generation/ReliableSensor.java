@@ -203,7 +203,7 @@ public class ReliableSensor implements DistanceSensor {
 	}
 	
 	/** This method sets the sensor to not working or to working based on the boolean passed in.
-     * @param boolean state
+     * @param state
      */
     public void setSensorState(boolean state) {
         this.sensorState = state;

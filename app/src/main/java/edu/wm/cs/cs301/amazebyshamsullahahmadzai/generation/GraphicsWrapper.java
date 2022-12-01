@@ -21,15 +21,10 @@ public class GraphicsWrapper extends View {
     private Canvas canvas;
     private Paint paint;
     private Bitmap bitmap;
-    private Bitmap wallBMP;
-    private BitmapShader wallShader;
-    private Bitmap skyBitmap;
-    private Bitmap floorBitmap;
+    private final BitmapShader wallShader;
     private final BitmapShader skyShader;
     private final BitmapShader floorShader;
     private Matrix matrix;
-    private int layoutWidth;
-    private int layoutHeight;
     private static final String LOG_TAG = "GraphicsWrapper";
     private static final int BITMAP_WIDTH = Constants.VIEW_WIDTH;
     private static final int BITMAP_HEIGHT = Constants.VIEW_HEIGHT;
@@ -38,13 +33,13 @@ public class GraphicsWrapper extends View {
 
     public GraphicsWrapper(Context context, AttributeSet attrs) {
         super(context, attrs);
-        wallBMP = BitmapFactory.decodeResource(context.getResources(), R.drawable.forest_walls);
+        Bitmap wallBMP = BitmapFactory.decodeResource(context.getResources(), R.drawable.forest_walls);
         wallBMP = Bitmap.createScaledBitmap(wallBMP, SHADER_WIDTH + 325, SHADER_HEIGHT + 200, false);
         wallShader = new BitmapShader(wallBMP, Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
-        skyBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.cloudy_sky);
+        Bitmap skyBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.cloudy_sky);
         skyBitmap = Bitmap.createScaledBitmap(skyBitmap, SHADER_WIDTH, SHADER_HEIGHT, false);
         skyShader = new BitmapShader(skyBitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
-        floorBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.creepy_floor);
+        Bitmap floorBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.creepy_floor);
         floorBitmap = Bitmap.createScaledBitmap(floorBitmap, SHADER_WIDTH + 50, SHADER_HEIGHT + 50, true);
         floorShader = new BitmapShader(floorBitmap, Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
 
@@ -169,8 +164,6 @@ public class GraphicsWrapper extends View {
         for (i = 1; i < xps.length; i++){
             path.lineTo(xps[i], yps[i]);
         }
-        //BitmapFactory.Options decode_options = new BitmapFactory.Options();
-        //bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.fallout4_wasteland_24dp);
         canvas.drawPath(path, paint);
         paint.setShader(null);
     }
@@ -181,8 +174,8 @@ public class GraphicsWrapper extends View {
     }
 
     public void measureDimensions() {
-        layoutWidth = this.getMeasuredWidth();
-        layoutHeight = this.getMeasuredHeight();
+        int layoutWidth = this.getMeasuredWidth();
+        int layoutHeight = this.getMeasuredHeight();
         Log.v(LOG_TAG, "Layout width: " + layoutWidth);
         Log.v(LOG_TAG, "Layout height: " + layoutHeight);
         init();

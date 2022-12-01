@@ -1,4 +1,4 @@
-package edu.wm.cs.cs301.amazebyshamsullahahmadzai.gui;
+package edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation;
 
 /**
  * Provides an adapter for a graphics object for the first person view

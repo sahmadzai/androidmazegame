@@ -77,7 +77,7 @@ public interface Robot {
 	 * or if controller is not in playing state, 
 	 * or if controller does not have a maze
 	 */
-	void setController(Control controller);	
+//	void setController(Control controller);
 	/**
 	 * Adds a distance sensor to the robot such that it measures in the given direction.
 	 * This method is used when a robot is initially configured to get ready for operation.

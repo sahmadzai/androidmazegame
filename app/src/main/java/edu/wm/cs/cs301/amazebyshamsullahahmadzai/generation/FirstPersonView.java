@@ -165,7 +165,7 @@ public class FirstPersonView {
         // draw background figure: lightGrey to green on bottom half, yellow to gold on top half
         drawBackground(g, percentToExit);
         // set color to white and draw what ever can be seen from the current position
-        g.setColor(ColorTheme.getColor(MazeColors.FIRSTPERSON_DEFAULT));
+        g.setColor(ColorTheme.getColor(ColorTheme.MazeColors.FIRSTPERSON_DEFAULT));
         // reset the set of ranges to a single new element (0,width-1)
         // to cover the full width of the view
         // as we have not drawn any polygons (walls) yet.

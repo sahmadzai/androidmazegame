@@ -2,8 +2,6 @@ package edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation;
 
 import java.util.logging.Logger;
 
-import edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation.Constants;
-
 
 /**
  * This class has the responsibility to create a maze of given dimensions (width, height) 

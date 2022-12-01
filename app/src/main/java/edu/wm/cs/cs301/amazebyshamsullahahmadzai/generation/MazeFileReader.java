@@ -3,6 +3,8 @@
  */
 package edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation;
 
+import android.content.Context;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,10 +41,11 @@ public class MazeFileReader {
 
 	/**
 	 * Constructor reads maze data from given file. The file format is an XML format produced by the MazeFileWriter class.
-	 *  
-	 * @param filename with data of a Maze object
-	 */
-	public MazeFileReader(String filename) {
+	 *
+     * @param filename with data of a Maze object
+     * @param applicationContext
+     */
+	public MazeFileReader(String filename, Context applicationContext) {
 		load(filename) ;
 	}
 
@@ -62,31 +65,31 @@ public class MazeFileReader {
 		return mazeConfig;
 	}
 	/////////////////// set of straightforward get methods //////////////
-	int getWidth() {
+	public int getWidth() {
 		return width ;
 	}
-	int getHeight() {
+	public int getHeight() {
 		return height ;
 	}
 	int getRooms() {
 		return rooms ;
 	}
-	int[][] getDistances() {
+	public int[][] getDistances() {
 		return dists ;
 	}
 	int getExpectedPartiters() {
 		return expected_partiters ;
 	}
-	Floorplan getCells() {
+	public Floorplan getCells() {
 		return cells ;
 	}
-	int getStartX() {
+	public int getStartX() {
 		return startx ;
 	}
-	int getStartY() {
+	public int getStartY() {
 		return starty ;
 	}
-	BSPNode getRootNode() {
+	public BSPNode getRootNode() {
 		return root ;
 	}
 	

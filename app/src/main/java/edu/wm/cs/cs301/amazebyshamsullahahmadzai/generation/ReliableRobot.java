@@ -32,7 +32,7 @@ public class ReliableRobot implements Robot {
      *    - Stop variable
      *    
      *    Driver relies on the robot to get what to do. Driver is like a controller that works 
-     *    with sensors (sense enviornment) or actuators (perform actions). The driver would want 
+     *    with sensors (sense environment) or actuators (perform actions). The driver would want
      *    to get information from the sensors in the Robot to perform actions such as moving or 
      *    turning. The actuators would tell the robot what to do. The robot should play the game
      *    through the Control class which contains the state and delegates what to do depending on
@@ -40,10 +40,10 @@ public class ReliableRobot implements Robot {
      *    
      *    The Sensor class handles calculation of what the distance to an obstacle is. When a sensor
      *    is mounted it is fixed to that position and is only looking in that direction with respect
-     *    to where the robot is pointing. The Sensor class uses the Floorplan class to figure out if 
-     *    there are walls in a certain direction. Think of sesnors as a table or map:
+     *    to where the robot is pointing. The Sensor class uses the Floor plan class to figure out if
+     *    there are walls in a certain direction. Think of sensors as a table or map:
      *    
-     *    Sensor Mount Dir   |  Cardinal Forward Dir |  Floorplan Dir
+     *    Sensor Mount Dir   |  Cardinal Forward Dir |  Floor plan Dir
      *    ------------------------------------------------------------
      *          F            |        N,S,E,W        |    N, S, E, W
      *          B            |        N,S,E,W        |    S, N, W, E
@@ -52,7 +52,7 @@ public class ReliableRobot implements Robot {
      *    
      *    North, South, East, and West needs to be translated from a CardinalDirection to be L, R, F, B.
      *    
-     * StatePlay.-> Control    Floorplan
+     * StatePlay.-> Control    Floor plan
      *                ^          ^
      *                |          |
      *    Driver -> Robot -> Sensor
@@ -88,7 +88,7 @@ public class ReliableRobot implements Robot {
 	@Override
 	public void setController(Control controller) {
 		/*
-		 * Initalize a controller object that can be used to get the different states and move the robot around.
+		 * Initialize a controller object that can be used to get the different states and move the robot around.
 		 */
 		if (controller == null) {
 			throw new IllegalArgumentException("Controller cannot be null");

@@ -3,7 +3,6 @@
  */
 package edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation;
 
-import java.awt.Graphics;
 import java.util.logging.Logger;
 
 /**
@@ -184,7 +183,7 @@ public class Map {
 		final int mazeWidth = maze.getWidth() ;
 		final int mazeHeight = maze.getHeight() ;
 		
-		g.setColor(ColorTheme.getColor(MazeColors.MAP_DEFAULT));
+		g.setColor(ColorTheme.getColor(ColorTheme.MazeColors.MAP_DEFAULT));
 		
 		// note: 1/2 of width and height is the center of the screen
 		// the whole map is centered at the current position

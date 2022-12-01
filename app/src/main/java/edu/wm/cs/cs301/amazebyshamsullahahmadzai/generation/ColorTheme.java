@@ -2,7 +2,6 @@ package edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation;
 
 import android.graphics.Color;
 
-import java.awt.Color;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -24,21 +23,21 @@ public class ColorTheme {
 	
 	
 	// General color settings across multiple screens
-	private static final Color greenWM = Color.decode("#115740");
-	private static final Color goldWM = Color.decode("#916f41");
-	private static final Color blackWM = Color.decode("#222222");
-	private static final Color yellowWM = Color.decode("#FFFF99");
+	private static final Color greenWM = Color.valueOf(Color.parseColor("#115740"));
+	private static final Color goldWM = Color.valueOf(Color.parseColor("#916f41"));
+	private static final Color blackWM = Color.valueOf(Color.parseColor("#222222"));
+	private static final Color yellowWM = Color.valueOf(Color.parseColor("#FFFF99"));
 
 	//specifically for CompassRose.java, corresponding enum values have prefix COMPASSROSE_
 	// fixed configuration for arms
     private static final Color MAIN_COLOR = greenWM; //new Color(0.4f, 0.4f, 1.0f);
     // fixed configuration for circle surrounding arms
-    private static final Color CIRCLE_HIGHLIGHT = new Color(1.0f, 1.0f, 1.0f, 0.8f); 
+    private static final Color CIRCLE_HIGHLIGHT = goldWM;
     //Color.decode("#115740").darker();// = new Color(1.0f, 1.0f, 1.0f, 0.8f); 
-    private static final Color CIRCLE_SHADE = new Color(1.0f, 1.0f, 1.0f, 0.3f); 
+    private static final Color CIRCLE_SHADE = yellowWM;
     //Color.decode("#115740").brighter(); //new Color(0.0f, 0.0f, 0.0f, 0.2f); 
     // fixed configuration for letters used to indicate direction
-    private static final Color MARKER_COLOR = Color.black; 
+    private static final Color MARKER_COLOR = Color.valueOf(Color.BLACK);
     
     // Logger to track execution
     private static final Logger LOGGER = Logger.getLogger(ColorTheme.class.getName());
@@ -48,14 +47,14 @@ public class ColorTheme {
      * The prefix indicates which class or feature uses it. 
      */
 	public enum MazeColors {BACKGROUND_TOP, BACKGROUND_BOTTOM, 
-		MAP_DEFAULT, MAP_WALL_DEFAULT, MAP_WALL_SEENBEFORE, MAP_CURRENTLOCATION, MAP_SOLUTION, 
+		MAP_DEFAULT, MAP_WALL_DEFAULT, MAP_WALL_SEENBEFORE, MAP_CURRENTLOCATION, MAP_SOLUTION,
 		COMPASSROSE_MAIN_COLOR, COMPASSROSE_CIRCLE_HIGHLIGHT, COMPASSROSE_CIRCLE_SHADE, 
 		COMPASSROSE_MARKER_COLOR_DEFAULT, COMPASSROSE_MARKER_COLOR_CURRENTDIRECTION, COMPASSROSE_BACKGROUND,
 		TITLE_LARGE, TITLE_SMALL, TITLE_DEFAULT, FRAME_OUTSIDE, FRAME_MIDDLE, FRAME_INSIDE,
-		FIRSTPERSON_DEFAULT} ;
-	
-		// address needs from Map.java
-		// requires predefined color for white (seen), grey for other walls, red for currentlocation, yellow for solution
+		FIRSTPERSON_DEFAULT}
+
+	// address needs from Map.java
+		// requires predefined color for white (seen), grey for other walls, red for current location, yellow for solution
 		
 	public static int getColor(MazeColors color) {
 		switch (color) {
@@ -64,47 +63,20 @@ public class ColorTheme {
 		case BACKGROUND_TOP: 
 			return Color.BLACK; // unused, just for completeness
 		case BACKGROUND_BOTTOM:
-			return Color.DARK_GRAY; // unused, just for completeness
+			return Color.DKGRAY; // unused, just for completeness
 		// color settings for Map
 		case MAP_DEFAULT:
 			case MAP_WALL_SEENBEFORE:
+				// color settings for FirstPersonView
+			case FIRSTPERSON_DEFAULT:
 				return Color.WHITE;
 		case MAP_WALL_DEFAULT:
 			return Color.GRAY;
 			case MAP_CURRENTLOCATION:
 			return Color.RED;
 		case MAP_SOLUTION:
-			return Color.YELLOW;	
-		// color settings for CompassRose
-		case COMPASSROSE_MAIN_COLOR:
-			return MAIN_COLOR;
-		case COMPASSROSE_CIRCLE_HIGHLIGHT:
-			return CIRCLE_HIGHLIGHT;
-		case COMPASSROSE_CIRCLE_SHADE:
-			return CIRCLE_SHADE;
-		case COMPASSROSE_MARKER_COLOR_DEFAULT:
-			return goldWM;
-		case COMPASSROSE_MARKER_COLOR_CURRENTDIRECTION:
-			return MARKER_COLOR;
-		case COMPASSROSE_BACKGROUND:
-			return Color.WHITE;
-		// color settings for SimpleScreens
-		case TITLE_DEFAULT:
-			return blackWM;
-		case TITLE_LARGE:
-			return goldWM;
-		case TITLE_SMALL:
-			return greenWM;
-		case FRAME_OUTSIDE:
-			return greenWM;
-		case FRAME_MIDDLE:
-			return goldWM;
-		case FRAME_INSIDE:
-			return Color.WHITE;
-		// color settings for FirstPersonView
-		case FIRSTPERSON_DEFAULT:
-			return Color.WHITE;
-		default:
+			return Color.YELLOW;
+			default:
 			break;
 		}
 		return Color.WHITE; // this is a mistake if you get here!!!
@@ -122,25 +94,25 @@ public class ColorTheme {
 	 * @return the matching instance of a color
 	 */
 	public static Color getColor(int rgb) {
-		return new Color(rgb);
+		return Color.valueOf(Color.parseColor(String.valueOf(rgb)));
 	}
 	/**
 	 * Class encapsulates a color setting for the background and walls.
-	 * The background is black on top, darkgray on the bottom. 
-	 * All walls are lightgrey.
+	 * The background is black on top, dark gray on the bottom.
+	 * All walls are light grey.
 	 * 
 	 * @author Peter Kemper
 	 *
 	 */
 	private static class ColorSettings {
 		Color getColor(MazeColors color, float percentToExit) {
-			Color result = (MazeColors.BACKGROUND_TOP == color)? Color.BLACK : Color.DARK_GRAY;
+			Color result = (MazeColors.BACKGROUND_TOP == color)? Color.valueOf(Color.BLACK) : Color.valueOf(Color.DKGRAY);
 			LOGGER.log(Level.FINEST, "given:" + color + ", returns color: " + result);
 			return result;
 		}
 		Color getWallColor(final int distance, final int cc, final int extensionX) {
-			LOGGER.log(Level.FINEST, "regardless of input, returns color: " + Color.LIGHT_GRAY);
-			return Color.LIGHT_GRAY;
+			LOGGER.log(Level.FINEST, "regardless of input, returns color: " + Color.LTGRAY);
+			return Color.valueOf(Color.LTGRAY);
 	    }
 		//////// shared code for subclasses, not used in this class ////////
 	    /**
@@ -166,7 +138,7 @@ public class ColorTheme {
 	}
 	/**
 	 * Class encapsulates a color setting for the background and walls.
-	 * The background is black on top, darkgray on the bottom. 
+	 * The background is black on top, dark gray on the bottom.
 	 * A wall has a color that is selected from 6 broad categories
 	 * and some variation within that depends on the distance to the exit.
 	 * The effect is that there are areas within the maze where walls
@@ -181,39 +153,38 @@ public class ColorTheme {
 	private static class ColorSettingsBasic extends ColorSettings {
 	     /**
 	     * Determine and set the color for this segment.
-	     *
-	     * @param distance
+	     *  @param distance
 	     *            to exit
 	     * @param cc
-	     *            obscure
-	     */
+		  * @return
+		  */
 	    @Override
-	    Color getWallColor(final int distance, final int cc, final int extensionX) {
+		Color getWallColor(final int distance, final int cc, final int extensionX) {
 	    	Color result; 
 	    	final int d = distance / 4;
 	        // mod used to limit the number of colors to 6
 	        final int rgbValue = calculateRGBValue(d, extensionX);
 	        switch (((d >> 3) ^ cc) % 6) {
 	        case 0:
-	            result = new Color(rgbValue, RGB_DEF, RGB_DEF);
+	            result = Color.valueOf(rgbValue, RGB_DEF, RGB_DEF);
 	            break;
 	        case 1:
-	        	result = new Color(RGB_DEF, rgbValue, RGB_DEF);
+	        	result = Color.valueOf(RGB_DEF, rgbValue, RGB_DEF);
 	        	break;
 	        case 2:
-	        	result = new Color(RGB_DEF, RGB_DEF, rgbValue);
+	        	result = Color.valueOf(RGB_DEF, RGB_DEF, rgbValue);
 	        	break;
 	        case 3:
-	        	result = new Color(rgbValue, rgbValue, RGB_DEF);
+	        	result = Color.valueOf(rgbValue, rgbValue, RGB_DEF);
 	        	break;
 	        case 4:
-	        	result = new Color(RGB_DEF, rgbValue, rgbValue);
+	        	result = Color.valueOf(RGB_DEF, rgbValue, rgbValue);
 	        	break;
 	        case 5:
-	        	result = new Color(rgbValue, RGB_DEF, rgbValue);
+	        	result = Color.valueOf(rgbValue, RGB_DEF, rgbValue);
 	        	break;
 	        default:
-	        	result = new Color(RGB_DEF, RGB_DEF, RGB_DEF);
+	        	result = Color.valueOf(RGB_DEF, RGB_DEF, RGB_DEF);
 	        	break;
 	        }
 	        LOGGER.log(Level.FINEST, "given distance:" + distance + ", returns color: " + result);
@@ -249,14 +220,14 @@ public class ColorTheme {
 		 * of yellowWM and lightGray towards goldWM and greenWM as final
 		 * color settings close to the exit
 		 * @param percentToExit describes how far it is to the exit as a percentage value
-		 * @param top is true for the top rectangle, false for the bottom
+		 * @param color is true for the top rectangle, false for the bottom
 		 * @return the color to use for the background rectangle
 		 */
 		@Override
 		Color getColor(MazeColors color, float percentToExit) {
 			Color result = (MazeColors.BACKGROUND_TOP == color)? 
 					blend(yellowWM, goldWM, percentToExit) : 
-						blend(Color.lightGray, greenWM, percentToExit);
+						blend(Color.valueOf(Color.LTGRAY), greenWM, percentToExit);
 			LOGGER.log(Level.FINEST, "given:" + color + ", returns color: " + result);
 	        return result;
 		}
@@ -277,12 +248,12 @@ public class ColorTheme {
 				return sndColor;
 			if (weightFstColor > 0.95)
 				return fstColor;
-		    double r = weightFstColor * fstColor.getRed() + (1-weightFstColor) * sndColor.getRed();
-		    double g = weightFstColor * fstColor.getGreen() + (1-weightFstColor) * sndColor.getGreen();
-		    double b = weightFstColor * fstColor.getBlue() + (1-weightFstColor) * sndColor.getBlue();
-		    double a = Math.max(fstColor.getAlpha(), sndColor.getAlpha());
+		    double r = weightFstColor * fstColor.RED + (1-weightFstColor) * sndColor.RED;
+		    double g = weightFstColor * fstColor.GREEN + (1-weightFstColor) * sndColor.GREEN;
+		    double b = weightFstColor * fstColor.BLUE + (1-weightFstColor) * sndColor.BLUE;
+		    double a = Math.max(fstColor.alpha(), sndColor.alpha());
 
-		    return new Color((int) r, (int) g, (int) b, (int) a);
+			return Color.valueOf(Color.argb((int) a, (int) r, (int) g, (int) b));
 		  }
 		/**
 	     * Default minimum value for RGB values.
@@ -290,40 +261,39 @@ public class ColorTheme {
 	    private static final int RGB_DEF_GREEN = 10;
 	    /**
 	     * Determine the color for this wall.
-	     *
-	     * @param distance
+	     *  @param distance
 	     *            to exit
 	     * @param cc
-	     *            obscure
-	     */
+		 * @return
+		 */
 	    @Override
-	    Color getWallColor(final int distance, final int cc, final int extensionX) {
+		Color getWallColor(final int distance, final int cc, final int extensionX) {
 	    	Color result;
 	    	final int d = distance / 4;
 	        // mod used to limit the number of colors to 6
 	        final int rgbValue = calculateRGBValue(d, extensionX);
-	        //System.out.println("Initcolor rgb: " + rgbValue);
+	        //System.out.println("Init color rgb: " + rgbValue);
 	        switch (((d >> 3) ^ cc) % 6) {
 	        case 0:
-	            result = new Color(rgbValue, RGB_DEF, RGB_DEF);
+	            result = Color.valueOf(rgbValue, RGB_DEF, RGB_DEF);
 	            break;
 	        case 1:
-	        	result = new Color(RGB_DEF, RGB_DEF_GREEN, RGB_DEF);
+	        	result = Color.valueOf(RGB_DEF, RGB_DEF_GREEN, RGB_DEF);
 	        	break;
 	        case 2:
-	        	result = new Color(RGB_DEF, RGB_DEF, rgbValue);
+	        	result = Color.valueOf(RGB_DEF, RGB_DEF, rgbValue);
 	        	break;
 	        case 3:
-	        	result = new Color(rgbValue, RGB_DEF_GREEN, RGB_DEF);
+	        	result = Color.valueOf(rgbValue, RGB_DEF_GREEN, RGB_DEF);
 	        	break;
 	        case 4:
-	        	result = new Color(RGB_DEF, RGB_DEF_GREEN, rgbValue);
+	        	result = Color.valueOf(RGB_DEF, RGB_DEF_GREEN, rgbValue);
 	        	break;
 	        case 5:
-	        	result = new Color(rgbValue, RGB_DEF, rgbValue);
+	        	result = Color.valueOf(rgbValue, RGB_DEF, rgbValue);
 	        	break;
 	        default:
-	        	result = new Color(RGB_DEF, RGB_DEF, RGB_DEF);
+	        	result = Color.valueOf(RGB_DEF, RGB_DEF, RGB_DEF);
 	        	break;
 	        }
 	        LOGGER.log(Level.FINEST, "given distance:" + distance + ", returns color: " + result);
@@ -353,8 +323,8 @@ public class ColorTheme {
 		return instance;
 	}
 	
-	public enum ColorThemeSelection {DEFAULT, BASIC, ADVANCED};
-	
+	public enum ColorThemeSelection {DEFAULT, BASIC, ADVANCED}
+
 	public static void setColorTheme(ColorThemeSelection selection) {
 		theme = selection;
 	}
@@ -390,9 +360,8 @@ public class ColorTheme {
      * @return the rgb value for the color of the wall
      */
     public static int getWallColor(int distance, int cc, int extensionX) {
-    	return getColorSettings().getWallColor(distance,cc,extensionX).getRGB(); 
-    };
-    
- 
+    	return Color.parseColor("#" + getColorSettings().getWallColor(distance,cc,extensionX));
+    }
+
 
 }

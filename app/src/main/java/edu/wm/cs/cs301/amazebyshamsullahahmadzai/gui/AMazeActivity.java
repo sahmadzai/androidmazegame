@@ -1,6 +1,7 @@
 package edu.wm.cs.cs301.amazebyshamsullahahmadzai.gui;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,6 +15,8 @@ import android.widget.Spinner;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.snackbar.Snackbar;
+
+import java.util.Random;
 
 import edu.wm.cs.cs301.amazebyshamsullahahmadzai.R;
 
@@ -123,6 +126,9 @@ public class AMazeActivity extends AppCompatActivity {
      * The data is passed to the GeneratingActivity through a Bundle object using the Intent.putExtras() method.
      */
     private void setUpButtons() {
+        // Generate the seed value using the Random class
+        Random random = new Random();
+        seed = random.nextInt();
         // Setting up the NewMazeButton and adding a click listener
         Button newMazeBtn = findViewById(R.id.newmazebtn);
         newMazeBtn.setOnClickListener(view -> {
@@ -160,16 +166,15 @@ public class AMazeActivity extends AppCompatActivity {
      * @param view The view that was clicked.
      */
     public void onRoomChoice(View view) {
-        RadioButton radio_yes = findViewById(R.id.radio_yes);                                                   // Get the "Yes" radio button   
+        RadioButton radio_yes = findViewById(R.id.radio_yes);
 
-        if (radio_yes.isChecked()) {                                                                            // If the "Yes" radio button is checked
-            rooms = true;                                                                                       // Set the rooms variable to true
-            Log.v(LOG_TAG, "User selected YES for room generation.");                                           // Log the event
-            Snackbar.make(view, "Rooms enabled", Snackbar.LENGTH_SHORT).setDuration(LENGTH_SHORT).show();       // Show a snackbar that says "Rooms enabled"
+        if (radio_yes.isChecked()) {
+            rooms = true;
+            Log.v(LOG_TAG, "User selected YES for room generation.");
         } else {
-            rooms = false;                                                                                       // Set the rooms variable to false                    
-            Log.v(LOG_TAG, "User selected NO for room generation.");                                             // Log the event
-            Snackbar.make(view, "Rooms disabled", Snackbar.LENGTH_SHORT).setDuration(LENGTH_SHORT).show();       // Show a snackbar that says "Rooms disabled"
+            rooms = false;
+            Log.v(LOG_TAG, "User selected NO for room generation.");
         }
     }
+
 }

@@ -16,6 +16,7 @@ import com.google.android.material.snackbar.Snackbar;
 import edu.wm.cs.cs301.amazebyshamsullahahmadzai.R;
 import edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation.DefaultOrder;
 import edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation.Maze;
+import edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation.MazeDataHolder;
 import edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation.MazeFactory;
 import edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation.MazeFileReader;
 import edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation.Order;
@@ -27,7 +28,7 @@ import edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation.Order;
  * A progress bar shows how much of the maze has been generated. While it's generating, the user can
  * select the robot driver and robot reliability they want to use. When the progress bar reaches 100%,
  * the activity will check that the user has selected a driver and a reliability before starting the
- * respective playing activity. If not, it will show a snackbar prompting the user to select a driver and a reliability
+ * respective playing activity. If not, it will show a snack-bar prompting the user to select a driver and a reliability
  * level.
  * 
  * @author Shamsullah Ahmadzai
@@ -49,6 +50,8 @@ public class GeneratingActivity extends AppCompatActivity {
     protected static Maze maze;
     protected static MazeFactory mazeFactory;
     protected static Order.Builder builder;
+    DefaultOrder order;
+    private MazeDataHolder mazeData;
     private MazeFileReader reader;
 
     private final int LENGTH_SHORT = 800;
@@ -71,14 +74,16 @@ public class GeneratingActivity extends AppCompatActivity {
         initSpinners();
 
         // Start the maze generation thread and update the progress bar
-        updateProgressBar();
+//        updateProgressBar();
 
         // generate the maze
         generateMaze(data.getInt("skill_level"), data.getString("gen_method"), data.getBoolean("gen_rooms"), data.getInt("seed"));
     }
 
     private void generateMaze(int skill_lvl, String gen_method, Boolean rooms, int seed) {
-        switch(gen_method) {
+        ProgressBar genProgress = findViewById(R.id.gen_progress);
+
+        switch (gen_method) {
             case "Prim":
                 builder = Order.Builder.Prim;
             case "Boruvka":
@@ -87,14 +92,45 @@ public class GeneratingActivity extends AppCompatActivity {
                 builder = Order.Builder.DFS;
         }
         mazeFactory = new MazeFactory();
-        DefaultOrder order = new DefaultOrder(skill_lvl, builder, rooms, seed);
+        order = new DefaultOrder(skill_lvl, builder, rooms, seed);
         mazeFactory.order(order);
-        mazeFactory.waitTillDelivered();
-        order.deliver(order.getMaze());
-        maze = order.getMaze();
+
+        thread = new Thread(() -> {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            while (order.getProgress() <= 100) {
+                genProgress.setProgress(order.getProgress());
+                if (order.getProgress() == 100) {break;}
+            }
+
+            mazeGenComplete = true;
+            // Check if user has selected choices for method and reliability and move accordingly
+            hasUserSelected(Thread.currentThread());
+
+        });
+        thread.start();
+        sendMazeToDataHolder(skill_lvl);
         Log.v(LOG_TAG, maze.getWidth() + ", " + maze.getHeight());
     }
 
+    private void sendMazeToDataHolder(int skill_lvl) {
+        mazeFactory.waitTillDelivered();
+        order.deliver(order.getMaze());
+        maze = order.getMaze();
+
+        MazeDataHolder.setMaze(maze);
+        MazeDataHolder.setHeight(maze.getHeight());
+        MazeDataHolder.setWidth(maze.getWidth());
+        MazeDataHolder.setDistance(maze.getMazedists().getAllDistanceValues());
+        MazeDataHolder.setStartX(maze.getStartingPosition()[0]);
+        MazeDataHolder.setStartY(maze.getStartingPosition()[1]);
+        MazeDataHolder.setSkill(skill_lvl);
+        MazeDataHolder.setGenerationAlgorithm(String.valueOf(builder));
+    }
 
     /**
      * This method overrides the default back button behavior to take the user 
@@ -103,9 +139,7 @@ public class GeneratingActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         Intent intent = new Intent(GeneratingActivity.this, AMazeActivity.class);           // Create an intent to start the title screen
-        thread.interrupt();                                                                          // Interrupt the thread to stop the maze generation
-        driveModeSelected = true;
-        robotReliabilitySelected = true;
+        thread.interrupt();
         startActivity(intent);                                                                           // Start the title screen activity
     }
 
@@ -126,19 +160,20 @@ public class GeneratingActivity extends AppCompatActivity {
             
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (i == 0)                                                                 // If the user selects the blank option do nothing              
+                if (i == 0)                                                                 // If the user selects the blank option do nothing
                     driveModeSelected = false;
                 else {
                     String text = adapterView.getItemAtPosition(i).toString();              // Get the text of the selected item
                     driveMode = text;                                                       // Set the drive mode variable to the selected item
                     driveModeSelected = true;                                               // Set the drive mode selected variable to true
+                    MazeDataHolder.setDriver(driveMode);
                     Log.v(LOG_TAG, "User selected driving method: " + text);                // Log the selected driving method
                     
                     if (mazeGenComplete)                                                    // If the maze generation is complete
-                        // Create a snackbar to tell the user that the game will start shortly
+                        // Create a snack-bar to tell the user that the game will start shortly
                         Snackbar.make(view, "The game will start shortly.", Snackbar.LENGTH_SHORT).setDuration(LENGTH_SHORT).show();
                     else
-                        // Create a snackbar to tell the user a driver method and type must be selected
+                        // Create a snack-bar to tell the user a driver method and type must be selected
                         Snackbar.make(view, "A driver type needs to be selected in order to play.", Snackbar.LENGTH_SHORT).setDuration(LENGTH_SHORT).show();
                 }
             }
@@ -165,6 +200,7 @@ public class GeneratingActivity extends AppCompatActivity {
                     String text = adapterView.getItemAtPosition(i).toString();
                     robotReliability = text;
                     robotReliabilitySelected = true;
+                    MazeDataHolder.setDriverLvl(robotReliability);
                     Log.v(LOG_TAG, "User selected skill level: " + text);
                 }
             }
@@ -183,6 +219,7 @@ public class GeneratingActivity extends AppCompatActivity {
      * bar. On completion of the loop the thread checks if the user has selected a drive mode and
      * robot reliability.
      */
+    /*
     private void updateProgressBar() {
         ProgressBar genProgress = findViewById(R.id.gen_progress);
         thread = new Thread(() -> {
@@ -202,7 +239,7 @@ public class GeneratingActivity extends AppCompatActivity {
             }
         });
         thread.start();
-    }
+    } */
 
     /**
      * Method that checks if the user has selected a drive mode and robot reliability. If the user
@@ -227,7 +264,7 @@ public class GeneratingActivity extends AppCompatActivity {
             Log.v(LOG_TAG, "User needs to select an option for driving method and skill.");             // Log that the user needs to select both
             
             try {
-                thread.sleep(1000);                                                                    // Sleep the thread for 1 second
+                Thread.sleep(1000);                                                                    // Sleep the thread for 1 second
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

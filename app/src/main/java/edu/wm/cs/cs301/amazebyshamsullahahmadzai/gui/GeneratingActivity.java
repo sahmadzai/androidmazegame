@@ -1,6 +1,8 @@
 package edu.wm.cs.cs301.amazebyshamsullahahmadzai.gui;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -63,12 +65,20 @@ public class GeneratingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.generating_layout);
 
-        Intent intent = getIntent();                                                        // Get the intent that started this activity
-        Bundle data = intent.getExtras();                                                   // Get the data that was sent with the intent
-        Log.v(LOG_TAG, "The difficulty level is: " + data.getInt("skill_level", 0));        // Log the difficulty level
-        Log.v(LOG_TAG, "The maze gen method is: " + data.getString("gen_method"));          // Log the maze gen method
-        Log.v(LOG_TAG, "Will rooms be generated? " + data.getBoolean("gen_rooms"));         // Log whether rooms will be generated
-        Log.v(LOG_TAG, "The maze seed is: " + data.getInt("seed"));                         // Log the maze seed
+        Context context = getApplicationContext();
+        SharedPreferences sharedPref = context.getSharedPreferences("edu.wm.cs301.amazebyshamsullahahmadzai.preferences", Context.MODE_PRIVATE);
+        Log.v(LOG_TAG, "The difficulty level is: " + sharedPref.getInt("skill_level", -1));
+        Log.v(LOG_TAG, "The maze gen method is: " + sharedPref.getString("gen_method", null));
+        Log.v(LOG_TAG, "Will rooms be generated? " + sharedPref.getBoolean("gen_rooms", false));
+        Log.v(LOG_TAG, "The maze seed is: " + sharedPref.getInt("seed", -1));
+
+        Intent intent = getIntent();
+        Bundle data = intent.getExtras();
+
+//        Log.v(LOG_TAG, "The difficulty level is: " + data.getInt("skill_level", 0));        // Log the difficulty level
+//        Log.v(LOG_TAG, "The maze gen method is: " + data.getString("gen_method"));          // Log the maze gen method
+//        Log.v(LOG_TAG, "Will rooms be generated? " + data.getBoolean("gen_rooms"));         // Log whether rooms will be generated
+//        Log.v(LOG_TAG, "The maze seed is: " + data.getInt("seed"));                         // Log the maze seed
 
         // Initialize and start listeners for the drive method & skill spinners
         initSpinners();

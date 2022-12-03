@@ -24,11 +24,11 @@ import edu.wm.cs.cs301.amazebyshamsullahahmadzai.R;
  * This activity represents the title screen of the maze app. It has welcome text, a SeekBar to
  * select the skill level for the maze, a Spinner to select the maze generation method and some radio
  * buttons to choose whether rooms should be generated or not.
- *  
+ *
  * The user presses either the "Load Old Maze" button or the "Load New Maze" button to proceed.
  * Based on their choice, the activity starts a new activity, GeneratingActivity, which generates
  * the maze and shows the progress of the generation.
- * 
+ *
  * @author Shamsullah Ahmadzai
  *
  */
@@ -42,6 +42,8 @@ public class AMazeActivity extends AppCompatActivity {
     private int skill_level = 0;
     private boolean rooms = true;
     private int seed;
+    private SharedPreferences pref;
+    private SharedPreferences.Editor editor;
     private final int LENGTH_SHORT = 800;
     private final String LOG_TAG = "AMazeActivity";
 
@@ -49,6 +51,10 @@ public class AMazeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.title_layout);
+
+        // Initialize the values before adding in data
+        pref = getApplicationContext().getSharedPreferences("edu.wm.cs301.amazebyshamsullahahmadzai.preferences", 0);
+        editor = pref.edit();
 
         // Setup and start the seekbar listener
         initSeekBar();
@@ -122,7 +128,7 @@ public class AMazeActivity extends AppCompatActivity {
      * The listeners start the GeneratingActivity when the user presses either the "Load Old Maze" or
      * the "Load New Maze" button. Based on the button that was pressed, the GeneratingActivity will
      * either load the old maze or generate a new maze.
-     * 
+     *
      * The data is passed to the GeneratingActivity through a Bundle object using the Intent.putExtras() method.
      */
     private void setUpButtons() {
@@ -132,14 +138,15 @@ public class AMazeActivity extends AppCompatActivity {
         // Setting up the NewMazeButton and adding a click listener
         Button newMazeBtn = findViewById(R.id.newmazebtn);
         newMazeBtn.setOnClickListener(view -> {
+            pushToPreferences();
             Intent intent = new Intent(this, GeneratingActivity.class);     // Create new intent
             Log.v(LOG_TAG, "Generating a NEW Maze.");                       // Log the event
             Bundle extras = new Bundle();                                   // Create a new bundle
-            extras.putInt("skill_level", skill_level);                      // Add the skill level to the bundle  
+            extras.putInt("skill_level", skill_level);                      // Add the skill level to the bundle
             extras.putString("gen_method", gen_method);                     // Add the generation method to the bundle
             extras.putBoolean("gen_rooms", rooms);                          // Add the rooms boolean to the bundle
-            extras.putInt("seed", seed);                                    // Add the seed to the bundle   
-            intent.putExtras(extras);                                       // Add the bundle to the intent    
+            extras.putInt("seed", seed);                                    // Add the seed to the bundle
+            intent.putExtras(extras);                                       // Add the bundle to the intent
             startActivity(intent);                                          // Start the GeneratingActivity
         });
 
@@ -149,10 +156,10 @@ public class AMazeActivity extends AppCompatActivity {
             Intent intent = new Intent(this, GeneratingActivity.class);
             Log.v(LOG_TAG, "Revisiting the OLD Maze.");
             Bundle extras = new Bundle();
-            extras.putInt("skill_level", skill_level);
-            extras.putString("gen_method", gen_method);
-            extras.putBoolean("gen_rooms", rooms);
-            extras.putInt("seed", seed);
+            extras.putInt("skill_level", pref.getInt("skill_level", -1));
+            extras.putString("gen_method", pref.getString("gen_method", null));
+            extras.putBoolean("gen_rooms", pref.getBoolean("gen_rooms",  false));
+            extras.putInt("seed", pref.getInt("seed", -1));
             intent.putExtras(extras);
             startActivity(intent);
         });
@@ -160,9 +167,9 @@ public class AMazeActivity extends AppCompatActivity {
 
     /**
      * This method is called when the user presses an option from radio group.
-     * It updates the rooms variable to true if the user selects the "Yes" 
+     * It updates the rooms variable to true if the user selects the "Yes"
      * option and false if the user selects the "No" option.
-     * 
+     *
      * @param view The view that was clicked.
      */
     public void onRoomChoice(View view) {
@@ -177,4 +184,18 @@ public class AMazeActivity extends AppCompatActivity {
         }
     }
 
+    private void pushToPreferences() {
+
+
+        // Clear the file before adding anything in
+        editor.clear();
+        editor.commit();
+
+        // Add in the user inputs to the pref file
+        editor.putInt("skill_level", skill_level);
+        editor.putString("gen_method", gen_method);
+        editor.putBoolean("gen_rooms", rooms);
+        editor.putInt("seed", seed);
+        editor.commit();
+    }
 }

@@ -72,9 +72,9 @@ public class ColorTheme {
 				return Color.valueOf(Color.DKGRAY); // unused, just for completeness
 			// color settings for Map
 			case MAP_DEFAULT:
-				return Color.valueOf(Color.WHITE);
+				return Color.valueOf(Color.GREEN);
 			case MAP_WALL_DEFAULT:
-				return Color.valueOf(Color.GRAY);
+				return Color.valueOf(Color.GREEN);
 			case MAP_WALL_SEENBEFORE:
 				return Color.valueOf(Color.WHITE);
 			case MAP_CURRENTLOCATION:
@@ -109,7 +109,7 @@ public class ColorTheme {
 				return Color.valueOf(Color.WHITE);
 			// color settings for FirstPersonView
 			case FIRSTPERSON_DEFAULT:
-				return Color.valueOf(Color.WHITE);
+				return Color.valueOf(Color.MAGENTA);
 			default:
 				break;
 		}

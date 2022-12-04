@@ -30,7 +30,7 @@ import edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation.StatePlaying;
 
 public class PlayManuallyActivity extends AppCompatActivity {
 
-    private int distanceTravelled;
+    private static int distanceTravelled;
     private StatePlaying playState;
     private final int LENGTH_SHORT = 800;
     private final String LOG_TAG = "PlayManuallyActivity";
@@ -44,7 +44,7 @@ public class PlayManuallyActivity extends AppCompatActivity {
         setUpToggleButtons();
         setUpMoveButtons();
 
-        playState = new StatePlaying();
+        playState = new StatePlaying(this);
         playState.setMaze(getMaze());
         MazePanel panel = findViewById(R.id.maze_view);
         playState.start(panel);
@@ -70,19 +70,13 @@ public class PlayManuallyActivity extends AppCompatActivity {
         // Setting up the jumpToLose button and adding a click listener
         Button jumpToLose = findViewById(R.id.jumpToLose);
         jumpToLose.setOnClickListener(view -> {
-            Intent intent = new Intent(this, LosingActivity.class);
-            intent.putExtra("distance", distanceTravelled);
-            Log.v(LOG_TAG, "Jumping to the losing screen.");
-            startActivity(intent);
+            switchToLosing();
         });
 
         // Setting up the jumpToWin and adding a click listener
         Button jumpToWin = findViewById(R.id.jumpToWin);
         jumpToWin.setOnClickListener(view -> {
-            Intent intent = new Intent(this, WinningActivity.class);
-            intent.putExtra("distance", distanceTravelled);
-            Log.v(LOG_TAG, "Jumping to the winning screen.");
-            startActivity(intent);
+            switchToWinning();
         });
 
         // Setting up the zoom in button and adding a click listener
@@ -204,6 +198,20 @@ public class PlayManuallyActivity extends AppCompatActivity {
             Log.v(LOG_TAG, "User pressed the turn right button.");
             playState.handleUserInput(Constants.UserInput.RIGHT, 0);
         });
+    }
+
+    public void switchToWinning() {
+        Intent intent = new Intent(PlayManuallyActivity.this, WinningActivity.class);
+        intent.putExtra("distance", distanceTravelled);
+        Log.v(LOG_TAG, "Jumping to the winning screen.");
+        startActivity(intent);
+    }
+
+    public void switchToLosing() {
+        Intent intent = new Intent(PlayManuallyActivity.this, LosingActivity.class);
+        intent.putExtra("distance", distanceTravelled);
+        Log.v(LOG_TAG, "Jumping to the losing screen.");
+        startActivity(intent);
     }
 
 

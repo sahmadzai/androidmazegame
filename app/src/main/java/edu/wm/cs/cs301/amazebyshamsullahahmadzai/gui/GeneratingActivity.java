@@ -101,9 +101,31 @@ public class GeneratingActivity extends AppCompatActivity {
             default:
                 builder = Order.Builder.DFS;
         }
-        mazeFactory = new MazeFactory();
-        order = new DefaultOrder(skill_lvl, builder, rooms, seed);
-        mazeFactory.order(order);
+
+        Thread gen_thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                mazeFactory = new MazeFactory();
+                order = new DefaultOrder(skill_lvl, builder, rooms, seed);
+                mazeFactory.order(order);
+                sendMazeToDataHolder(skill_lvl);
+            }
+
+            private void sendMazeToDataHolder(int skill_lvl) {
+                mazeFactory.waitTillDelivered();
+                order.deliver(order.getMaze());
+                maze = order.getMaze();
+
+                MazeDataHolder.setMaze(maze);
+                MazeDataHolder.setHeight(maze.getHeight());
+                MazeDataHolder.setWidth(maze.getWidth());
+                MazeDataHolder.setDistance(maze.getMazedists().getAllDistanceValues());
+                MazeDataHolder.setStartX(maze.getStartingPosition()[0]);
+                MazeDataHolder.setStartY(maze.getStartingPosition()[1]);
+                MazeDataHolder.setSkill(skill_lvl);
+                MazeDataHolder.setGenerationAlgorithm(String.valueOf(builder));
+            }
+        });
 
         thread = new Thread(() -> {
             try {
@@ -122,24 +144,8 @@ public class GeneratingActivity extends AppCompatActivity {
             hasUserSelected(Thread.currentThread());
 
         });
+        gen_thread.start();
         thread.start();
-        sendMazeToDataHolder(skill_lvl);
-        Log.v(LOG_TAG, maze.getWidth() + ", " + maze.getHeight());
-    }
-
-    private void sendMazeToDataHolder(int skill_lvl) {
-        mazeFactory.waitTillDelivered();
-        order.deliver(order.getMaze());
-        maze = order.getMaze();
-
-        MazeDataHolder.setMaze(maze);
-        MazeDataHolder.setHeight(maze.getHeight());
-        MazeDataHolder.setWidth(maze.getWidth());
-        MazeDataHolder.setDistance(maze.getMazedists().getAllDistanceValues());
-        MazeDataHolder.setStartX(maze.getStartingPosition()[0]);
-        MazeDataHolder.setStartY(maze.getStartingPosition()[1]);
-        MazeDataHolder.setSkill(skill_lvl);
-        MazeDataHolder.setGenerationAlgorithm(String.valueOf(builder));
     }
 
     /**

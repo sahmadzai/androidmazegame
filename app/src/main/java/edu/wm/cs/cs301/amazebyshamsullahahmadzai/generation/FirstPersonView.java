@@ -169,12 +169,13 @@ public class FirstPersonView {
         
         // update graphics
         // draw background figure: lightGrey to green on bottom half, yellow to gold on top half
-        //drawBackground(panel, percentToExit);
+       // drawBackground(panel, percentToExit);
 		gc.fillSky( x, y, viewWidth,  viewHeight);
 		gc.fillFloor( x, y, viewWidth,  viewHeight);
+		//gc.addFilledPolygon(int[] xPoints, int[] yPoints, int nPoints)
 		gc.commit();
         // set color to white and draw what ever can be seen from the current position
-        panel.setColor(ColorTheme.getColor(ColorTheme.MazeColors.FIRSTPERSON_DEFAULT).toArgb());
+//        panel.setColor(ColorTheme.getColor(ColorTheme.MazeColors.FIRSTPERSON_DEFAULT).toArgb());
         // reset the set of ranges to a single new element (0,width-1)
         // to cover the full width of the view 
         // as we have not drawn any polygons (walls) yet.

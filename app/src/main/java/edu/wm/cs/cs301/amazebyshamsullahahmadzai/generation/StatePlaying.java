@@ -1,8 +1,13 @@
 package edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation;
 
+import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 
 import java.util.logging.Logger;
+
+import edu.wm.cs.cs301.amazebyshamsullahahmadzai.gui.PlayManuallyActivity;
+import edu.wm.cs.cs301.amazebyshamsullahahmadzai.gui.WinningActivity;
 
 
 /**
@@ -65,6 +70,8 @@ public class StatePlaying implements State {
      */
     private MazePanel panel;
 
+    PlayManuallyActivity playMan;
+
 
     /**
      * Maze holds the main information on where walls are.
@@ -118,7 +125,7 @@ public class StatePlaying implements State {
      * Constructor uses default settings but does not deliver a fully operation instance,
      * requires a call to start() and setMaze().
      */
-    public StatePlaying() {
+    public StatePlaying(PlayManuallyActivity playActivity) {
     	// initialization of some fields is delayed and done in start method
     	firstPersonView = null; // initialized in start method
     	mapView = null; // initialized in start method
@@ -139,6 +146,8 @@ public class StatePlaying implements State {
     	cd = CardinalDirection.East;
 
     	seenCells = null;
+
+        playMan = playActivity;
     }
     /**
      * Provides the maze to play.
@@ -368,40 +377,18 @@ public class StatePlaying implements State {
      * @param pathLength gives the length of the path
      */
     public void switchFromPlayingToWinning(int pathLength) {
-    	// need to instantiate and configure the winning state
-//        StateWinning currentState = new StateWinning();
-//
-//        // The playing state needs
-//        // 1) the path length
-//        //
-//        currentState.setPathLength(pathLength);
-//        currentState.setEnergyConsumed(energyConsumed);
-//        currentState.setInitialEnergy(initialEnergy);
-//        currentState.setCrashed(crashed);
-//
-//        LOGGER.fine("Control switches from playing to winning screen, game completed.");
-//
-//        // update the context class with the new state
-//        // and hand over control to the new state
-//        control.setState(currentState);
-//        currentState.start(control, panel);
+        playMan.switchToWinning();
     }
-    
+
     /**
-     * Switches the controller to the initial screen.
+     * Switches the controller to the final screen
+     * @param pathLength gives the length of the path
      */
-    public void switchToTitle() {
-       	// need to instantiate and configure the title state
-//        StateTitle currentState = new StateTitle();
-//
-//        LOGGER.fine("Control switches from playing to title screen, game play interrupted.");
-//
-//        // update the context class with the new state
-//        // and hand over control to the new state
-//
-//        control.setState(currentState);
-//        currentState.start(control, panel);
+    public void switchFromPlayingToLosing(int pathLength) {
+        playMan.switchToLosing();
     }
+
+
     
     /**
      * The method provides an appropriate response to user keyboard input. 
@@ -451,9 +438,6 @@ public class StatePlaying implements State {
             	// TODO: provide actual path length
                 switchFromPlayingToWinning(0);
             }
-            break;
-        case RETURNTOTITLE: // escape to title screen
-            switchToTitle();
             break;
         case JUMP: // make a step forward even through a wall
         	LOGGER.fine("Jump 1 step forward");

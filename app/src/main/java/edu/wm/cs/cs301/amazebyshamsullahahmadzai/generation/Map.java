@@ -183,7 +183,7 @@ public class Map {
 		final int mazeWidth = maze.getWidth() ;
 		final int mazeHeight = maze.getHeight() ;
 		
-		g.setColor(Integer.parseInt(String.valueOf(ColorTheme.MazeColors.MAP_DEFAULT)));
+		g.setColor(ColorTheme.getColor(ColorTheme.MazeColors.MAP_DEFAULT).toArgb());
 		
 		// note: 1/2 of width and height is the center of the screen
 		// the whole map is centered at the current position
@@ -231,9 +231,9 @@ public class Map {
 	private void drawVerticalLine(MazePanel g, boolean showMaze, int x, int y, int startX, int startY) {
 		if (hasAVerticalWall(x, y) && 
 				(seenWalls.hasWall(x, y, CardinalDirection.West) || showMaze)) {
-			g.setColor(seenWalls.hasWall(x, y, CardinalDirection.West) ?
+			g.setColor((seenWalls.hasWall(x, y, CardinalDirection.West) ?
 					ColorTheme.getColor(ColorTheme.MazeColors.MAP_WALL_SEENBEFORE) :
-						ColorTheme.getColor(ColorTheme.MazeColors.MAP_WALL_DEFAULT));
+						ColorTheme.getColor(ColorTheme.MazeColors.MAP_WALL_DEFAULT)).toArgb());
 			g.addLine(startX, startY, startX, startY - mapScale);
 		}
 	}
@@ -262,9 +262,9 @@ public class Map {
 	private void drawHorizontalLine(MazePanel g, boolean showMaze, int x, int y, int startX,
 			int startY) {
 		if (hasAHorizontalWall(x, y) && (seenWalls.hasWall(x,y, CardinalDirection.North) || showMaze) ) {
-			g.setColor(Integer.parseInt(String.valueOf(seenWalls.hasWall(x,y, CardinalDirection.North) ?
+			g.setColor((seenWalls.hasWall(x,y, CardinalDirection.North) ?
 					ColorTheme.getColor(ColorTheme.MazeColors.MAP_WALL_SEENBEFORE) :
-						ColorTheme.getColor(ColorTheme.MazeColors.MAP_WALL_DEFAULT))));
+					ColorTheme.getColor(ColorTheme.MazeColors.MAP_WALL_DEFAULT)).toArgb());
 			g.addLine(startX, startY, startX + mapScale, startY);
 		}
 	}
@@ -392,7 +392,7 @@ public class Map {
 	 * @param viewDY is the current viewing direction, y coordinate
 	 */
 	private void drawCurrentLocation(MazePanel gc, int viewDX, int viewDY) {
-		gc.setColor(Integer.parseInt(String.valueOf(ColorTheme.MazeColors.MAP_CURRENTLOCATION)));
+		gc.setColor(ColorTheme.getColor(ColorTheme.MazeColors.MAP_CURRENTLOCATION).toArgb());
 		// draw oval of appropriate size at the center of the screen
 		int centerX = viewWidth/2; // center x
 		int centerY = viewHeight/2; // center y
@@ -468,7 +468,7 @@ public class Map {
 		int sy = py;
 		int distance = maze.getDistanceToExit(sx, sy);
 		
-		gc.setColor(Integer.parseInt(String.valueOf(ColorTheme.MazeColors.MAP_SOLUTION)));
+		gc.setColor(ColorTheme.getColor(ColorTheme.MazeColors.MAP_SOLUTION).toArgb());
 		
 		// while we are more than 1 step away from the final position
 		while (distance > 1) {

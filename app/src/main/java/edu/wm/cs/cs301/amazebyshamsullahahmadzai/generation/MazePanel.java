@@ -2,11 +2,14 @@ package edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.BitmapShader;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.Shader;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -19,53 +22,74 @@ public class MazePanel extends View implements P7PanelF22 {
 	private Canvas canvas;
 	private Bitmap bitmap;
 	private Paint paint;
+	private Bitmap wallBMP;
+	private BitmapShader wallShader;
+	private Bitmap skyBitmap;
+	private Bitmap floorBitmap;
+	private BitmapShader skyShader;
+	private BitmapShader floorShader;
+	private static final int BITMAP_WIDTH = Constants.VIEW_WIDTH;
+	private static final int BITMAP_HEIGHT = Constants.VIEW_HEIGHT;
+	private static final int SHADER_WIDTH = 400;
+	private static final int SHADER_HEIGHT = 330;
+	private final String LOG_TAG = "MazePanel";
 
 	public MazePanel(Context context) {
 		super(context);
-		bitmap = Bitmap.createBitmap(500, 500, Bitmap.Config.ARGB_8888);
+		bitmap = Bitmap.createBitmap(1000, 1000, Bitmap.Config.ARGB_8888);
 		canvas = new Canvas(bitmap);
 
-		init(null);
+//		init(null);
 	}
 
 	public MazePanel(Context context, @Nullable AttributeSet attrs) {
 		super(context, attrs);
-		bitmap = Bitmap.createBitmap(500, 500, Bitmap.Config.ARGB_8888);
+		bitmap = Bitmap.createBitmap(1000, 1000, Bitmap.Config.ARGB_8888);
 		canvas = new Canvas(bitmap);
+		paint = new Paint();
 
-		init(null);
+		wallBMP = BitmapFactory.decodeResource(context.getResources(), R.drawable.forest_walls);
+		wallBMP = Bitmap.createScaledBitmap(wallBMP, SHADER_WIDTH , SHADER_HEIGHT , false);
+		wallShader = new BitmapShader(wallBMP, Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
+		skyBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.cloudy_sky);
+		skyBitmap = Bitmap.createScaledBitmap(skyBitmap, SHADER_WIDTH, SHADER_HEIGHT, false);
+		skyShader = new BitmapShader(skyBitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
+		floorBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.creepy_floor);
+		floorBitmap = Bitmap.createScaledBitmap(floorBitmap, SHADER_WIDTH , SHADER_HEIGHT , true);
+		floorShader = new BitmapShader(floorBitmap, Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
+
+//		init(null);
 	}
 
 	public MazePanel(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
 		super(context, attrs, defStyleAttr);
-		bitmap = Bitmap.createBitmap(500, 500, Bitmap.Config.ARGB_8888);
+		bitmap = Bitmap.createBitmap(1000, 1000, Bitmap.Config.ARGB_8888);
 		canvas = new Canvas(bitmap);
+		paint = new Paint();
 
-		init(null);
+//		init(null);
 	}
 
 	public MazePanel(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
 		super(context, attrs, defStyleAttr, defStyleRes);
-		bitmap = Bitmap.createBitmap(500, 500, Bitmap.Config.ARGB_8888);
+		bitmap = Bitmap.createBitmap(1000, 1000, Bitmap.Config.ARGB_8888);
 		canvas = new Canvas(bitmap);
+		paint = new Paint();
 
-		init(null);
+//		init(null);
 	}
 
-	private void init(@Nullable AttributeSet set) {
-		paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-	}
+//	private void init(@Nullable AttributeSet set) {
+//		paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+//		if (bitmap == null) {
+//			bitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
+//			canvas = new Canvas(bitmap);
+//		}
+//	}
 
 	protected void onDraw(Canvas canvas) {
-		this.canvas = canvas;
-		paint.setColor(Color.GRAY);
-		addFilledRectangle(0, 0, getWidth(), getHeight()/2);
-
-		paint.setColor(Color.BLACK);
-		addFilledRectangle(0, (getHeight()/2), getWidth(), getHeight());
-
-		paint.setColor(Color.RED);
-		addFilledOval((getWidth()/2), (getHeight()/2), 100, 100);
+		super.onDraw(canvas);
+		canvas.drawBitmap(bitmap, 0, 0, paint);
 	}
 
 	/**
@@ -100,7 +124,7 @@ public class MazePanel extends View implements P7PanelF22 {
 	 */
 	@Override
 	public void setColor(int argb) {
-		paint.setColor(Color.parseColor(String.valueOf(argb)));
+		paint.setColor(argb);
 	}
 
 	/**
@@ -110,7 +134,7 @@ public class MazePanel extends View implements P7PanelF22 {
 	 */
 	@Override
 	public int getColor() {
-		return Color.toArgb(paint.getColor());
+		return paint.getColor();
 	}
 
 	/**
@@ -125,7 +149,27 @@ public class MazePanel extends View implements P7PanelF22 {
 	 */
 	@Override
 	public void addBackground(float percentToExit) {
-		// TODO: add this method in
+//		paint.setColor(ColorTheme.getColor(ColorTheme.MazeColors.BACKGROUND_TOP, percentToExit).toArgb());
+//		addFilledRectangle(0, 0, getWidth(), getHeight()/2);
+//		paint.setColor(ColorTheme.getColor(ColorTheme.MazeColors.BACKGROUND_BOTTOM, percentToExit).toArgb());
+//		addFilledRectangle(0, getHeight()/2, getWidth(), getHeight()/2);
+		paint.setColor((ColorTheme.getColor(ColorTheme.MazeColors.BACKGROUND_TOP,percentToExit)).toArgb());
+		canvas.drawRect(0, 0, getWidth(), getHeight()/2, paint);
+		paint.setColor((ColorTheme.getColor(ColorTheme.MazeColors.BACKGROUND_BOTTOM,percentToExit)).toArgb());
+		canvas.drawRect(0, getHeight()/2, getWidth(), getHeight(), paint);
+
+	}
+
+	public void fillSky(int x, int y, int width, int height){
+		paint.setShader(skyShader);
+		addFilledRectangle(x, y, width, height);
+		paint.setShader(null);
+	}
+
+	public void fillFloor(int x, int y, int width, int height){
+		paint.setShader(floorShader);
+		addFilledRectangle(x, y, width, height);
+		paint.setShader(null);
 	}
 
 	/**
@@ -164,11 +208,15 @@ public class MazePanel extends View implements P7PanelF22 {
 	 */
 	@Override
 	public void addFilledPolygon(int[] xPoints, int[] yPoints, int nPoints) {
-		for (int x: xPoints) {
-			for (int y: yPoints) {
-				canvas.drawPoint(x, y, paint);
-			}
+		paint.setStyle(Paint.Style.FILL);
+		Path path = new Path();
+		path.reset();
+		path.moveTo(xPoints[0], yPoints[0]);
+		for (int i = 1; i < nPoints; i++) {
+			path.lineTo(xPoints[i], yPoints[i]);
 		}
+		path.lineTo(xPoints[0], yPoints[0]);
+		canvas.drawPath(path, paint);
 	}
 
 	/**
@@ -189,11 +237,14 @@ public class MazePanel extends View implements P7PanelF22 {
 	 */
 	@Override
 	public void addPolygon(int[] xPoints, int[] yPoints, int nPoints) {
-		for (int x: xPoints) {
-			for (int y: yPoints) {
-				canvas.drawPoint(x, y, paint);
-			}
+		Path path = new Path();
+		path.reset();
+		path.moveTo(xPoints[0], yPoints[0]);
+		for (int i = 1; i < nPoints; i++) {
+			path.lineTo(xPoints[i], yPoints[i]);
 		}
+		path.lineTo(xPoints[0], yPoints[0]);
+		canvas.drawPath(path, paint);
 	}
 
 	/**

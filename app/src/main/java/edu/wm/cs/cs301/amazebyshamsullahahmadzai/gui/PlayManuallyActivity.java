@@ -40,14 +40,13 @@ public class PlayManuallyActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play_manually);
 
-        CustomView_Manual maze_view = new CustomView_Manual(this);
         setUpButtons();
         setUpToggleButtons();
         setUpMoveButtons();
 
         playState = new StatePlaying();
         playState.setMaze(getMaze());
-        MazePanel panel = new MazePanel(getApplicationContext());
+        MazePanel panel = findViewById(R.id.maze_view);
         playState.start(panel);
     }
 
@@ -91,6 +90,7 @@ public class PlayManuallyActivity extends AppCompatActivity {
         zoom_in.setOnClickListener(view -> {
             Snackbar.make(view, "Zooming In", Snackbar.LENGTH_SHORT).setDuration(LENGTH_SHORT).show();
             Log.v(LOG_TAG, "User pressed the zoom in button.");
+            playState.handleUserInput(Constants.UserInput.ZOOMIN, 0);
         });
 
         // Setting up the zoom out button and adding a click listener
@@ -98,6 +98,7 @@ public class PlayManuallyActivity extends AppCompatActivity {
         zoom_out.setOnClickListener(view -> {
             Snackbar.make(view, "Zooming Out", Snackbar.LENGTH_SHORT).setDuration(LENGTH_SHORT).show();
             Log.v(LOG_TAG, "User pressed the zoom out button.");
+            playState.handleUserInput(Constants.UserInput.ZOOMOUT, 0);
         });
     }
 
@@ -123,6 +124,7 @@ public class PlayManuallyActivity extends AppCompatActivity {
                 showWalls.setTextColor(Color.BLACK);
                 Snackbar.make(view, "Walls Visible", Snackbar.LENGTH_SHORT).setDuration(LENGTH_SHORT).show();
                 Log.v(LOG_TAG, "User has now toggled walls to be visible.");
+                playState.handleUserInput(Constants.UserInput.TOGGLELOCALMAP, 0);
             }
         });
 
@@ -135,12 +137,14 @@ public class PlayManuallyActivity extends AppCompatActivity {
                 showSolution.setTextColor(Color.WHITE);
                 Snackbar.make(view, "Solution Hidden", Snackbar.LENGTH_SHORT).setDuration(LENGTH_SHORT).show();
                 Log.v(LOG_TAG, "User has now toggled the solution to be hidden.");
+                playState.handleUserInput(Constants.UserInput.TOGGLESOLUTION, 0);
             } else {
                 showSolution.setText(R.string.state_on);
                 showSolution.setBackgroundColor(ContextCompat.getColor(this, R.color.light_gray));
                 showSolution.setTextColor(Color.BLACK);
                 Snackbar.make(view, "Solution Visible", Snackbar.LENGTH_SHORT).setDuration(LENGTH_SHORT).show();
                 Log.v(LOG_TAG, "User has now toggled the solution to be visible.");
+                playState.handleUserInput(Constants.UserInput.TOGGLESOLUTION, 0);
             }
         });
 
@@ -153,13 +157,14 @@ public class PlayManuallyActivity extends AppCompatActivity {
                 showMaze.setTextColor(Color.WHITE);
                 Snackbar.make(view, "Maze Hidden", Snackbar.LENGTH_SHORT).setDuration(LENGTH_SHORT).show();
                 Log.v(LOG_TAG, "User has now toggled the maze to be hidden.");
-
+                playState.handleUserInput(Constants.UserInput.TOGGLEFULLMAP, 0);
             } else {
                 showMaze.setText(R.string.state_on);
                 showMaze.setBackgroundColor(ContextCompat.getColor(this, R.color.light_gray));
                 showMaze.setTextColor(Color.BLACK);
                 Snackbar.make(view, "Maze Visible", Snackbar.LENGTH_SHORT).setDuration(LENGTH_SHORT).show();
                 Log.v(LOG_TAG, "User has now toggled the maze to be visible.");
+                playState.handleUserInput(Constants.UserInput.TOGGLEFULLMAP, 0);
             }
         });
     }
@@ -180,19 +185,24 @@ public class PlayManuallyActivity extends AppCompatActivity {
             Snackbar.make(view, "Moving Forward", Snackbar.LENGTH_SHORT).setDuration(LENGTH_SHORT).show();
             Log.v(LOG_TAG, "User pressed the move forward button.");
             distanceTravelled++;
+            playState.handleUserInput(Constants.UserInput.UP, 0);
         });
         jump.setOnClickListener(view -> {
             Snackbar.make(view, "Jumping", Snackbar.LENGTH_SHORT).setDuration(LENGTH_SHORT).show();
             Log.v(LOG_TAG, "User pressed the jump button.");
             distanceTravelled++;
+            playState.handleUserInput(Constants.UserInput.JUMP, 0);
+
         });
         turnLeft.setOnClickListener(view -> {
             Snackbar.make(view, "Turning Left", Snackbar.LENGTH_SHORT).setDuration(LENGTH_SHORT).show();
             Log.v(LOG_TAG, "User pressed the turn left button.");
+            playState.handleUserInput(Constants.UserInput.LEFT, 0);
         });
         turnRight.setOnClickListener(view -> {
             Snackbar.make(view, "Turning Right", Snackbar.LENGTH_SHORT).setDuration(LENGTH_SHORT).show();
             Log.v(LOG_TAG, "User pressed the turn right button.");
+            playState.handleUserInput(Constants.UserInput.RIGHT, 0);
         });
     }
 

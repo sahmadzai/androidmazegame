@@ -3,6 +3,9 @@
  */
 package edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation;
 
+import android.graphics.Color;
+import android.util.Log;
+
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -114,6 +117,8 @@ public class FirstPersonView {
 	private int drawRectLateCounter;
 	private int drawRectWallCounter;
 	private int nesting = 0;
+
+	private String LOG_TAG = "FirstPersonView";
 	
 	/**
 	 * Constructor
@@ -137,6 +142,8 @@ public class FirstPersonView {
 		scaleZ = viewHeight/2;
 		// initialize fields
 		rSet = new RangeSet();
+
+		Log.v(LOG_TAG, "FirstPersonView has been called.");
 	}
 	/**
 	 * Draws the first person view on the screen during the game
@@ -149,14 +156,12 @@ public class FirstPersonView {
 	 * 
 	 */
 	public void draw(MazePanel panel, int x, int y, int walkStep, int ang, float percentToExit) {
-//		// obtain a Graphics2D object we can draw on
-//		Graphics g = panel.getBufferGraphics() ;
-//        // viewers draw on the buffer graphics
-//        if (null == g) {
-//            LOGGER.warning("Can't get graphics object to draw on, mitigate this by skipping draw operation") ;
-//            return;
-//        }
-//        gc = (MazePanel) g ;
+        // viewers draw on the buffer graphics
+        if (null == panel){
+            Log.v(LOG_TAG, "Can't get graphics object to draw on, mitigate this by skipping draw operation") ;
+            return;
+        }
+        gc = panel;
         
         // update fields angle, viewx, viewy for current position and viewing angle
         angle = ang ;
@@ -164,9 +169,12 @@ public class FirstPersonView {
         
         // update graphics
         // draw background figure: lightGrey to green on bottom half, yellow to gold on top half
-        drawBackground(panel, percentToExit);
+        //drawBackground(panel, percentToExit);
+		gc.fillSky( x, y, viewWidth,  viewHeight);
+		gc.fillFloor( x, y, viewWidth,  viewHeight);
+		gc.commit();
         // set color to white and draw what ever can be seen from the current position
-        panel.setColor(ColorTheme.getColor(ColorTheme.MazeColors.FIRSTPERSON_DEFAULT));
+        panel.setColor(ColorTheme.getColor(ColorTheme.MazeColors.FIRSTPERSON_DEFAULT).toArgb());
         // reset the set of ranges to a single new element (0,width-1)
         // to cover the full width of the view 
         // as we have not drawn any polygons (walls) yet.
@@ -212,10 +220,7 @@ public class FirstPersonView {
 	 * @param percentToExit gives the distance to exit
 	 */
 	private void drawBackground(MazePanel graphics, float percentToExit) {
-		graphics.setColor(Integer.parseInt(String.valueOf(ColorTheme.getColor(ColorTheme.MazeColors.BACKGROUND_TOP,percentToExit))));
-		graphics.addFilledRectangle(0, 0, viewWidth, viewHeight/2);
-		graphics.setColor(Integer.parseInt(String.valueOf(ColorTheme.getColor(ColorTheme.MazeColors.BACKGROUND_BOTTOM,percentToExit))));
-		graphics.addFilledRectangle(0, viewHeight/2, viewWidth, viewHeight/2);
+		graphics.addBackground(percentToExit);
 	}
 
 	/**
@@ -430,7 +435,7 @@ public class FirstPersonView {
 		
 		// moved code for drawing bits and pieces into yet another method to 
 		// gain more clarity on what information is actually needed
-		gc.setColor(Integer.parseInt(String.valueOf(ColorTheme.getColor(wall.getColor()))));
+		gc.setColor(ColorTheme.getColor(wall.getColor()).toArgb());
 		boolean drawn = drawPolygons(x1, x2, y11, y12, y21, y22);
 		
 		if (drawn && !wall.isSeen()) {

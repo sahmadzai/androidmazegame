@@ -54,6 +54,7 @@
     <string name="zoomin_desc">Zoom In</string>
     <string name="zoomout_desc">Zoom Out</string>
     <string name="upBtn_desc">Move Up</string>
+    <string name="jumpBtn_desc">Jump</string>
     <string name="leftBtn_desc">Move Left</string>
     <string name="rightBtn_desc">Move Right</string>
     <string name="rmng_energy">Remaining Energy:</string>s

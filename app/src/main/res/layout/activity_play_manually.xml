@@ -171,7 +171,7 @@
                 tools:ignore="TextContrastCheck" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <edu.wm.cs.cs301.amazebyshamsullahahmadzai.CustomView_Manual
+        <edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation.MazePanel
             android:id="@+id/maze_view"
             android:layout_width="200dp"
             android:layout_height="200dp"
@@ -255,7 +255,7 @@
                     style="@style/Widget.AppCompat.Button.Borderless"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:contentDescription="@string/leftBtn_desc"
+                    android:contentDescription="@string/jumpBtn_desc"
                     app:icon="@drawable/jump_small_removebg_preview"
                     app:iconPadding="0dp"
                     app:iconTint="#FEEA3B" />

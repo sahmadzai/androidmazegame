@@ -1,17 +1,72 @@
 package edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation;
 
+import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.util.AttributeSet;
+import android.view.View;
 
-public class MazePanel implements P7PanelF22 {
+import androidx.annotation.Nullable;
+
+import edu.wm.cs.cs301.amazebyshamsullahahmadzai.R;
+
+public class MazePanel extends View implements P7PanelF22 {
 
 	private Canvas canvas;
-	private Rect maze_rect;
-	private RectF circle;
+	private Bitmap bitmap;
 	private Paint paint;
+
+	public MazePanel(Context context) {
+		super(context);
+		bitmap = Bitmap.createBitmap(500, 500, Bitmap.Config.ARGB_8888);
+		canvas = new Canvas(bitmap);
+
+		init(null);
+	}
+
+	public MazePanel(Context context, @Nullable AttributeSet attrs) {
+		super(context, attrs);
+		bitmap = Bitmap.createBitmap(500, 500, Bitmap.Config.ARGB_8888);
+		canvas = new Canvas(bitmap);
+
+		init(null);
+	}
+
+	public MazePanel(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+		super(context, attrs, defStyleAttr);
+		bitmap = Bitmap.createBitmap(500, 500, Bitmap.Config.ARGB_8888);
+		canvas = new Canvas(bitmap);
+
+		init(null);
+	}
+
+	public MazePanel(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+		super(context, attrs, defStyleAttr, defStyleRes);
+		bitmap = Bitmap.createBitmap(500, 500, Bitmap.Config.ARGB_8888);
+		canvas = new Canvas(bitmap);
+
+		init(null);
+	}
+
+	private void init(@Nullable AttributeSet set) {
+		paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+	}
+
+	protected void onDraw(Canvas canvas) {
+		this.canvas = canvas;
+		paint.setColor(Color.GRAY);
+		addFilledRectangle(0, 0, getWidth(), getHeight()/2);
+
+		paint.setColor(Color.BLACK);
+		addFilledRectangle(0, (getHeight()/2), getWidth(), getHeight());
+
+		paint.setColor(Color.RED);
+		addFilledOval((getWidth()/2), (getHeight()/2), 100, 100);
+	}
 
 	/**
 	 * Commits all accumulated drawings to the UI.
@@ -19,7 +74,7 @@ public class MazePanel implements P7PanelF22 {
 	 */
 	@Override
 	public void commit() {
-
+		invalidate();
 	}
 
 	/**
@@ -70,17 +125,7 @@ public class MazePanel implements P7PanelF22 {
 	 */
 	@Override
 	public void addBackground(float percentToExit) {
-		maze_rect.top = 0;                                  // top of the rectangle is at the origin 0
-		maze_rect.left = canvas.getWidth();                        // left of the rectangle is at the width of the screen
-		maze_rect.bottom = canvas.getHeight()/2;                   // bottom of the rectangle is at the height of the screen divided by 2
-		paint.setColor(Color.GRAY);               // set the color of the rectangle to gray
-		canvas.drawRect(maze_rect, paint);        // draw the rectangle onto the canvas
-
-		maze_rect.top = canvas.getHeight()/2;                      // top is 1/2 of the height
-		maze_rect.left = canvas.getWidth();                        // left is the width
-		maze_rect.bottom = canvas.getHeight();                     // bottom stops at the rectangle height
-		paint.setColor(Color.BLACK);              // set the color to black
-		canvas.drawRect(maze_rect, paint);
+		// TODO: add this method in
 	}
 
 	/**
@@ -97,7 +142,9 @@ public class MazePanel implements P7PanelF22 {
 	 */
 	@Override
 	public void addFilledRectangle(int x, int y, int width, int height) {
-		canvas.drawRect(x, y, x + width, y + height, paint);
+		paint.setStyle(Paint.Style.FILL);
+		Rect rect = new Rect(x, y, x+width, y+height);
+		canvas.drawRect(rect, paint);
 	}
 
 	/**
@@ -180,7 +227,8 @@ public class MazePanel implements P7PanelF22 {
 	 */
 	@Override
 	public void addFilledOval(int x, int y, int width, int height) {
-		canvas.drawOval(x, y, x + width, y + height, paint);
+		RectF circle = new RectF(x - width, y - height, x + width, y + height);
+		canvas.drawOval(circle, paint);
 	}
 
 	/**

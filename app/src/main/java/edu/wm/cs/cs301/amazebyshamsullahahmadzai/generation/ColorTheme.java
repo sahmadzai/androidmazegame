@@ -341,9 +341,9 @@ public class ColorTheme {
 	 * starting color settings of yellowWM and lightGray 
 	 * towards goldWM and greenWM as final
 	 * color settings close to the exit
-	 * @param percentToExit describes how far it is to the exit as a percentage value
 	 * @param color is BACKGROUND_TOP for the upper rectangle or BACKGROUND_BOTTTOM
 	 * for the lower one
+	 * @param percentToExit describes how far it is to the exit as a percentage value
 	 * @return the color to use for the background rectangle
 	 */
 	public static Color getColor(MazeColors color, float percentToExit) {

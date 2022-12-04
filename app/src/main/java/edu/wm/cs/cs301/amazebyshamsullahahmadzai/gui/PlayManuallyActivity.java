@@ -1,5 +1,7 @@
 package edu.wm.cs.cs301.amazebyshamsullahahmadzai.gui;
 
+import static edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation.MazeDataHolder.getMaze;
+
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -13,6 +15,9 @@ import com.google.android.material.snackbar.Snackbar;
 
 import edu.wm.cs.cs301.amazebyshamsullahahmadzai.CustomView_Manual;
 import edu.wm.cs.cs301.amazebyshamsullahahmadzai.R;
+import edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation.Constants;
+import edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation.MazePanel;
+import edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation.StatePlaying;
 
 /**
  * This class is responsible for the manual robot moving through the maze. It has toggle buttons that allow
@@ -26,6 +31,7 @@ import edu.wm.cs.cs301.amazebyshamsullahahmadzai.R;
 public class PlayManuallyActivity extends AppCompatActivity {
 
     private int distanceTravelled;
+    private StatePlaying playState;
     private final int LENGTH_SHORT = 800;
     private final String LOG_TAG = "PlayManuallyActivity";
 
@@ -34,10 +40,15 @@ public class PlayManuallyActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play_manually);
 
-        CustomView_Manual maze_view = new CustomView_Manual(this);              // Creating a new CustomView_Manual object to display the maze
-        setUpButtons();                                                         // Setting up the buttons and adding a click listener
-        setUpToggleButtons();                                                   // Setting up the toggle buttons and adding a click listener
-        setUpMoveButtons();                                                     // Setting up the move buttons and adding a click listener
+        CustomView_Manual maze_view = new CustomView_Manual(this);
+        setUpButtons();
+        setUpToggleButtons();
+        setUpMoveButtons();
+
+        playState = new StatePlaying();
+        playState.setMaze(getMaze());
+        MazePanel panel = new MazePanel(getApplicationContext());
+        playState.start(panel);
     }
 
     /**
@@ -105,6 +116,7 @@ public class PlayManuallyActivity extends AppCompatActivity {
                 showWalls.setTextColor(Color.WHITE);
                 Snackbar.make(view, "Walls Hidden", Snackbar.LENGTH_SHORT).setDuration(LENGTH_SHORT).show();
                 Log.v(LOG_TAG, "User has now toggled walls to be hidden.");
+                playState.handleUserInput(Constants.UserInput.TOGGLELOCALMAP, 0);
             } else {
                 showWalls.setText(R.string.state_on);
                 showWalls.setBackgroundColor(ContextCompat.getColor(this, R.color.light_gray));
@@ -141,6 +153,7 @@ public class PlayManuallyActivity extends AppCompatActivity {
                 showMaze.setTextColor(Color.WHITE);
                 Snackbar.make(view, "Maze Hidden", Snackbar.LENGTH_SHORT).setDuration(LENGTH_SHORT).show();
                 Log.v(LOG_TAG, "User has now toggled the maze to be hidden.");
+
             } else {
                 showMaze.setText(R.string.state_on);
                 showMaze.setBackgroundColor(ContextCompat.getColor(this, R.color.light_gray));

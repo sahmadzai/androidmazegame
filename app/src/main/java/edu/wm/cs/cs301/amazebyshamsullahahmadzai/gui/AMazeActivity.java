@@ -141,12 +141,6 @@ public class AMazeActivity extends AppCompatActivity {
             pushToPreferences();
             Intent intent = new Intent(this, GeneratingActivity.class);     // Create new intent
             Log.v(LOG_TAG, "Generating a NEW Maze.");                       // Log the event
-            Bundle extras = new Bundle();                                   // Create a new bundle
-            extras.putInt("skill_level", skill_level);                      // Add the skill level to the bundle
-            extras.putString("gen_method", gen_method);                     // Add the generation method to the bundle
-            extras.putBoolean("gen_rooms", rooms);                          // Add the rooms boolean to the bundle
-            extras.putInt("seed", seed);                                    // Add the seed to the bundle
-            intent.putExtras(extras);                                       // Add the bundle to the intent
             startActivity(intent);                                          // Start the GeneratingActivity
         });
 
@@ -155,12 +149,6 @@ public class AMazeActivity extends AppCompatActivity {
         oldMazeBtn.setOnClickListener(view -> {
             Intent intent = new Intent(this, GeneratingActivity.class);
             Log.v(LOG_TAG, "Revisiting the OLD Maze.");
-            Bundle extras = new Bundle();
-            extras.putInt("skill_level", pref.getInt("skill_level", -1));
-            extras.putString("gen_method", pref.getString("gen_method", null));
-            extras.putBoolean("gen_rooms", pref.getBoolean("gen_rooms",  false));
-            extras.putInt("seed", pref.getInt("seed", -1));
-            intent.putExtras(extras);
             startActivity(intent);
         });
     }

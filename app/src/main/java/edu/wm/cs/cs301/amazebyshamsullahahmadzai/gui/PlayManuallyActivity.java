@@ -13,7 +13,6 @@ import androidx.core.content.ContextCompat;
 
 import com.google.android.material.snackbar.Snackbar;
 
-import edu.wm.cs.cs301.amazebyshamsullahahmadzai.CustomView_Manual;
 import edu.wm.cs.cs301.amazebyshamsullahahmadzai.R;
 import edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation.Constants;
 import edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation.MazePanel;
@@ -69,15 +68,11 @@ public class PlayManuallyActivity extends AppCompatActivity {
     private void setUpButtons() {
         // Setting up the jumpToLose button and adding a click listener
         Button jumpToLose = findViewById(R.id.jumpToLose);
-        jumpToLose.setOnClickListener(view -> {
-            switchToLosing();
-        });
+        jumpToLose.setOnClickListener(view -> switchToLosing());
 
         // Setting up the jumpToWin and adding a click listener
         Button jumpToWin = findViewById(R.id.jumpToWin);
-        jumpToWin.setOnClickListener(view -> {
-            switchToWinning();
-        });
+        jumpToWin.setOnClickListener(view -> switchToWinning());
 
         // Setting up the zoom in button and adding a click listener
         Button zoom_in = findViewById(R.id.zoom_in);
@@ -99,7 +94,7 @@ public class PlayManuallyActivity extends AppCompatActivity {
     /**
      * This method sets up the toggle buttons that allow the user to show the solution path, full map
      * of the maze, or the walls of the maze. It also sets up a click listener for each button that
-     * logs the event and shows a snackbar to the user.
+     * logs the event.
      */
     private void setUpToggleButtons() {
         Button showWalls = findViewById(R.id.shw_walls);
@@ -109,14 +104,12 @@ public class PlayManuallyActivity extends AppCompatActivity {
                 showWalls.setText(R.string.state_off);
                 showWalls.setBackgroundColor(ContextCompat.getColor(this, R.color.dark_gray));
                 showWalls.setTextColor(Color.WHITE);
-                Snackbar.make(view, "Walls Hidden", Snackbar.LENGTH_SHORT).setDuration(LENGTH_SHORT).show();
                 Log.v(LOG_TAG, "User has now toggled walls to be hidden.");
                 playState.handleUserInput(Constants.UserInput.TOGGLELOCALMAP, 0);
             } else {
                 showWalls.setText(R.string.state_on);
                 showWalls.setBackgroundColor(ContextCompat.getColor(this, R.color.light_gray));
                 showWalls.setTextColor(Color.BLACK);
-                Snackbar.make(view, "Walls Visible", Snackbar.LENGTH_SHORT).setDuration(LENGTH_SHORT).show();
                 Log.v(LOG_TAG, "User has now toggled walls to be visible.");
                 playState.handleUserInput(Constants.UserInput.TOGGLELOCALMAP, 0);
             }
@@ -129,14 +122,12 @@ public class PlayManuallyActivity extends AppCompatActivity {
                 showSolution.setText(R.string.state_off);
                 showSolution.setBackgroundColor(ContextCompat.getColor(this, R.color.dark_gray));
                 showSolution.setTextColor(Color.WHITE);
-                Snackbar.make(view, "Solution Hidden", Snackbar.LENGTH_SHORT).setDuration(LENGTH_SHORT).show();
                 Log.v(LOG_TAG, "User has now toggled the solution to be hidden.");
                 playState.handleUserInput(Constants.UserInput.TOGGLESOLUTION, 0);
             } else {
                 showSolution.setText(R.string.state_on);
                 showSolution.setBackgroundColor(ContextCompat.getColor(this, R.color.light_gray));
                 showSolution.setTextColor(Color.BLACK);
-                Snackbar.make(view, "Solution Visible", Snackbar.LENGTH_SHORT).setDuration(LENGTH_SHORT).show();
                 Log.v(LOG_TAG, "User has now toggled the solution to be visible.");
                 playState.handleUserInput(Constants.UserInput.TOGGLESOLUTION, 0);
             }
@@ -149,14 +140,12 @@ public class PlayManuallyActivity extends AppCompatActivity {
                 showMaze.setText(R.string.state_off);
                 showMaze.setBackgroundColor(ContextCompat.getColor(this, R.color.dark_gray));
                 showMaze.setTextColor(Color.WHITE);
-                Snackbar.make(view, "Maze Hidden", Snackbar.LENGTH_SHORT).setDuration(LENGTH_SHORT).show();
                 Log.v(LOG_TAG, "User has now toggled the maze to be hidden.");
                 playState.handleUserInput(Constants.UserInput.TOGGLEFULLMAP, 0);
             } else {
                 showMaze.setText(R.string.state_on);
                 showMaze.setBackgroundColor(ContextCompat.getColor(this, R.color.light_gray));
                 showMaze.setTextColor(Color.BLACK);
-                Snackbar.make(view, "Maze Visible", Snackbar.LENGTH_SHORT).setDuration(LENGTH_SHORT).show();
                 Log.v(LOG_TAG, "User has now toggled the maze to be visible.");
                 playState.handleUserInput(Constants.UserInput.TOGGLEFULLMAP, 0);
             }
@@ -166,7 +155,7 @@ public class PlayManuallyActivity extends AppCompatActivity {
     /**
      * This method sets up the movement buttons that allow the user to move the robot forward, rotate
      * the robot left, rotate the robot right, or make the robot jump. It also sets up a click listener
-     * for each button that logs the event and shows a snackbar to the user. It also updates the distance
+     * for each button that logs the event. It also updates the distance
      * travelled by the robot which will be passed to the winning or losing activity.
      */
     private void setUpMoveButtons() {
@@ -176,25 +165,21 @@ public class PlayManuallyActivity extends AppCompatActivity {
         Button turnRight   = findViewById(R.id.move_right);
 
         moveForward.setOnClickListener(view -> {
-            Snackbar.make(view, "Moving Forward", Snackbar.LENGTH_SHORT).setDuration(LENGTH_SHORT).show();
             Log.v(LOG_TAG, "User pressed the move forward button.");
             distanceTravelled++;
             playState.handleUserInput(Constants.UserInput.UP, 0);
         });
         jump.setOnClickListener(view -> {
-            Snackbar.make(view, "Jumping", Snackbar.LENGTH_SHORT).setDuration(LENGTH_SHORT).show();
             Log.v(LOG_TAG, "User pressed the jump button.");
             distanceTravelled++;
             playState.handleUserInput(Constants.UserInput.JUMP, 0);
 
         });
         turnLeft.setOnClickListener(view -> {
-            Snackbar.make(view, "Turning Left", Snackbar.LENGTH_SHORT).setDuration(LENGTH_SHORT).show();
             Log.v(LOG_TAG, "User pressed the turn left button.");
             playState.handleUserInput(Constants.UserInput.LEFT, 0);
         });
         turnRight.setOnClickListener(view -> {
-            Snackbar.make(view, "Turning Right", Snackbar.LENGTH_SHORT).setDuration(LENGTH_SHORT).show();
             Log.v(LOG_TAG, "User pressed the turn right button.");
             playState.handleUserInput(Constants.UserInput.RIGHT, 0);
         });

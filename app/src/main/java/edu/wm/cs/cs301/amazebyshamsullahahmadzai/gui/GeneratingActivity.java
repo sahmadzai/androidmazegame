@@ -67,27 +67,22 @@ public class GeneratingActivity extends AppCompatActivity {
 
         Context context = getApplicationContext();
         SharedPreferences sharedPref = context.getSharedPreferences("edu.wm.cs301.amazebyshamsullahahmadzai.preferences", Context.MODE_PRIVATE);
+
+        int skill_lvl = sharedPref.getInt("skill_level", -1);
+        String gen_method = sharedPref.getString("gen_method", null);
+        Boolean gen_rooms = sharedPref.getBoolean("gen_rooms", false);
+        int seed = sharedPref.getInt("seed", -1);
+
         Log.v(LOG_TAG, "The difficulty level is: " + sharedPref.getInt("skill_level", -1));
         Log.v(LOG_TAG, "The maze gen method is: " + sharedPref.getString("gen_method", null));
         Log.v(LOG_TAG, "Will rooms be generated? " + sharedPref.getBoolean("gen_rooms", false));
         Log.v(LOG_TAG, "The maze seed is: " + sharedPref.getInt("seed", -1));
 
-        Intent intent = getIntent();
-        Bundle data = intent.getExtras();
-
-//        Log.v(LOG_TAG, "The difficulty level is: " + data.getInt("skill_level", 0));        // Log the difficulty level
-//        Log.v(LOG_TAG, "The maze gen method is: " + data.getString("gen_method"));          // Log the maze gen method
-//        Log.v(LOG_TAG, "Will rooms be generated? " + data.getBoolean("gen_rooms"));         // Log whether rooms will be generated
-//        Log.v(LOG_TAG, "The maze seed is: " + data.getInt("seed"));                         // Log the maze seed
-
         // Initialize and start listeners for the drive method & skill spinners
         initSpinners();
 
-        // Start the maze generation thread and update the progress bar
-//        updateProgressBar();
-
         // generate the maze
-        generateMaze(data.getInt("skill_level"), data.getString("gen_method"), data.getBoolean("gen_rooms"), data.getInt("seed"));
+        generateMaze(skill_lvl, gen_method, gen_rooms, seed);
     }
 
     private void generateMaze(int skill_lvl, String gen_method, Boolean rooms, int seed) {
@@ -228,34 +223,6 @@ public class GeneratingActivity extends AppCompatActivity {
 
         });
     }
-
-    /**
-     * Method that updates the progress bar by using a thread with a while loop that runs until the
-     * progress bar is full. The thread sleeps for 50 milliseconds after each update to the progress
-     * bar. On completion of the loop the thread checks if the user has selected a drive mode and
-     * robot reliability.
-     */
-    /*
-    private void updateProgressBar() {
-        ProgressBar genProgress = findViewById(R.id.gen_progress);
-        thread = new Thread(() -> {
-            try {
-                int i = 1;
-                while(genProgress.getProgress() < 100) {
-                    genProgress.setProgress(i);
-                    i++;
-                    Thread.sleep(50);
-                }
-                mazeGenComplete = true;
-                // Check if user has selected choices for method and reliability and move accordingly
-                hasUserSelected(Thread.currentThread());
-
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        });
-        thread.start();
-    } */
 
     /**
      * Method that checks if the user has selected a drive mode and robot reliability. If the user

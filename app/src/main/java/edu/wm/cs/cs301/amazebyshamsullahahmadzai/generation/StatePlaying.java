@@ -225,45 +225,6 @@ public class StatePlaying implements State {
         }
     }
     
-    public void runAuto() {
-
-    	if (MazeDataHolder.getDriver().equals("WallFollower")) {
-            Log.v(LOG_TAG, "WallFollower driver has been selected and is running.");
-            if(MazeDataHolder.getDriverLvl().equals("Premium"))
-                robot = new ReliableRobot(this);
-            else
-                robot = new UnreliableRobot(this);
-    		driver = new WallFollower();
-            boolean [] sensorArr = getSensorArray(MazeDataHolder.getSensorString());
-    		robot.setUnreliableSensors(sensorArr);
-    		driver.setMaze(maze);
-    		driver.setRobot(robot);
-    		// visibility settings
-    		showMaze = true ;
-    		showSolution = true ;
-    		mapMode = true;
-    		startFailAndRepairProcess(sensorArr, robot);
-    		try {
-    			if(!driver.drive2Exit()) {
-    				energyConsumed = driver.getEnergyConsumption();
-    				stopFailAndRepairProcess(sensorArr, robot);
-    				switchFromPlayingToWinning(driver.getPathLength());
-    			}
-    		} catch (Exception e) {
-    			/*
-    			 * If an error or exception occurs, then set a crash
-    			 * variable to true which will print out a losing page.
-    			 */
-    			e.printStackTrace();
-    			crashed = true;
-    			energyConsumed = driver.getEnergyConsumption();
-    			initialEnergy = driver.getInitialBatteryLevel();
-    			stopFailAndRepairProcess(sensorArr, robot);
-    			switchFromPlayingToWinning(driver.getPathLength());
-    		}
-    	}
-    }
-    
     /**
      * This method is passed in a string of 1s and 0s and returns a boolean array 
      * of the same length with true for 1s and false for 0s. This will represent

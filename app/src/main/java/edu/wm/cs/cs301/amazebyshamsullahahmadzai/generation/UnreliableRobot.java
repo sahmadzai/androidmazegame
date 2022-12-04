@@ -23,7 +23,8 @@ public class UnreliableRobot extends ReliableRobot {
      * This method takes in a boolean array of unreliable sensors and then sets the sensors
      * in the robot object to be unreliable. The order of the sensors in the array is 
      * Forward, Left, Right, Backward.
-     * @param unreliableSensors
+     * @param unreliableSensors - the array of unreliable sensors
+	 * @param maze - the maze object being used
      */
     public void setUnreliableSensors(boolean[] unreliableSensors, Maze maze) {
         /**

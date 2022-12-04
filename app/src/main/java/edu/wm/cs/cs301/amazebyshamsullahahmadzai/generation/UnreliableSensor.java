@@ -25,8 +25,8 @@ public class UnreliableSensor extends ReliableSensor {
      * Since this class is a subclass of ReliableSensor, it will have all the same methods and variables
      * as ReliableSensor. The only difference is that any sensor that is unreliable will be handled in this class.
      * The constructor calls the super constructor and passes in the same parameters.
-     * @param Maze maze
-     * @param Direction direction
+     * @param maze
+     * @param direction
      */
     public UnreliableSensor(Maze maze, Direction direction) {
         super(maze, direction);
@@ -90,7 +90,7 @@ public class UnreliableSensor extends ReliableSensor {
     }
 
     /** This method sets the sensor to not working or to working based on the boolean passed in.
-     * @param boolean state
+     * @param state
      */
     public void setSensorState(boolean state) {
         this.sensorState = state;

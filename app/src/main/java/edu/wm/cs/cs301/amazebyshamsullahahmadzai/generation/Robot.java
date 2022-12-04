@@ -48,7 +48,8 @@ package edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation;
  *
  */
 public interface Robot {
-	/** 
+
+	/**
 	 * Describes all possible turns that a robot can do when it rotates on the spot.
 	 * Left is 90 degrees left, right is 90 degrees right, turn around is 180 degrees.
 	 */
@@ -62,22 +63,14 @@ public interface Robot {
 	 * a sensor is mounted on the robot.
 	 */
 	public enum Direction { LEFT, RIGHT, FORWARD, BACKWARD };
-	
+
+	DistanceSensor getForwardSensor();
+	DistanceSensor getLeftSensor();
+	DistanceSensor getRightSensor();
+	DistanceSensor getBackSensor();
 	///////////////////////////////////////////////////////////////////
 	/////////////////// Initial configuration of a robot   ////////////
 	///////////////////////////////////////////////////////////////////
-	/**
-	 * Provides the robot with a reference to the controller to cooperate with.
-	 * The robot memorizes the controller such that this method is most likely called only once
-	 * and for initialization purposes. The controller serves as the main source of information
-	 * for the robot about the current position, the presence of walls, the reaching of an exit.
-	 * The controller is assumed to be in the playing state.
-	 * @param controller is the communication partner for robot
-	 * @throws IllegalArgumentException if controller is null, 
-	 * or if controller is not in playing state, 
-	 * or if controller does not have a maze
-	 */
-//	void setController(Control controller);
 	/**
 	 * Adds a distance sensor to the robot such that it measures in the given direction.
 	 * This method is used when a robot is initially configured to get ready for operation.
@@ -236,9 +229,9 @@ public interface Robot {
      * This method takes in a boolean array of unreliable sensors and then sets the sensors
      * in the robot object to be unreliable. The order of the sensors in the array is 
      * Forward, Left, Right, Backward.
-     * @param boolean[] unreliableSensors 
+     * @param unreliableSensors
      */
-	void setUnreliableSensors(boolean[] unreliableSensors);
+	void setUnreliableSensors(boolean[] unreliableSensors, Maze maze);
 	/**
 	 * Tells the distance to an obstacle (a wall) 
 	 * in the given direction.

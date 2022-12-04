@@ -194,8 +194,6 @@ public class MazeDataHolder {
                 sensorArr = "0110";
             case "Shaky":
                 sensorArr = "0000";
-            default:
-                sensorArr = "1111";
         }
         return sensorArr;
     }

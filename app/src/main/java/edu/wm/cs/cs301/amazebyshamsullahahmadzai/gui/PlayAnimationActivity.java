@@ -1,14 +1,17 @@
 package edu.wm.cs.cs301.amazebyshamsullahahmadzai.gui;
 
 import static edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation.MazeDataHolder.getMaze;
+import static edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation.MazeDataHolder.maze;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.media.Image;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,7 +25,6 @@ import edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation.MazePanel;
 import edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation.ReliableRobot;
 import edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation.Robot;
 import edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation.RobotDriver;
-import edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation.State;
 import edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation.StatePlaying;
 import edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation.UnreliableRobot;
 import edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation.WallFollower;
@@ -43,12 +45,16 @@ public class PlayAnimationActivity extends AppCompatActivity {
 
     private Robot robot;
     private RobotDriver driver;
-    private boolean crashed;
     private float energyConsumed;
     private float initialEnergy;
 
+    private ImageView forwardSensor;
+    private ImageView leftSensor;
+    private ImageView rightSensor;
+    private ImageView backSensor;
+
     private final int LENGTH_SHORT = 800;
-    private int SLEEP_INTERVAL;
+    private int SLEEP_INTERVAL = 1000;
     Handler playAnimHandler = new Handler();
     Runnable playAnimRunnable;
     StatePlaying playState;
@@ -67,6 +73,11 @@ public class PlayAnimationActivity extends AppCompatActivity {
         playState.setMaze(getMaze());
         MazePanel panel = findViewById(R.id.maze_view);
         playState.start(panel);
+
+        forwardSensor = findViewById(R.id.fsensor_state);
+        leftSensor    = findViewById(R.id.lsensor_state);
+        rightSensor   = findViewById(R.id.rsensor_state);
+        backSensor    = findViewById(R.id.bsensor_state);
 
         setUpDriver();
     }
@@ -167,7 +178,7 @@ public class PlayAnimationActivity extends AppCompatActivity {
 
     /**
      * This method sets up the seek bar that allows the user to change the animation speed. It also
-     * sets up a change listener for the seek bar that logs the event and shows a snackbar to the user
+     * sets up a change listener for the seek bar that logs the event and shows a snack-bar to the user
      * with the new animation speed.
      */
     private void setUpAnimationSpeed() {
@@ -176,16 +187,27 @@ public class PlayAnimationActivity extends AppCompatActivity {
             
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                SLEEP_INTERVAL = i;
+                updateSLEEP_INTERVAL(i);
                 Log.v(LOG_TAG, "Animation speed is now: " + (SLEEP_INTERVAL+1));
-                String text = "Animation speed is now: " + (SLEEP_INTERVAL+1);
-                Snackbar.make(seekBar, text, Snackbar.LENGTH_SHORT).setDuration(LENGTH_SHORT).show();
             }
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {}
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {}
         });
+    }
+
+    private void updateSLEEP_INTERVAL(int i) {
+        switch (i) {
+            case 0:
+                SLEEP_INTERVAL = 5000;
+            case 1:
+                SLEEP_INTERVAL = 4000;
+            case 2:
+                SLEEP_INTERVAL = 2000;
+            case 3:
+                SLEEP_INTERVAL = 0;
+        }
     }
 
     private void setUpDriver() {
@@ -197,7 +219,7 @@ public class PlayAnimationActivity extends AppCompatActivity {
                 robot = new UnreliableRobot(playState);
             driver = new Wizard();
             boolean[] sensorArr = playState.getSensorArray(MazeDataHolder.getSensorString());
-            robot.setUnreliableSensors(sensorArr);
+            robot.setUnreliableSensors(sensorArr, maze);
             driver.setMaze(MazeDataHolder.getMaze());
             driver.setRobot(robot);
             // visibility settings
@@ -205,13 +227,15 @@ public class PlayAnimationActivity extends AppCompatActivity {
             playState.showSolution = true;
             playState.mapMode = true;
             playState.startFailAndRepairProcess(sensorArr, robot);
+
             playAnimRunnable = new Runnable() {
                 @Override
                 public void run() {
                     try {
                         if (!robot.isAtExit()) {
                             driver.drive1Step2Exit();
-                            playAnimHandler.postDelayed(this, 100);
+                            updateVisualSensors(robot);
+                            playAnimHandler.postDelayed(this, SLEEP_INTERVAL);
                         } else {
                             robot.move(1);
                             switchToWinning(driver.getPathLength());
@@ -222,7 +246,6 @@ public class PlayAnimationActivity extends AppCompatActivity {
                          * variable to true which will print out a losing page.
                          */
                         e.printStackTrace();
-                        crashed = true;
                         energyConsumed = driver.getEnergyConsumption();
                         initialEnergy = driver.getInitialBatteryLevel();
                         playState.stopFailAndRepairProcess(sensorArr, robot);
@@ -238,7 +261,7 @@ public class PlayAnimationActivity extends AppCompatActivity {
                 robot = new UnreliableRobot(playState);
             driver = new WallFollower();
             boolean [] sensorArr = playState.getSensorArray(MazeDataHolder.getSensorString());
-            robot.setUnreliableSensors(sensorArr);
+            robot.setUnreliableSensors(sensorArr, maze);
             driver.setMaze(MazeDataHolder.getMaze());
             driver.setRobot(robot);
             // visibility settings
@@ -246,23 +269,31 @@ public class PlayAnimationActivity extends AppCompatActivity {
             playState.showSolution = true ;
             playState.mapMode = true;
             playState.startFailAndRepairProcess(sensorArr, robot);
-            try {
-                if(!driver.drive2Exit()) {
-                    energyConsumed = driver.getEnergyConsumption();
-                    playState.stopFailAndRepairProcess(sensorArr, robot);
-                    switchToWinning(driver.getPathLength());
+            playAnimRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        if (!robot.isAtExit()) {
+                            driver.drive1Step2Exit();
+                            updateVisualSensors(robot);
+                            playAnimHandler.postDelayed(this, SLEEP_INTERVAL);
+                        } else {
+                            robot.move(1);
+                            switchToWinning(driver.getPathLength());
+                        }
+                    } catch (Exception e) {
+                        /*
+                         * If an error or exception occurs, then set a crash
+                         * variable to true which will print out a losing page.
+                         */
+                        e.printStackTrace();
+                        energyConsumed = driver.getEnergyConsumption();
+                        initialEnergy = driver.getInitialBatteryLevel();
+                        playState.stopFailAndRepairProcess(sensorArr, robot);
+                        switchToLosing(driver.getPathLength());
+                    }
                 }
-            } catch (Exception e) {
-                /*
-                 * If an error or exception occurs, then set a crash
-                 * variable to true which will print out a losing page.
-                 */
-                e.printStackTrace();
-                energyConsumed = driver.getEnergyConsumption();
-                initialEnergy = driver.getInitialBatteryLevel();
-                playState.stopFailAndRepairProcess(sensorArr, robot);
-                switchToLosing(driver.getPathLength());
-            }
+            };
         }
     }
 
@@ -272,6 +303,28 @@ public class PlayAnimationActivity extends AppCompatActivity {
 
     public void stopAnimation(View view) {
         playAnimHandler.removeCallbacks(playAnimRunnable);
+    }
+
+    private void updateVisualSensors(Robot robot) {
+        if(robot.getForwardSensor().getSensorState())
+            forwardSensor.setImageResource(R.drawable.snsrstate_green);
+        else
+            forwardSensor.setImageResource(R.drawable.snsrstate_red);
+
+        if(robot.getLeftSensor().getSensorState())
+            leftSensor.setImageResource(R.drawable.snsrstate_green);
+        else
+            leftSensor.setImageResource(R.drawable.snsrstate_red);
+
+        if(robot.getRightSensor().getSensorState())
+            rightSensor.setImageResource(R.drawable.snsrstate_green);
+        else
+            rightSensor.setImageResource(R.drawable.snsrstate_red);
+
+        if(robot.getBackSensor().getSensorState())
+            backSensor.setImageResource(R.drawable.snsrstate_green);
+        else
+            backSensor.setImageResource(R.drawable.snsrstate_red);
     }
 
     public void switchToWinning(int pathLength) {

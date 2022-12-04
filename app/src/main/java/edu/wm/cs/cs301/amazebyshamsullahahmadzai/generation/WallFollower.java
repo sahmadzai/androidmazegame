@@ -235,7 +235,7 @@ public class WallFollower implements RobotDriver {
 	 * Method to rotate the robot to the heading that it was in before moving.
 	 * Comparing the current heading to the original heading and rotating the robot
 	 * accordingly.
-	 * @param currHeading
+	 * @param ogHeading
 	 * @throws Exception
 	 */
 	private void rotateToHeading(CardinalDirection ogHeading) throws Exception {

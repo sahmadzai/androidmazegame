@@ -146,8 +146,14 @@ public interface DistanceSensor {
 	void stopFailureAndRepairProcess() throws UnsupportedOperationException;
 	
 	/** This method sets the sensor to not working or to working based on the boolean passed in.
-     * @param state
+     * @param state - the state of the sensor either on or off
      */
     void setSensorState(boolean state);
 
+	/**
+	 * This method handles the state of the sensor. If the sensor is unreliable, it will return true.
+	 * If the sensor is reliable, it will return false.
+	 * @return boolean
+	 */
+	boolean getSensorState();
 }

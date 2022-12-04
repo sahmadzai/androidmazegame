@@ -5,14 +5,14 @@ import java.util.Arrays;
 /**
  * CRC Card for ReliableRobot:
  * Responsibilities:
- *  - Takes in a statePlayingler object that it uses to move the robot
+ *  - Takes in a statePlaying object that it uses to move the robot
  *  - Adds a distance sensor to different directions or sides of the robot (North, South, East, West)
  *  - Returns the current position of the robot, the current direction it is facing, and the distance to the wall in the direction it is facing
  *  - Tracks and sets the battery level, odometer, and the amount of energy it uses to move, rotate, jump, and sense
  *
  * Collaborators:
  * 1. CardinalDirection
- * 2. statePlaying (statePlayingler)
+ * 2. statePlaying (StatePlaying)
  * 3. RobotDriver
  * 5. StatePlaying
  *
@@ -50,14 +50,30 @@ public class ReliableRobot implements Robot {
         this.x = statePlaying.getCurrentPosition()[0];
         this.y = statePlaying.getCurrentPosition()[1];
 
-        left = new ReliableSensor(statePlaying.getMaze(), Direction.LEFT);
-        right = new ReliableSensor(statePlaying.getMaze(), Direction.RIGHT);
-        forward = new ReliableSensor(statePlaying.getMaze(), Direction.FORWARD);
-        backward = new ReliableSensor(statePlaying.getMaze(), Direction.BACKWARD);
+        this.left = new ReliableSensor(statePlaying.getMaze(), Direction.LEFT);
+        this.right = new ReliableSensor(statePlaying.getMaze(), Direction.RIGHT);
+        this.forward = new ReliableSensor(statePlaying.getMaze(), Direction.FORWARD);
+        this.backward = new ReliableSensor(statePlaying.getMaze(), Direction.BACKWARD);
         addDistanceSensor(left, Direction.LEFT);
         addDistanceSensor(right, Direction.RIGHT);
         addDistanceSensor(forward, Direction.FORWARD);
         addDistanceSensor(backward, Direction.BACKWARD);
+    }
+
+    public DistanceSensor getForwardSensor() {
+        return forward;
+    }
+
+    public DistanceSensor getLeftSensor() {
+        return left;
+    }
+
+    public DistanceSensor getRightSensor() {
+        return right;
+    }
+
+    public DistanceSensor getBackSensor() {
+        return backward;
     }
 
     /**
@@ -502,7 +518,7 @@ public class ReliableRobot implements Robot {
      *
      * @param unreliableSensors - array of unreliable sensors
      */
-    public void setUnreliableSensors(boolean[] unreliableSensors) {
+    public void setUnreliableSensors(boolean[] unreliableSensors, Maze maze) {
         /*
          * If the array is not null then loop through the array and check that the value at each index
          * is either true or false. If it is true then the sensor at that index is unreliable and if it is

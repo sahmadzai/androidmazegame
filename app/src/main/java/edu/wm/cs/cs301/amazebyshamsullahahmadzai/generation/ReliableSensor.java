@@ -22,13 +22,13 @@ public class ReliableSensor implements DistanceSensor {
 	
 	/*
 	 * Initialize class variables for:
-	 *    - Maze objectds
+	 *    - Maze objects
 	 *    - Mount Direction of Sensor
 	 */
     protected Maze maze;
     protected Direction mountedDir;
 	protected int energyForSensing = 1;
-	private boolean sensorState = true;
+	protected boolean sensorState = true;
 	
     public ReliableSensor(Maze maze, Direction dir) {
     	setMaze(maze);
@@ -201,7 +201,16 @@ public class ReliableSensor implements DistanceSensor {
 		 */
         return energyForSensing;
 	}
-	
+
+	/**
+	 * This method handles the state of the sensor. If the sensor is unreliable, it will return true.
+	 * If the sensor is reliable, it will return false.
+	 * @return boolean
+	 */
+	public boolean getSensorState() {
+		return sensorState;
+	}
+
 	/** This method sets the sensor to not working or to working based on the boolean passed in.
      * @param state
      */

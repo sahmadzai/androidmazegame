@@ -5,14 +5,14 @@ import java.util.Arrays;
 /**
  * CRC Card for ReliableRobot:
  * Responsibilities:
- *  - Takes in a controller object that it uses to move the robot
+ *  - Takes in a statePlayingler object that it uses to move the robot
  *  - Adds a distance sensor to different directions or sides of the robot (North, South, East, West)
  *  - Returns the current position of the robot, the current direction it is facing, and the distance to the wall in the direction it is facing
  *  - Tracks and sets the battery level, odometer, and the amount of energy it uses to move, rotate, jump, and sense
  *
  * Collaborators:
  * 1. CardinalDirection
- * 2. Control (Controller)
+ * 2. statePlaying (statePlayingler)
  * 3. RobotDriver
  * 5. StatePlaying
  *
@@ -21,24 +21,44 @@ import java.util.Arrays;
  *
  */
 public class ReliableRobot implements Robot {
-    float[] batteryLevel = new float[1];
-    int odometer;
-    int energyForQuarterTurn = 3;
-    int energyForStepForward = 6;
-    int energyForJump = 40;
-    int energyForSensing = 1;
-    boolean stopped = false;
-    int x;
-    int y;
-    DistanceSensor left;
-    DistanceSensor right;
-    DistanceSensor forward;
-    DistanceSensor backward;
+
+    protected StatePlaying statePlaying;
+    protected float[] batteryLevel = new float[1];
+    protected int odometer;
+    protected int energyForQuarterTurn = 3;
+    protected int energyForStepForward = 6;
+    protected int energyForJump = 40;
+    protected int energyForSensing = 1;
+    protected boolean stopped;
+    protected int x;
+    protected int y;
+    protected DistanceSensor left;
+    protected DistanceSensor right;
+    protected DistanceSensor forward;
+    protected DistanceSensor backward;
 
     protected enum Heading {NORTH, EAST, SOUTH, WEST}
 
-    ;
     protected Heading currDirection;
+
+    public ReliableRobot(StatePlaying statePlaying) {
+        super();
+        this.statePlaying = statePlaying;
+        this.batteryLevel[0] = 3500;
+        this.odometer = 0;
+        this.stopped = false;
+        this.x = statePlaying.getCurrentPosition()[0];
+        this.y = statePlaying.getCurrentPosition()[1];
+
+        left = new ReliableSensor(statePlaying.getMaze(), Direction.LEFT);
+        right = new ReliableSensor(statePlaying.getMaze(), Direction.RIGHT);
+        forward = new ReliableSensor(statePlaying.getMaze(), Direction.FORWARD);
+        backward = new ReliableSensor(statePlaying.getMaze(), Direction.BACKWARD);
+        addDistanceSensor(left, Direction.LEFT);
+        addDistanceSensor(right, Direction.RIGHT);
+        addDistanceSensor(forward, Direction.FORWARD);
+        addDistanceSensor(backward, Direction.BACKWARD);
+    }
 
     /**
      * Adds a distance sensor to the robot such that it measures in the given direction.
@@ -96,12 +116,11 @@ public class ReliableRobot implements Robot {
      *
      * @return array of length 2, x = array[0], y = array[1]
      * and ({@code 0 <= x < width, 0 <= y < height}) of the maze
-     * @throws Exception if position is outside of the maze
      */
     @Override
-    public int[] getCurrentPosition() throws Exception {
+    public int[] getCurrentPosition() {
         /*
-         * Use the Control class's getCurrentPosition() method.
+         * Use the statePlaying class's getCurrentPosition() method.
          * With that just return the x,y position as an int array with length 2.
          */
         int[] position = new int[2];
@@ -118,10 +137,10 @@ public class ReliableRobot implements Robot {
     @Override
     public CardinalDirection getCurrentDirection() {
         /*
-         * Control has a function to get the current direction that is being faced.
+         * statePlaying has a function to get the current direction that is being faced.
          * Using the that we can then return the direction the robot is facing.
          */
-        return getCurrentDirection();
+        return statePlaying.getCurrentDirection();
     }
 
     /**
@@ -150,8 +169,8 @@ public class ReliableRobot implements Robot {
      * for distance2Obstacle may use less energy than a move forward operation.
      * If battery {@code level <= 0} then robot stops to function and hasStopped() is true.
      *
-     * @param level is the current battery level
-     * @throws IllegalArgumentException if level is negative
+     * @param level - is the current battery level
+     * @throws IllegalArgumentException - if level is negative
      */
     @Override
     public void setBatteryLevel(float level) {
@@ -250,32 +269,32 @@ public class ReliableRobot implements Robot {
          * method in the StatePlaying.java class which takes in 1 or -1. After turning decrement the battery level
          * based on the constant variable that holds the battery costs for different turns.
          */
-//		if (batteryLevel[0] < energyForQuarterTurn) {
-//			stopped = true;
-//			System.out.println("--------- BATTERY too LOW for ROTATE ---------" + batteryLevel[0]);
-//		} if (hasStopped()) {
-//			System.out.println("Robot has crashed either due to hitting a wall or no energy.");
-//		} else {
-//			switch (turn) {
-//			case LEFT:
-//				((StatePlaying)state).rotate(1);
-//				batteryLevel[0] -= energyForQuarterTurn;
-//				break;
-//			case RIGHT:
-//				((StatePlaying)state).rotate(-1);
-//				batteryLevel[0] -= energyForQuarterTurn;
-//				break;
-//			case AROUND:
-//				((StatePlaying)state).rotate(1);
-//				((StatePlaying)state).rotate(1);
-//				batteryLevel[0] -= energyForQuarterTurn*2;
-//				if (batteryLevel[0] < 0) {
-//					((StatePlaying)state).rotate(-1);
-//					((StatePlaying)state).rotate(-1);
-//				}
-//				break;
-//			}
-//		}
+		if (batteryLevel[0] < energyForQuarterTurn) {
+			stopped = true;
+			System.out.println("--------- BATTERY too LOW for ROTATE ---------" + batteryLevel[0]);
+		} if (hasStopped()) {
+			System.out.println("Robot has crashed either due to hitting a wall or no energy.");
+		} else {
+			switch (turn) {
+			case LEFT:
+				statePlaying.rotate(1);
+				batteryLevel[0] -= energyForQuarterTurn;
+				break;
+			case RIGHT:
+				statePlaying.rotate(-1);
+				batteryLevel[0] -= energyForQuarterTurn;
+				break;
+			case AROUND:
+				statePlaying.rotate(1);
+				statePlaying.rotate(1);
+				batteryLevel[0] -= energyForQuarterTurn*2;
+				if (batteryLevel[0] < 0) {
+					statePlaying.rotate(-1);
+					statePlaying.rotate(-1);
+				}
+				break;
+			}
+		}
     }
 
     /**
@@ -304,56 +323,56 @@ public class ReliableRobot implements Robot {
          * with respect to the direction the bot is facing. Then move/walk one step forward and decrement the
          * distance and the battery level respectively.
          */
-//		if (distance < 0) {
-//			throw new IllegalArgumentException("Distance cannot be negative.");
-//		}
-//		if (batteryLevel[0] < energyForStepForward) {
-//			stopped = true;
-//			System.out.println("--------- BATTERY too LOW for MOVE ---------");
-//		}
-//		if (hasStopped()) {
-//			System.out.println("Robot has crashed either due to hitting a wall or no energy.");
-//		} else {
-//			while(distance > 0 && !hasStopped()) {
-//				try {
-//					switch(control.getCurrentDirection()) {
-//					case North:
-//						if (y <= control.getMaze().getHeight()) {
-//							y--;
-//							((StatePlaying)state).walk(1);
-//							break;
-//						}
-//						break;
-//					case South:
-//						if (y >= 0) {
-//							y++;
-//							((StatePlaying)state).walk(1);
-//							break;
-//						}
-//						break;
-//					case East:
-//						if (x >= 0) {
-//							x++;
-//							((StatePlaying)state).walk(1);
-//							break;
-//						}
-//						break;
-//					case West:
-//						if (x <= control.getMaze().getWidth()) {
-//							x--;
-//							((StatePlaying)state).walk(1);
-//							break;
-//						}
-//						break;
-//				}
-//					distance--;
-//					odometer++;
-//					batteryLevel[0] -= getEnergyForStepForward();
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		}
+		if (distance < 0) {
+			throw new IllegalArgumentException("Distance cannot be negative.");
+		}
+		if (batteryLevel[0] < energyForStepForward) {
+			stopped = true;
+			System.out.println("--------- BATTERY too LOW for MOVE ---------");
+		}
+		if (hasStopped()) {
+			System.out.println("Robot has crashed either due to hitting a wall or no energy.");
+		} else {
+			while(distance > 0 && !hasStopped()) {
+				try {
+					switch(statePlaying.getCurrentDirection()) {
+					case North:
+						if (y <= statePlaying.getMaze().getHeight()) {
+							y--;
+							statePlaying.walk(1);
+							break;
+						}
+						break;
+					case South:
+						if (y >= 0) {
+							y++;
+							statePlaying.walk(1);
+							break;
+						}
+						break;
+					case East:
+						if (x >= 0) {
+							x++;
+							statePlaying.walk(1);
+							break;
+						}
+						break;
+					case West:
+						if (x <= statePlaying.getMaze().getWidth()) {
+							x--;
+							statePlaying.walk(1);
+							break;
+						}
+						break;
+				}
+					distance--;
+					odometer++;
+					batteryLevel[0] -= getEnergyForStepForward();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
 
     }
 
@@ -377,54 +396,54 @@ public class ReliableRobot implements Robot {
          * border wall then go back to the previous location and direction before the jump and make sure
          * battery level doesn't change.
          */
-//		if (batteryLevel[0] < energyForJump) {
-//			stopped = true;
-//			System.out.println("--------- BATTERY too LOW for JUMP ---------");
-//		}
-//		if (hasStopped()) {
-//			System.out.println("Robot has crashed either due to hitting a wall or no energy.");
-//		} else {
-//			System.out.println("Now jumping");
-//			try {
-//				switch(control.getCurrentDirection()) {
-//				case North:
-//					if (y <= control.getMaze().getHeight()) {
-//						y--;
-//						((StatePlaying)state).walk(1);
-//						odometer++;
-//						break;
-//					}
-//					break;
-//				case South:
-//					if (y >= 0) {
-//						y++;
-//						((StatePlaying)state).walk(1);
-//						odometer++;
-//						break;
-//					}
-//					break;
-//				case East:
-//					if (x >= 0) {
-//						x++;
-//						((StatePlaying)state).walk(1);
-//						odometer++;
-//						break;
-//					}
-//					break;
-//				case West:
-//					if (x <= control.getMaze().getWidth()) {
-//						x--;
-//						((StatePlaying)state).walk(1);
-//						odometer++;
-//						break;
-//					}
-//					break;
-//			}
-//				batteryLevel[0] -= energyForJump;
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//			}
-//		}
+		if (batteryLevel[0] < energyForJump) {
+			stopped = true;
+			System.out.println("--------- BATTERY too LOW for JUMP ---------");
+		}
+		if (hasStopped()) {
+			System.out.println("Robot has crashed either due to hitting a wall or no energy.");
+		} else {
+			System.out.println("Now jumping");
+			try {
+				switch(statePlaying.getCurrentDirection()) {
+				case North:
+					if (y <= statePlaying.getMaze().getHeight()) {
+						y--;
+						statePlaying.walk(1);
+						odometer++;
+						break;
+					}
+					break;
+				case South:
+					if (y >= 0) {
+						y++;
+						statePlaying.walk(1);
+						odometer++;
+						break;
+					}
+					break;
+				case East:
+					if (x >= 0) {
+						x++;
+						statePlaying.walk(1);
+						odometer++;
+						break;
+					}
+					break;
+				case West:
+					if (x <= statePlaying.getMaze().getWidth()) {
+						x--;
+						statePlaying.walk(1);
+						odometer++;
+						break;
+					}
+					break;
+			}
+				batteryLevel[0] -= energyForJump;
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
     }
 
     /**
@@ -440,10 +459,7 @@ public class ReliableRobot implements Robot {
          * Compare the current x,y coordinates of the robot to the exit position in
          * the maze, if they are equal then return true, otherwise return false.
          */
-//		if (Arrays.equals(control.getCurrentPosition(), control.getMaze().getExitPosition())) {
-//			return true;
-//		}
-        return false;
+        return Arrays.equals(statePlaying.getCurrentPosition(), statePlaying.getMaze().getExitPosition());
     }
 
     /**
@@ -457,8 +473,7 @@ public class ReliableRobot implements Robot {
          * Pass the current x,y coordinates of the robot to the maze's isInRoom()
          * method, return the results of the method call which will be true or false.
          */
-//		return control.getMaze().isInRoom(control.getCurrentPosition()[0], control.getCurrentPosition()[1]);
-        return false;
+		return statePlaying.getMaze().isInRoom(statePlaying.getCurrentPosition()[0], statePlaying.getCurrentPosition()[1]);
     }
 
     /**
@@ -476,19 +491,16 @@ public class ReliableRobot implements Robot {
          * variable is not equal to false. This stop variable can be changed in any function.
          * Return the result of that conditional.
          */
-        if (batteryLevel[0] <= 0 || stopped == true) {
-            return true;
-        }
-        return false;
+        return batteryLevel[0] <= 0 || stopped;
     }
 
     /**
-     * NOT USED FOR RELIABLEROBOT
+     * NOT USED FOR RELIABLE ROBOT
      * This method takes in a boolean array of unreliable sensors and then sets the sensors
      * in the robot object to be unreliable. The order of the sensors in the array is
      * Forward, Left, Right, Backward.
      *
-     * @param unreliableSensors
+     * @param unreliableSensors - array of unreliable sensors
      */
     public void setUnreliableSensors(boolean[] unreliableSensors) {
         /*
@@ -505,16 +517,16 @@ public class ReliableRobot implements Robot {
 //			System.out.print(unreliableSensors[i] + ", ");
 //			if (unreliableSensors[i]) {
 //				if (i == 0) {
-//					forward = new UnreliableSensor(control.getMaze(), Direction.FORWARD);
+//					forward = new UnreliableSensor(statePlaying.getMaze(), Direction.FORWARD);
 //					addDistanceSensor(forward, Direction.FORWARD);
 //				} else if (i == 1) {
-//					left = new UnreliableSensor(control.getMaze(), Direction.LEFT);
+//					left = new UnreliableSensor(statePlaying.getMaze(), Direction.LEFT);
 //					addDistanceSensor(left, Direction.LEFT);
 //				} else if (i == 2) {
-//					right = new UnreliableSensor(control.getMaze(), Direction.RIGHT);
+//					right = new UnreliableSensor(statePlaying.getMaze(), Direction.RIGHT);
 //					addDistanceSensor(right, Direction.RIGHT);
 //				} else if (i == 3) {
-//					backward = new UnreliableSensor(control.getMaze(), Direction.BACKWARD);
+//					backward = new UnreliableSensor(statePlaying.getMaze(), Direction.BACKWARD);
 //					addDistanceSensor(backward, Direction.BACKWARD);
 //				}
 //			}
@@ -643,14 +655,12 @@ public class ReliableRobot implements Robot {
          * distance in the given direction is equal to a large integer value (Max value), return the result (true or false)
          * If no if statements run then just return false.
          */
-//		if (!Arrays.equals(control.getCurrentPosition(), control.getMaze().getExitPosition())) {
-//			return false;
-//		}
-//		if (Arrays.equals(control.getCurrentPosition(), control.getMaze().getExitPosition())) {
-//			if (distanceToObstacle(direction) == Integer.MAX_VALUE) {
-//				return true;
-//			}
-//		}
+		if (!Arrays.equals(statePlaying.getCurrentPosition(), statePlaying.getMaze().getExitPosition())) {
+			return false;
+		}
+		if (Arrays.equals(statePlaying.getCurrentPosition(), statePlaying.getMaze().getExitPosition())) {
+            return distanceToObstacle(direction) == Integer.MAX_VALUE;
+		}
         return false;
     }
 

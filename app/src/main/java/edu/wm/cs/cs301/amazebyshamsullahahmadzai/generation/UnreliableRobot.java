@@ -15,7 +15,11 @@ package edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation;
  */
 public class UnreliableRobot extends ReliableRobot {
 
-    /**
+	public UnreliableRobot(StatePlaying statePlaying) {
+		super(statePlaying);
+	}
+
+	/**
      * This method takes in a boolean array of unreliable sensors and then sets the sensors
      * in the robot object to be unreliable. The order of the sensors in the array is 
      * Forward, Left, Right, Backward.

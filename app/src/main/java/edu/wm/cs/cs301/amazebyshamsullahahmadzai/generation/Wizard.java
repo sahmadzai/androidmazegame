@@ -1,5 +1,7 @@
 package edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation;
 
+import android.util.Log;
+
 import java.util.Arrays;
 
 import edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation.Robot.Direction;

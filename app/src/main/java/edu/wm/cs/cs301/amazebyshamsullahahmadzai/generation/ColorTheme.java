@@ -109,7 +109,7 @@ public class ColorTheme {
 				return Color.valueOf(Color.WHITE);
 			// color settings for FirstPersonView
 			case FIRSTPERSON_DEFAULT:
-				return Color.valueOf(Color.MAGENTA);
+				return Color.valueOf(Color.WHITE);
 			default:
 				break;
 		}

@@ -19,6 +19,7 @@ public class MazeDataHolder {
     public static String generationAlgorithm;
     public static String driver;
     public static String driver_lvl;
+    public static String sensorArr;
 
     /**
      * Set the distances matrix
@@ -183,4 +184,19 @@ public class MazeDataHolder {
         return driver_lvl;
     }
 
+    public static String getSensorString() {
+        switch (driver_lvl) {
+            case "Premium":
+                sensorArr = "1111";
+            case "Mediocre":
+                sensorArr = "1001";
+            case "Soso":
+                sensorArr = "0110";
+            case "Shaky":
+                sensorArr = "0000";
+            default:
+                sensorArr = "1111";
+        }
+        return sensorArr;
+    }
 }

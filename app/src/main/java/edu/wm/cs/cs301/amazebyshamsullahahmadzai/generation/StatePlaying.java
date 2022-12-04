@@ -1,13 +1,13 @@
 package edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation;
 
-import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
+import android.os.Handler;
+import android.view.View;
 
 import java.util.logging.Logger;
 
+import edu.wm.cs.cs301.amazebyshamsullahahmadzai.gui.PlayAnimationActivity;
 import edu.wm.cs.cs301.amazebyshamsullahahmadzai.gui.PlayManuallyActivity;
-import edu.wm.cs.cs301.amazebyshamsullahahmadzai.gui.WinningActivity;
 
 
 /**
@@ -62,25 +62,36 @@ public class StatePlaying implements State {
 	 * and visualizes it with a compass rose. It draws on top of the 
 	 * first person view. As map and compass rose compete for space on the 
 	 * screen, one can show at most one of the two at any point in time.
-	 */
-//	private CompassRose cr;
+	 *
+     * private CompassRose cr;
+     * /
 	   
     /**
      * The panel is the capability to draw on the screen.
      */
-    private MazePanel panel;
+    public MazePanel panel;
 
+    /**
+     * Holds the running activities to be used to call
+     * switch to Lose and Win methods in the respective activity.
+     */
     PlayManuallyActivity playMan;
+    PlayAnimationActivity playAnim;
 
+    /**
+     * Robot and robot driver that will be used throughout StatePlaying
+     */
+    Robot robot;
+    public RobotDriver driver;
 
     /**
      * Maze holds the main information on where walls are.
      */
     Maze maze ; 
 
-    private boolean showMaze;           // toggle switch to show overall maze on screen
-    private boolean showSolution;       // toggle switch to show solution in overall maze on screen
-    private boolean mapMode; // true: display map of maze, false: do not display map of maze
+    public boolean showMaze;           // toggle switch to show overall maze on screen
+    public boolean showSolution;       // toggle switch to show solution in overall maze on screen
+    public boolean mapMode; // true: display map of maze, false: do not display map of maze
     // mapMode is toggled by user keyboard input, causes a call to drawMap during play mode
 
     // current position and direction with regard to MazeConfiguration
@@ -119,7 +130,7 @@ public class StatePlaying implements State {
      */
     boolean started;
 
-    private String LOG_TAG = "StatePlaying";
+    private final String LOG_TAG = "StatePlaying";
   
     /**
      * Constructor uses default settings but does not deliver a fully operation instance,
@@ -148,6 +159,35 @@ public class StatePlaying implements State {
     	seenCells = null;
 
         playMan = playActivity;
+    }
+
+    /**
+     * Constructor uses default settings but does not deliver a fully operation instance,
+     * requires a call to start() and setMaze().
+     */
+    public StatePlaying(PlayAnimationActivity animAct) {
+        // initialization of some fields is delayed and done in start method
+        firstPersonView = null; // initialized in start method
+        mapView = null; // initialized in start method
+        panel = null; // provided by start method
+        started = false; // method start has not been called yet
+
+        maze = null; // provided by set method
+
+        // visibility settings, default values
+        showMaze = false ;
+        showSolution = false ;
+        mapMode = false;
+
+        // initial position and direction in absence of maze
+        // position at [0,0], direction is east
+        px = 0;
+        py = 0;
+        cd = CardinalDirection.East;
+
+        seenCells = null;
+
+        playAnim = animAct;
     }
     /**
      * Provides the maze to play.
@@ -178,7 +218,6 @@ public class StatePlaying implements State {
 
         if (panel != null) {
         	startDrawer();
-//        	runAuto();
         }
         else {
         	// else: dry-run without graphics, most likely for testing purposes
@@ -186,83 +225,54 @@ public class StatePlaying implements State {
         }
     }
     
-//    private void runAuto() {
-//    	if(control.getWizard) {
-//    		RobotDriver wizard = control.getDriver();
-//    		Robot robot = control.getRobot();
-//    		boolean [] sensorArr = getSensorArray(control.sensorString);
-//    		robot.setController(control);
-//    		robot.setUnreliableSensors(sensorArr);
-//    		wizard.setMaze(maze);
-//    		wizard.setRobot(robot);
-//    		// visibility settings
-//    		showMaze = true ;
-//    		showSolution = true ;
-//    		mapMode = true;
-//    		startFailAndRepairProcess(sensorArr, robot);
-//    		try {
-//    			if(!wizard.drive2Exit()) {
-//    				System.out.println("Moved succesfully.");
-//    				energyConsumed = wizard.getEnergyConsumption();
-//    				stopFailAndRepairProcess(sensorArr, robot);
-//    				switchFromPlayingToWinning(wizard.getPathLength());
-//    			}
-//    		} catch (Exception e) {
-//    			/*
-//    			 * If an error or exception occurs, then set a crash
-//    			 * variable to true which will print out a losing page.
-//    			 */
-//    			e.printStackTrace();
-//    			crashed = true;
-//    			energyConsumed = wizard.getEnergyConsumption();
-//    			initialEnergy = wizard.getInitialBatteryLevel();
-//    			stopFailAndRepairProcess(sensorArr, robot);
-//    			switchFromPlayingToWinning(wizard.getPathLength());
-//    		}
-//    	} else if (control.getWallFollower) {
-//    		RobotDriver wallfollow = control.getDriver();
-//    		Robot robot = control.getRobot();
-//    		boolean [] sensorArr = getSensorArray(control.sensorString);
-//    		robot.setController(control);
-//    		robot.setUnreliableSensors(getSensorArray(control.sensorString));
-//    		wallfollow.setMaze(maze);
-//    		wallfollow.setRobot(robot);
-//    		// visibility settings
-//    		showMaze = true ;
-//    		showSolution = true ;
-//    		mapMode = true;
-//    		startFailAndRepairProcess(sensorArr, robot);
-//    		try {
-//    			if(!wallfollow.drive2Exit()) {
-//    				System.out.println("Moved succesfully.");
-//    				energyConsumed = wallfollow.getEnergyConsumption();
-//    				stopFailAndRepairProcess(sensorArr, robot);
-//    				switchFromPlayingToWinning(wallfollow.getPathLength());
-//    			}
-//    		} catch (Exception e) {
-//    			/*
-//    			 * If an error or exception occurs, then set a crash
-//    			 * variable to true which will print out a losing page.
-//    			 */
-//    			e.printStackTrace();
-//    			crashed = true;
-//    			energyConsumed = wallfollow.getEnergyConsumption();
-//    			initialEnergy = wallfollow.getInitialBatteryLevel();
-//    			stopFailAndRepairProcess(sensorArr, robot);
-//    			switchFromPlayingToWinning(wallfollow.getPathLength());
-//    		}
-//    	}
-//    }
+    public void runAuto() {
+
+    	if (MazeDataHolder.getDriver().equals("WallFollower")) {
+            Log.v(LOG_TAG, "WallFollower driver has been selected and is running.");
+            if(MazeDataHolder.getDriverLvl().equals("Premium"))
+                robot = new ReliableRobot(this);
+            else
+                robot = new UnreliableRobot(this);
+    		driver = new WallFollower();
+            boolean [] sensorArr = getSensorArray(MazeDataHolder.getSensorString());
+    		robot.setUnreliableSensors(sensorArr);
+    		driver.setMaze(maze);
+    		driver.setRobot(robot);
+    		// visibility settings
+    		showMaze = true ;
+    		showSolution = true ;
+    		mapMode = true;
+    		startFailAndRepairProcess(sensorArr, robot);
+    		try {
+    			if(!driver.drive2Exit()) {
+    				energyConsumed = driver.getEnergyConsumption();
+    				stopFailAndRepairProcess(sensorArr, robot);
+    				switchFromPlayingToWinning(driver.getPathLength());
+    			}
+    		} catch (Exception e) {
+    			/*
+    			 * If an error or exception occurs, then set a crash
+    			 * variable to true which will print out a losing page.
+    			 */
+    			e.printStackTrace();
+    			crashed = true;
+    			energyConsumed = driver.getEnergyConsumption();
+    			initialEnergy = driver.getInitialBatteryLevel();
+    			stopFailAndRepairProcess(sensorArr, robot);
+    			switchFromPlayingToWinning(driver.getPathLength());
+    		}
+    	}
+    }
     
     /**
      * This method is passed in a string of 1s and 0s and returns a boolean array 
      * of the same length with true for 1s and false for 0s. This will represent
      * the sensors that are working and the ones that are not. With the order 
      * being forward, left, right, back.
-     * @param sensorString
+     * @param sensorString - A string that represents which sensors are reliable or unreliable
      * @return boolean[] sensorArray
      */
-    protected boolean[] getSensorArray(String sensorString) {
+    public boolean[] getSensorArray(String sensorString) {
         boolean[] sensorArray = new boolean[4];
         for (int i = 0; i < sensorString.length(); i++) {
             if (sensorString.charAt(i) == '0') {
@@ -279,9 +289,9 @@ public class StatePlaying implements State {
      * checks which sensors are unreliable based on the order forward, left, right, backward.
      * It then calls the robot.startFailureAndRepairProcess method for the sensor in its direction.
      * It waits for 1.3 seconds after starting a sensor before starting the next sensor
-     * @param sensors
+     * @param sensors - A boolean array that indicates which sensors are reliable or unreliable
      */
-    protected void startFailAndRepairProcess(boolean[] sensors, Robot robot) {
+    public void startFailAndRepairProcess(boolean[] sensors, Robot robot) {
         if (sensors[0]) {
             robot.startFailureAndRepairProcess(Robot.Direction.FORWARD, 4, 2);
             try {
@@ -324,9 +334,9 @@ public class StatePlaying implements State {
      * This method takes in a boolean array of true and falses for each sensors and
      * checks which sensors are unreliable based on the order forward, left, right, backward.
      * It then calls the robot.stopFailureAndRepairProcess method for the sensor in its direction.
-     * @param sensors
+     * @param sensors - An array of booleans that indicate which sensors are reliable or unreliable.
      */
-    protected void stopFailAndRepairProcess(boolean[] sensors, Robot robot) {
+    public void stopFailAndRepairProcess(boolean[] sensors, Robot robot) {
         if (sensors[0]) {
             robot.stopFailureAndRepairProcess(Robot.Direction.FORWARD);
         }
@@ -650,11 +660,11 @@ public class StatePlaying implements State {
         	//System.out.println("Facing deadend, help by showing solution");
         	mapView.draw(panel, px, py, cd.angle(), 0, true, true) ;
         }
-    	else {
+//    	else {
 //    		// draw compass rose
 //    		cr.setCurrentDirection(cd);
 //    		cr.paintComponent(panel.getBufferGraphics());
-    	}
+//    	}
     	panel.commit();
     }
  

@@ -5,7 +5,6 @@ import static edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation.MazeDataHolde
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.media.Image;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;

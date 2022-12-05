@@ -251,12 +251,14 @@ public class StatePlaying implements State {
      * It then calls the robot.startFailureAndRepairProcess method for the sensor in its direction.
      * It waits for 1.3 seconds after starting a sensor before starting the next sensor
      * @param sensors - A boolean array that indicates which sensors are reliable or unreliable
+     *
+     *                THREAD ERROR
      */
     public void startFailAndRepairProcess(boolean[] sensors, Robot robot) {
         if (sensors[0]) {
             robot.startFailureAndRepairProcess(Robot.Direction.FORWARD, 4, 2);
             try {
-				Thread.sleep(1300);
+				Thread.sleep(200);
 				System.out.println("Sleep done after forward sensor.");
 			} catch (InterruptedException e) {
 				e.printStackTrace();
@@ -265,7 +267,7 @@ public class StatePlaying implements State {
         if (sensors[1]) {
             robot.startFailureAndRepairProcess(Robot.Direction.LEFT, 4, 2);
             try {
-            	Thread.sleep(1300);
+            	Thread.sleep(200);
             	System.out.println("Sleep done after left sensor.");
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -274,7 +276,7 @@ public class StatePlaying implements State {
         if (sensors[2]) {
             robot.startFailureAndRepairProcess(Robot.Direction.RIGHT, 4, 2);
             try {
-            	Thread.sleep(1300);
+            	Thread.sleep(200);
             	System.out.println("Sleep done after right sensor.");
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -283,7 +285,7 @@ public class StatePlaying implements State {
         if (sensors[3]) {
             robot.startFailureAndRepairProcess(Robot.Direction.BACKWARD, 4, 2);
             try {
-            	Thread.sleep(1300);
+            	Thread.sleep(200);
             	System.out.println("Sleep done after backward sensor.");
             } catch (InterruptedException e) {
                 e.printStackTrace();

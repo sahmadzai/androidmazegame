@@ -9,6 +9,8 @@ import android.util.Log;
 import java.util.List;
 import java.util.logging.Logger;
 
+import edu.wm.cs.cs301.amazebyshamsullahahmadzai.R;
+
 /**
  * This class encapsulates all functionality for drawing the current view 
  * at the maze from a first person perspective.
@@ -172,7 +174,6 @@ public class FirstPersonView {
        // drawBackground(panel, percentToExit);
 		gc.fillSky( x, y, viewWidth,  viewHeight);
 		gc.fillFloor( x, y, viewWidth,  viewHeight);
-		//gc.addFilledPolygon(int[] xPoints, int[] yPoints, int nPoints)
 		gc.commit();
         // set color to white and draw what ever can be seen from the current position
 //        panel.setColor(ColorTheme.getColor(ColorTheme.MazeColors.FIRSTPERSON_DEFAULT).toArgb());
@@ -431,7 +432,7 @@ public class FirstPersonView {
 		
 		rp = null; // added just for clarity, rp not used anymore 
 		
-		if (x1 >= x2) /* reject backfaces */
+		if (x1 >= x2) /* reject back faces */
 			return;
 		
 		// moved code for drawing bits and pieces into yet another method to 

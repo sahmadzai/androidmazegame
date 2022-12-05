@@ -193,7 +193,7 @@ public class MazePanel extends View implements P7PanelF22 {
 	 */
 	@Override
 	public void addFilledPolygon(int[] xPoints, int[] yPoints, int nPoints) {
-		//paint.setStyle(Paint.Style.FILL);
+		paint.setStyle(Paint.Style.FILL);
 		paint.setShader(wallShader);
 		Path path = new Path();
 		path.reset();
@@ -203,7 +203,7 @@ public class MazePanel extends View implements P7PanelF22 {
 		}
 		path.lineTo(xPoints[0], yPoints[0]);
 		canvas.drawPath(path, paint);
-
+		paint.setShader(null);
 	}
 
 	/**

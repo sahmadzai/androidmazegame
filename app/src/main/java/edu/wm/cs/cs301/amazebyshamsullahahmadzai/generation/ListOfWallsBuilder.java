@@ -1,10 +1,10 @@
 package edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation;
 
+import android.annotation.SuppressLint;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation.Constants;
 
 /**
  * This class creates a list of walls for a floorplan.
@@ -24,7 +24,7 @@ public class ListOfWallsBuilder {
 	private final int height ; 				// height of maze
 	private final Distance dists ; 			// distance matrix
 	private final Floorplan floorplan ;		// floorplan with maze layout
-	private int colchange;
+	private final int colchange;
 	
 	/**
 	 * Constructor
@@ -57,6 +57,7 @@ public class ListOfWallsBuilder {
      * Identify continuous sequences of wallboards in a vertical direction
      * @param sl the list of walls that carries the result of the computation
      */
+	   @SuppressLint("SuspiciousIndentation")
 	   private void generateWallsForVerticalWallboards(ArrayList<Wall> sl) {
 	        int x;
 	        int y;
@@ -67,8 +68,8 @@ public class ListOfWallsBuilder {
 	            it = floorplan.iterator(x, 0, CardinalDirection.West);
 	            while(it.hasNext()) {
 	                cur = it.next();
-	                int starty = cur[0];
-	                y = cur[1];
+					int starty = cur[0];
+					y = cur[1];
 	                // create wall with (x,starty) being the actual start position of the wall, 
                     // y-starty being the positive length
                     sl.add(new Wall(x*Constants.MAP_UNIT, starty*Constants.MAP_UNIT,

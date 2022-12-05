@@ -1,8 +1,9 @@
 package edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation;
 
+import android.annotation.SuppressLint;
+
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Random;
 import java.util.logging.Logger;
 
 
@@ -35,6 +36,7 @@ public class MazeBuilderBoruvka extends MazeBuilder implements Runnable {
      * So for example rooms are generated before Boruvka’s algorithm is applied. The generatePathways() method takes advantage of the getEdgeWeight() method if it needs to select an edge according to its associated weight or cost. 
      * Note that you can test getEdgeWeight independently of the generatePathways() method.
      */
+    @SuppressLint("SuspiciousIndentation")
     @Override
     public void generatePathways() {
         /*
@@ -76,7 +78,7 @@ public class MazeBuilderBoruvka extends MazeBuilder implements Runnable {
                         CardinalDirection minEdgeDirection = null;
                         
                         // Check the four directions for an edge between two trees
-                        for (CardinalDirection dir : CardinalDirection.values()) {
+                            for (CardinalDirection dir : CardinalDirection.values()) {
                             // Create a new wallboard object and check that if it is part of the border
                             Wallboard wallboard = new Wallboard(root.x, root.y, dir);
                             if (floorplan.canTearDown(wallboard)) {

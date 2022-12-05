@@ -57,6 +57,8 @@ public class PlayAnimationActivity extends AppCompatActivity {
     Handler playAnimHandler = new Handler();
     Runnable playAnimRunnable;
     StatePlaying playState;
+    private boolean[] sensorArr;
+
     private final String LOG_TAG = "PlayAnimationActivity";
 
     @Override
@@ -209,6 +211,21 @@ public class PlayAnimationActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Thread that handles the call to sensor startFailandRepairProcess
+     * This allows for the delay to be made between different sensors
+     * without causing the app to become unresponsive.
+     */
+    private final Thread sensorProcess = new Thread(new Runnable() {
+        @Override
+        public void run() {
+            robot.setUnreliableSensors(sensorArr, maze);
+            driver.setMaze(MazeDataHolder.getMaze());
+            driver.setRobot(robot);
+            playState.startFailAndRepairProcess(sensorArr, robot);
+        }
+    });
+
     private void setUpDriver() {
         if (MazeDataHolder.getDriver().equals("Wizard")) {
             Log.v(LOG_TAG, "Wizard driver has been selected and is running.");
@@ -217,15 +234,14 @@ public class PlayAnimationActivity extends AppCompatActivity {
             else
                 robot = new UnreliableRobot(playState);
             driver = new Wizard();
-            boolean[] sensorArr = playState.getSensorArray(MazeDataHolder.getSensorString());
-            robot.setUnreliableSensors(sensorArr, maze);
-            driver.setMaze(MazeDataHolder.getMaze());
-            driver.setRobot(robot);
+            sensorArr = playState.getSensorArray(MazeDataHolder.getSensorString());
+
             // visibility settings
             playState.showMaze = true;
             playState.showSolution = true;
             playState.mapMode = true;
-            playState.startFailAndRepairProcess(sensorArr, robot);
+
+            sensorProcess.start();
 
             playAnimRunnable = new Runnable() {
                 @Override
@@ -237,6 +253,7 @@ public class PlayAnimationActivity extends AppCompatActivity {
                             playAnimHandler.postDelayed(this, SLEEP_INTERVAL);
                         } else {
                             robot.move(1);
+                            sensorProcess.interrupt();
                             switchToWinning(driver.getPathLength());
                         }
                     } catch (Exception e) {
@@ -259,15 +276,15 @@ public class PlayAnimationActivity extends AppCompatActivity {
             else
                 robot = new UnreliableRobot(playState);
             driver = new WallFollower();
-            boolean [] sensorArr = playState.getSensorArray(MazeDataHolder.getSensorString());
-            robot.setUnreliableSensors(sensorArr, maze);
-            driver.setMaze(MazeDataHolder.getMaze());
-            driver.setRobot(robot);
+            sensorArr = playState.getSensorArray(MazeDataHolder.getSensorString());
+
             // visibility settings
             playState.showMaze = true ;
             playState.showSolution = true ;
             playState.mapMode = true;
-            playState.startFailAndRepairProcess(sensorArr, robot);
+
+            sensorProcess.start();
+
             playAnimRunnable = new Runnable() {
                 @Override
                 public void run() {
@@ -278,6 +295,7 @@ public class PlayAnimationActivity extends AppCompatActivity {
                             playAnimHandler.postDelayed(this, SLEEP_INTERVAL);
                         } else {
                             robot.move(1);
+                            sensorProcess.interrupt();
                             switchToWinning(driver.getPathLength());
                         }
                     } catch (Exception e) {
@@ -327,16 +345,18 @@ public class PlayAnimationActivity extends AppCompatActivity {
     }
 
     public void switchToWinning(int pathLength) {
+        sensorProcess.interrupt();
         Intent intent = new Intent(this, WinningActivity.class);
         intent.putExtra("distance", pathLength);
-        Log.v(LOG_TAG, "Jumping to the winning screen.");
+        Log.v(LOG_TAG, "Jumping to the winning screen. " + pathLength);
         startActivity(intent);
     }
 
     public void switchToLosing(int pathLength) {
+        sensorProcess.interrupt();
         Intent intent = new Intent(this, LosingActivity.class);
         intent.putExtra("distance", pathLength);
-        Log.v(LOG_TAG, "Jumping to the losing screen.");
+        Log.v(LOG_TAG, "Jumping to the losing screen. " + pathLength);
         startActivity(intent);
     }
 }

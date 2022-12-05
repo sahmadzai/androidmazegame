@@ -167,7 +167,7 @@ public class FirstPersonView {
         
         // update fields angle, viewx, viewy for current position and viewing angle
         angle = ang ;
-        setView(x, y, walkStep);
+		setView(x, y, walkStep);
         
         // update graphics
         // draw background figure: lightGrey to green on bottom half, yellow to gold on top half

@@ -40,7 +40,7 @@ public class ColorTheme {
 	// fixed configuration for circle surrounding arms
 	private static final Color CIRCLE_HIGHLIGHT = Color.valueOf(1.0f, 1.0f, 1.0f, 0.8f);
 	//Color.decode("#115740").darker();// = new Color(1.0f, 1.0f, 1.0f, 0.8f);
-	private static final Color CIRCLE_SHADE = Color.valueOf(1.0f, 1.0f, 1.0f, 0.3f);
+	private static final Color CIRCLE_SHADE = Color.valueOf(1.0f, 1.0f, 1.0f, 0.8f);
 	//Color.decode("#115740").brighter(); //new Color(0.0f, 0.0f, 0.0f, 0.2f);
 	// fixed configuration for letters used to indicate direction
 	private static final Color MARKER_COLOR = Color.valueOf(Color.BLACK);

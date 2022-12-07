@@ -212,8 +212,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:backgroundTint="#303030"
-            android:text="@string/state_pause"
+            android:backgroundTint="@color/light_gray"
+            android:text="@string/state_play"
+            android:textColor="@color/black"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/maze_view" />
@@ -232,11 +233,12 @@
             app:layout_constraintTop_toBottomOf="@+id/tableRow" />
 
         <ProgressBar
-            android:id="@+id/progressBar2"
+            android:id="@+id/energy_bar"
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
+            android:progress="3500"
             android:max="3500"
             android:progressTint="#FFC107"
             app:layout_constraintEnd_toEndOf="parent"
@@ -309,7 +311,7 @@
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/progressBar2" />
+            app:layout_constraintTop_toBottomOf="@+id/energy_bar" />
 
         <SeekBar
             android:id="@+id/animSpeed"

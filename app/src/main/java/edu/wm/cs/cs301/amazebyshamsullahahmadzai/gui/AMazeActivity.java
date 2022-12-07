@@ -1,8 +1,12 @@
 package edu.wm.cs.cs301.amazebyshamsullahahmadzai.gui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Vibrator;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -44,6 +48,9 @@ public class AMazeActivity extends AppCompatActivity {
     private int seed;
     private SharedPreferences pref;
     private SharedPreferences.Editor editor;
+    private MediaPlayer mp;
+    private MediaPlayer touchmp;
+    private Vibrator vibe;
     private final int LENGTH_SHORT = 800;
     private final String LOG_TAG = "AMazeActivity";
 
@@ -51,6 +58,14 @@ public class AMazeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.title_layout);
+
+        vibe =  (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
+        mp = MediaPlayer.create(this, R.raw.title_music);
+        mp.setLooping(true);
+        mp.start();
+
+        touchmp = MediaPlayer.create(this, R.raw.touch);
 
         // Initialize the values before adding in data
         pref = getApplicationContext().getSharedPreferences("edu.wm.cs301.amazebyshamsullahahmadzai.preferences", 0);
@@ -82,12 +97,12 @@ public class AMazeActivity extends AppCompatActivity {
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
+                vibe.vibrate(50);
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
+                vibe.vibrate(100);
             }
         });
     }
@@ -105,6 +120,7 @@ public class AMazeActivity extends AppCompatActivity {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int i, long l) {
+                touchmp.start();
                 if (i == 0)
                     Log.v(LOG_TAG, "User has not selected anything yet.");
                 else {
@@ -138,17 +154,21 @@ public class AMazeActivity extends AppCompatActivity {
         // Setting up the NewMazeButton and adding a click listener
         Button newMazeBtn = findViewById(R.id.newmazebtn);
         newMazeBtn.setOnClickListener(view -> {
+            touchmp.start();
             pushToPreferences();
             Intent intent = new Intent(this, GeneratingActivity.class);     // Create new intent
             Log.v(LOG_TAG, "Generating a NEW Maze.");                       // Log the event
+            mp.stop();
             startActivity(intent);                                          // Start the GeneratingActivity
         });
 
         // Setting up the OldMazeButton and adding a click listener
         Button oldMazeBtn = findViewById(R.id.oldmazebtn);
         oldMazeBtn.setOnClickListener(view -> {
+            touchmp.start();
             Intent intent = new Intent(this, GeneratingActivity.class);
             Log.v(LOG_TAG, "Revisiting the OLD Maze.");
+            mp.stop();
             startActivity(intent);
         });
     }
@@ -161,6 +181,7 @@ public class AMazeActivity extends AppCompatActivity {
      * @param view The view that was clicked.
      */
     public void onRoomChoice(View view) {
+        touchmp.start();
         RadioButton radio_yes = findViewById(R.id.radio_yes);
 
         if (radio_yes.isChecked()) {

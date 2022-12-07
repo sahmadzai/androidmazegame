@@ -5,12 +5,14 @@ import static edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation.MazeDataHolde
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.SeekBar;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,9 +21,9 @@ import androidx.core.content.ContextCompat;
 import com.google.android.material.snackbar.Snackbar;
 
 import edu.wm.cs.cs301.amazebyshamsullahahmadzai.R;
+import edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation.Constants;
 import edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation.MazeDataHolder;
 import edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation.MazePanel;
-import edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation.ReliableRobot;
 import edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation.Robot;
 import edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation.RobotDriver;
 import edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation.StatePlaying;
@@ -45,26 +47,31 @@ public class PlayAnimationActivity extends AppCompatActivity {
     private Robot robot;
     private RobotDriver driver;
     private float energyConsumed;
-    private float initialEnergy;
 
     private ImageView forwardSensor;
     private ImageView leftSensor;
     private ImageView rightSensor;
     private ImageView backSensor;
+    private ProgressBar energy;
 
     private final int LENGTH_SHORT = 800;
-    private int SLEEP_INTERVAL = 1000;
+    private int SLEEP_INTERVAL = 5000;
     Handler playAnimHandler = new Handler();
     Runnable playAnimRunnable;
     StatePlaying playState;
     private boolean[] sensorArr;
 
+    private MediaPlayer mp;
     private final String LOG_TAG = "PlayAnimationActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play_animation);
+
+        mp = MediaPlayer.create(this, R.raw.playmanualsound);
+        mp.setLooping(true);
+        mp.start();
 
         setUpButtons();                                                             // Setting up the seekbar and adding a change listener
         setUpToggleButtons();                                                       // Setting up the toggle buttons and adding a click listener
@@ -80,6 +87,8 @@ public class PlayAnimationActivity extends AppCompatActivity {
         rightSensor   = findViewById(R.id.rsensor_state);
         backSensor    = findViewById(R.id.bsensor_state);
 
+        energy        = findViewById(R.id.energy_bar);
+
         setUpDriver();
     }
 
@@ -91,6 +100,7 @@ public class PlayAnimationActivity extends AppCompatActivity {
     public void onBackPressed() {
         // Handle the back button event by going back to the title page
         Intent intent = new Intent(PlayAnimationActivity.this, AMazeActivity.class);
+        mp.stop();
         startActivity(intent);
     }
 
@@ -101,12 +111,28 @@ public class PlayAnimationActivity extends AppCompatActivity {
      */
     private void setUpButtons() {
         // Setting up the JumpToLose button and adding a click listener
-        Button jumpToLose = findViewById(R.id.jumpToLose);
-        jumpToLose.setOnClickListener(view -> switchToLosing(0));
+//        Button jumpToLose = findViewById(R.id.jumpToLose);
+//        jumpToLose.setOnClickListener(view -> switchToLosing(0, driver.getEnergyConsumption()));
 
-        // Setting up the JumpToWin button and adding a click listener
-        Button jumpToWin = findViewById(R.id.jumpToWin);
-        jumpToWin.setOnClickListener(view -> switchToWinning(0));
+          // Setting up the JumpToWin button and adding a click listener
+//        Button jumpToWin = findViewById(R.id.jumpToWin);
+//        jumpToWin.setOnClickListener(view -> switchToWinning(0, driver.getEnergyConsumption()));
+
+        // Setting up the zoom in button and adding a click listener
+        Button zoom_in = findViewById(R.id.zoom_in);
+        zoom_in.setOnClickListener(view -> {
+            Snackbar.make(view, "Zooming In", Snackbar.LENGTH_SHORT).setDuration(LENGTH_SHORT).show();
+            Log.v(LOG_TAG, "User pressed the zoom in button.");
+            playState.handleUserInput(Constants.UserInput.ZOOMIN, 0);
+        });
+
+        // Setting up the zoom out button and adding a click listener
+        Button zoom_out = findViewById(R.id.zoom_out);
+        zoom_out.setOnClickListener(view -> {
+            Snackbar.make(view, "Zooming Out", Snackbar.LENGTH_SHORT).setDuration(LENGTH_SHORT).show();
+            Log.v(LOG_TAG, "User pressed the zoom out button.");
+            playState.handleUserInput(Constants.UserInput.ZOOMOUT, 0);
+        });
     }
 
     /**
@@ -122,10 +148,14 @@ public class PlayAnimationActivity extends AppCompatActivity {
                 showWalls.setText(R.string.state_off);
                 showWalls.setBackgroundColor(ContextCompat.getColor(this, R.color.dark_gray));
                 showWalls.setTextColor(Color.WHITE);
+                Log.v(LOG_TAG, "User has now toggled walls to be hidden.");
+                playState.handleUserInput(Constants.UserInput.TOGGLELOCALMAP, 0);
             } else {
                 showWalls.setText(R.string.state_on);
                 showWalls.setBackgroundColor(ContextCompat.getColor(this, R.color.light_gray));
                 showWalls.setTextColor(Color.BLACK);
+                Log.v(LOG_TAG, "User has now toggled walls to be visible.");
+                playState.handleUserInput(Constants.UserInput.TOGGLELOCALMAP, 0);
             }
         });
 
@@ -136,11 +166,14 @@ public class PlayAnimationActivity extends AppCompatActivity {
                 showSolution.setText(R.string.state_off);
                 showSolution.setBackgroundColor(ContextCompat.getColor(this, R.color.dark_gray));
                 showSolution.setTextColor(Color.WHITE);
+                Log.v(LOG_TAG, "User has now toggled the solution to be hidden.");
+                playState.handleUserInput(Constants.UserInput.TOGGLESOLUTION, 0);
             } else {
                 showSolution.setText(R.string.state_on);
                 showSolution.setBackgroundColor(ContextCompat.getColor(this, R.color.light_gray));
                 showSolution.setTextColor(Color.BLACK);
-                Snackbar.make(view, "Solution Visible", Snackbar.LENGTH_SHORT).setDuration(LENGTH_SHORT).show();
+                Log.v(LOG_TAG, "User has now toggled the solution to be visible.");
+                playState.handleUserInput(Constants.UserInput.TOGGLESOLUTION, 0);
             }
         });
 
@@ -151,10 +184,14 @@ public class PlayAnimationActivity extends AppCompatActivity {
                 showMaze.setText(R.string.state_off);
                 showMaze.setBackgroundColor(ContextCompat.getColor(this, R.color.dark_gray));
                 showMaze.setTextColor(Color.WHITE);
+                Log.v(LOG_TAG, "User has now toggled the maze to be hidden.");
+                playState.handleUserInput(Constants.UserInput.TOGGLEFULLMAP, 0);
             } else {
                 showMaze.setText(R.string.state_on);
                 showMaze.setBackgroundColor(ContextCompat.getColor(this, R.color.light_gray));
                 showMaze.setTextColor(Color.BLACK);
+                Log.v(LOG_TAG, "User has now toggled the maze to be visible.");
+                playState.handleUserInput(Constants.UserInput.TOGGLEFULLMAP, 0);
             }
         });
 
@@ -166,12 +203,14 @@ public class PlayAnimationActivity extends AppCompatActivity {
                 pauseAnim.setBackgroundColor(ContextCompat.getColor(this, R.color.dark_gray));
                 pauseAnim.setTextColor(Color.WHITE);
                 startAnimation(pauseAnim);
+                Log.v(LOG_TAG, "User has started playing the animation.");
                 Snackbar.make(view, "Animation Playing", Snackbar.LENGTH_SHORT).setDuration(LENGTH_SHORT).show();
             } else {
                 pauseAnim.setText(R.string.state_play);
                 pauseAnim.setBackgroundColor(ContextCompat.getColor(this, R.color.light_gray));
                 pauseAnim.setTextColor(Color.BLACK);
                 stopAnimation(pauseAnim);
+                Log.v(LOG_TAG, "User has paused the animation");
                 Snackbar.make(view, "Animation Paused", Snackbar.LENGTH_SHORT).setDuration(LENGTH_SHORT).show();
             }
         });
@@ -189,7 +228,7 @@ public class PlayAnimationActivity extends AppCompatActivity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 updateSLEEP_INTERVAL(i);
-                Log.v(LOG_TAG, "Animation speed is now: " + (SLEEP_INTERVAL+1));
+                Log.v(LOG_TAG, "Animation speed is now: " + (SLEEP_INTERVAL));
             }
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {}
@@ -202,13 +241,24 @@ public class PlayAnimationActivity extends AppCompatActivity {
         switch (i) {
             case 0:
                 SLEEP_INTERVAL = 5000;
+                break;
             case 1:
                 SLEEP_INTERVAL = 4000;
+                break;
             case 2:
                 SLEEP_INTERVAL = 2000;
+                break;
             case 3:
+                SLEEP_INTERVAL = 1000;
+                break;
+            case 4:
                 SLEEP_INTERVAL = 0;
+                break;
         }
+    }
+
+    private int getSleepInterval(){
+        return SLEEP_INTERVAL;
     }
 
     /**
@@ -229,89 +279,95 @@ public class PlayAnimationActivity extends AppCompatActivity {
     private void setUpDriver() {
         if (MazeDataHolder.getDriver().equals("Wizard")) {
             Log.v(LOG_TAG, "Wizard driver has been selected and is running.");
-            if (MazeDataHolder.getDriverLvl().equals("Premium"))
-                robot = new ReliableRobot(playState);
-            else
-                robot = new UnreliableRobot(playState);
-            driver = new Wizard();
-            sensorArr = playState.getSensorArray(MazeDataHolder.getSensorString());
-
-            // visibility settings
-            playState.showMaze = true;
-            playState.showSolution = true;
-            playState.mapMode = true;
-
-            sensorProcess.start();
-
-            playAnimRunnable = new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        if (!robot.isAtExit()) {
-                            driver.drive1Step2Exit();
-                            updateVisualSensors(robot);
-                            playAnimHandler.postDelayed(this, SLEEP_INTERVAL);
-                        } else {
-                            robot.move(1);
-                            sensorProcess.interrupt();
-                            switchToWinning(driver.getPathLength());
-                        }
-                    } catch (Exception e) {
-                        /*
-                         * If an error or exception occurs, then set a crash
-                         * variable to true which will print out a losing page.
-                         */
-                        e.printStackTrace();
-                        energyConsumed = driver.getEnergyConsumption();
-                        initialEnergy = driver.getInitialBatteryLevel();
-                        playState.stopFailAndRepairProcess(sensorArr, robot);
-                        switchToLosing(driver.getPathLength());
-                    }
-                }
-            };
+            startWizard();
         } else if (MazeDataHolder.getDriver().equals("WallFollower")) {
             Log.v(LOG_TAG, "WallFollower driver has been selected and is running.");
-            if(MazeDataHolder.getDriverLvl().equals("Premium"))
-                robot = new ReliableRobot(playState);
-            else
-                robot = new UnreliableRobot(playState);
-            driver = new WallFollower();
-            sensorArr = playState.getSensorArray(MazeDataHolder.getSensorString());
-
-            // visibility settings
-            playState.showMaze = true ;
-            playState.showSolution = true ;
-            playState.mapMode = true;
-
-            sensorProcess.start();
-
-            playAnimRunnable = new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        if (!robot.isAtExit()) {
-                            driver.drive1Step2Exit();
-                            updateVisualSensors(robot);
-                            playAnimHandler.postDelayed(this, SLEEP_INTERVAL);
-                        } else {
-                            robot.move(1);
-                            sensorProcess.interrupt();
-                            switchToWinning(driver.getPathLength());
-                        }
-                    } catch (Exception e) {
-                        /*
-                         * If an error or exception occurs, then set a crash
-                         * variable to true which will print out a losing page.
-                         */
-                        e.printStackTrace();
-                        energyConsumed = driver.getEnergyConsumption();
-                        initialEnergy = driver.getInitialBatteryLevel();
-                        playState.stopFailAndRepairProcess(sensorArr, robot);
-                        switchToLosing(driver.getPathLength());
-                    }
-                }
-            };
+            startWallFollower();
         }
+    }
+
+    private void startWizard() {
+        robot = new UnreliableRobot(playState);
+        driver = new Wizard();
+        sensorArr = playState.getSensorArray(MazeDataHolder.getSensorString());
+
+        // visibility settings
+        playState.showMaze = true;
+        playState.showSolution = true;
+        playState.mapMode = true;
+
+        sensorProcess.start();
+
+        playAnimRunnable = new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    if (!robot.isAtExit()) {
+                        driver.drive1Step2Exit();
+                        updateVisualSensors(robot);
+                        updateEnergyBar(driver.getEnergyConsumption());
+                        playAnimHandler.postDelayed(this, getSleepInterval());
+                    } else {
+                        robot.move(1);
+                        sensorProcess.interrupt();
+                        switchToWinning(robot.getOdometerReading(), robot.getBatteryLevel());
+                    }
+                } catch (Exception e) {
+                    /*
+                     * If an error or exception occurs, then set a crash
+                     * variable to true which will print out a losing page.
+                     */
+                    e.printStackTrace();
+                    energyConsumed = driver.getEnergyConsumption();
+                    playState.stopFailAndRepairProcess(sensorArr, robot);
+                    switchToLosing(robot.getOdometerReading(), robot.getBatteryLevel());
+                }
+            }
+        };
+    }
+
+    private void startWallFollower() {
+        robot = new UnreliableRobot(playState);
+        driver = new WallFollower();
+        Log.v(LOG_TAG, "Sensor String is: " + MazeDataHolder.getSensorString());
+        sensorArr = playState.getSensorArray(MazeDataHolder.getSensorString());
+
+        // visibility settings
+        playState.showMaze = true ;
+        playState.showSolution = true ;
+        playState.mapMode = true;
+
+        sensorProcess.start();
+
+        playAnimRunnable = new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    if (!robot.isAtExit()) {
+                        driver.drive1Step2Exit();
+                        updateVisualSensors(robot);
+                        updateEnergyBar(driver.getEnergyConsumption());
+                        playAnimHandler.postDelayed(this, getSleepInterval());
+                    } else {
+                        Log.v(LOG_TAG, "Made it to exit");
+                        robot.move(1);
+                        sensorProcess.interrupt();
+                        switchToWinning(robot.getOdometerReading(), robot.getBatteryLevel());
+                    }
+                } catch (Exception e) {
+                    /*
+                     * If an error or exception occurs, then set a crash
+                     * variable to true which will print out a losing page.
+                     */
+                    e.printStackTrace();
+                    energyConsumed = driver.getEnergyConsumption();
+                    playState.stopFailAndRepairProcess(sensorArr, robot);
+                    switchToLosing(robot.getOdometerReading(), robot.getBatteryLevel());
+                }
+            }
+        };
+
+        Log.v(LOG_TAG, "The animation speed is: " + SLEEP_INTERVAL);
     }
 
     public void startAnimation(View view) {
@@ -344,19 +400,29 @@ public class PlayAnimationActivity extends AppCompatActivity {
             backSensor.setImageResource(R.drawable.snsrstate_red);
     }
 
-    public void switchToWinning(int pathLength) {
+    public void switchToWinning(int pathLength, float battery_lvl) {
         sensorProcess.interrupt();
         Intent intent = new Intent(this, WinningActivity.class);
         intent.putExtra("distance", pathLength);
+        intent.putExtra("energyConsumed", (3500 - battery_lvl));
         Log.v(LOG_TAG, "Jumping to the winning screen. " + pathLength);
+        mp.stop();
         startActivity(intent);
     }
 
-    public void switchToLosing(int pathLength) {
+    public void switchToLosing(int pathLength, float battery_lvl) {
         sensorProcess.interrupt();
         Intent intent = new Intent(this, LosingActivity.class);
         intent.putExtra("distance", pathLength);
+        intent.putExtra("energyConsumed", (3500 - battery_lvl));
         Log.v(LOG_TAG, "Jumping to the losing screen. " + pathLength);
+        mp.stop();
         startActivity(intent);
+    }
+
+    private void updateEnergyBar(float batteryLevel) {
+        int battery_lvl = 3500 - (int) batteryLevel;
+        Log.v(LOG_TAG, "The battery level is: " + battery_lvl);
+        energy.setProgress(battery_lvl);
     }
 }

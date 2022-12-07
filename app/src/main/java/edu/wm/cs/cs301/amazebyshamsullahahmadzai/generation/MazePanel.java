@@ -310,6 +310,7 @@ public class MazePanel extends View implements P7PanelF22 {
 	 */
 	@Override
 	public void addMarker(float x, float y, String str) {
+		paint.setTextSize(25);
 		canvas.drawText(str, x, y, paint);
 	}
 

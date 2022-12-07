@@ -63,9 +63,9 @@ public class StatePlaying implements State {
 	 * first person view. As map and compass rose compete for space on the 
 	 * screen, one can show at most one of the two at any point in time.
 	 *
-     * private CompassRose cr;
-     * /
-	   
+     */
+     private CompassRose cr;
+
     /**
      * The panel is the capability to draw on the screen.
      */
@@ -157,6 +157,8 @@ public class StatePlaying implements State {
     	cd = CardinalDirection.East;
 
     	seenCells = null;
+
+        cr = null;
 
         playMan = playActivity;
     }
@@ -320,15 +322,15 @@ public class StatePlaying implements State {
      * for this state.
      */
 	protected void startDrawer() {
-//		cr = new CompassRose();
-//		cr.setPositionAndSize(Constants.VIEW_WIDTH/2,
-//				(int)(0.1*Constants.VIEW_HEIGHT),35);
+		cr = new CompassRose();
+		cr.setPositionAndSize(Constants.VIEW_WIDTH/2,
+				(int)(Constants.VIEW_HEIGHT/6),40);
 
 		firstPersonView = new FirstPersonView(Constants.VIEW_WIDTH,
 				Constants.VIEW_HEIGHT, Constants.MAP_UNIT,
 				Constants.STEP_SIZE, seenCells, maze.getRootnode()) ;
 		
-		mapView = new Map(seenCells, 15, maze) ;
+		mapView = new Map(seenCells, 20, maze) ;
 		// draw the initial screen for this state
 		draw(cd.angle(), 0);
 	}
@@ -348,7 +350,7 @@ public class StatePlaying implements State {
      * @param pathLength gives the length of the path
      */
     public void switchFromPlayingToWinning(int pathLength) {
-        playMan.switchToWinning();
+        playMan.switchToWinning(pathLength);
     }
 
     /**
@@ -356,7 +358,7 @@ public class StatePlaying implements State {
      * @param pathLength gives the length of the path
      */
     public void switchFromPlayingToLosing(int pathLength) {
-        playMan.switchToLosing();
+        playMan.switchToLosing(pathLength);
     }
 
 
@@ -555,7 +557,7 @@ public class StatePlaying implements State {
             angle = (angle+1800) % 360;
             // draw method is called and uses angle field for direction
             // information.
-			slowedDownRedraw(angle, 0);
+            slowedDownRedraw(angle, 0);
         }
         // update maze direction only after intermediate steps are done
         // because choice of direction values are more limited.
@@ -570,6 +572,7 @@ public class StatePlaying implements State {
      * @param dir, only possible values are 1 (forward) and -1 (backward)
      */
     public synchronized void walk(int dir) {
+        Log.v(LOG_TAG, "Move has been called");
     	// check if there is a wall in the way
         if (!wayIsClear(dir))
             return;
@@ -621,11 +624,11 @@ public class StatePlaying implements State {
         	//System.out.println("Facing deadend, help by showing solution");
         	mapView.draw(panel, px, py, cd.angle(), 0, true, true) ;
         }
-//    	else {
-//    		// draw compass rose
-//    		cr.setCurrentDirection(cd);
-//    		cr.paintComponent(panel.getBufferGraphics());
-//    	}
+    	else {
+    		// draw compass rose
+    		cr.setCurrentDirection(cd);
+    		cr.paintComponent(panel);
+    	}
     	panel.commit();
     }
  

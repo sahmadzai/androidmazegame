@@ -188,12 +188,16 @@ public class MazeDataHolder {
         switch (driver_lvl) {
             case "Premium":
                 sensorArr = "1111";
+                break;
             case "Mediocre":
                 sensorArr = "1001";
+                break;
             case "Soso":
                 sensorArr = "0110";
-            case "Shaky":
+                break;
+            default:
                 sensorArr = "0000";
+                break;
         }
         return sensorArr;
     }

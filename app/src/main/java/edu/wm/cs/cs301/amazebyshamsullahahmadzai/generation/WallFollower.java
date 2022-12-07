@@ -126,28 +126,17 @@ public class WallFollower implements RobotDriver {
 				robot.rotate(Turn.AROUND);
 			return false;
 		}
-		// if(robot.distanceToObstacle(Direction.LEFT) > 0) {
-		// 	robot.rotate(Turn.LEFT);
-		// 	robot.move(1);
-		// 	return true;
-		// }
 
-		// System.out.println(robot.distanceToObstacle(Direction.FORWARD));
-		// if(robot.distanceToObstacle(Direction.FORWARD) > 0) {
-		// 	robot.move(1);
-		// 	return true;
-		// }
-//		CardinalDirection ogHeading = robot.getCurrentDirection();
 		if (checkLeftSensorAndMove()) {
 			//Rotate back to the original heading before moving
-			//rotateToHeading(ogHeading);
+//			rotateToHeading(ogHeading);
 			robot.rotate(Turn.LEFT);
 			robot.move(1);
 			return true;
 		}
 		if (checkForwardSensorAndMove()) {
 			//Rotate back to the original heading before moving
-			//rotateToHeading(ogHeading);
+//			rotateToHeading(ogHeading);
 			robot.move(1);
 			return true;			
 		}

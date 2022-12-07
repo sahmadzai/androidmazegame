@@ -1,5 +1,7 @@
 package edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation;
 
+import android.util.Log;
+
 import edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation.Robot.Direction;
 
 /**
@@ -18,8 +20,10 @@ import edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation.Robot.Direction;
 public class UnreliableSensor extends ReliableSensor {
 	
 	// Variable to hold the sensor's current state.
+	private String LOG_TAG = "unreliable sensor";
     private boolean sensorState;
     private Thread thread;
+	private boolean wallhit;
 
     /**
      * Since this class is a subclass of ReliableSensor, it will have all the same methods and variables
@@ -65,7 +69,7 @@ public class UnreliableSensor extends ReliableSensor {
         	throw new Exception("SensorFailure");
         }
         int distance = 0;
-        boolean wallhit = false;
+        wallhit = false;
         int[] currentPos = currentPosition;
         while(!wallhit) {
 			if (maze.hasWall(currentPos[0], currentPos[1], currentDirection)) {
@@ -77,6 +81,44 @@ public class UnreliableSensor extends ReliableSensor {
 		}
         //powersupply[0] -= energyForSensing;
 		return distance;
+	}
+	@Override
+	protected int[] moveForward(int[] currentPosition, CardinalDirection currentDirection) {
+		/*
+		 * Move the robot forward one cell in the direction given
+		 * and return the new position as a 2 integer array.
+		 */
+		int[] newPos = new int[2];
+		switch (currentDirection) {
+			case North:
+				newPos[0] = currentPosition[0];
+				newPos[1] = currentPosition[1] - 1;
+				break;
+			case East:
+				newPos[0] = currentPosition[0] + 1;
+				newPos[1] = currentPosition[1];
+				break;
+			case South:
+				newPos[0] = currentPosition[0];
+				newPos[1] = currentPosition[1] + 1;
+				break;
+			case West:
+				newPos[0] = currentPosition[0] - 1;
+				newPos[1] = currentPosition[1];
+				break;
+			default:
+				break;
+		}
+		Log.v(LOG_TAG, "MOVING FORWARD TO DETECT DISTANCE: " + newPos[0] + ", " + newPos[1]);
+		if (newPos[0] < 0 || newPos[1] < 0) {
+			wallhit = true;
+			Log.v(LOG_TAG, "Exit has been detected, OVER NEGATIVE");
+		}
+		else if (newPos[0] > maze.getWidth() || newPos[1] > maze.getHeight()) {
+			wallhit = true;
+			Log.v(LOG_TAG, "Exit has been detected, OVER POSITIVE");
+		}
+		return newPos;
 	}
 
 

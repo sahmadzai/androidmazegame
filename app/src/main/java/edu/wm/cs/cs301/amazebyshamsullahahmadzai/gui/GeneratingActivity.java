@@ -3,6 +3,7 @@ package edu.wm.cs.cs301.amazebyshamsullahahmadzai.gui;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -55,6 +56,8 @@ public class GeneratingActivity extends AppCompatActivity {
     DefaultOrder order;
     private MazeDataHolder mazeData;
     private MazeFileReader reader;
+    private MediaPlayer mp;
+    private MediaPlayer touchmp;
 
     private final int LENGTH_SHORT = 800;
     private final String LOG_TAG = "GeneratingActivity";
@@ -65,9 +68,21 @@ public class GeneratingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.generating_layout);
 
+        /*
+         * Set up the media player objects for touches and for the background music
+         */
+        mp = MediaPlayer.create(this, R.raw.generating);
+        mp.setLooping(true);
+        mp.start();
+
+        touchmp = MediaPlayer.create(this, R.raw.touch);
+
+        /*
+         * Get the sharedPref file and save the information from AMazeActivity into variables
+         * Log the items from sharedPref to confirm they were saved properly.
+         */
         Context context = getApplicationContext();
         SharedPreferences sharedPref = context.getSharedPreferences("edu.wm.cs301.amazebyshamsullahahmadzai.preferences", Context.MODE_PRIVATE);
-
         int skill_lvl = sharedPref.getInt("skill_level", -1);
         String gen_method = sharedPref.getString("gen_method", null);
         Boolean gen_rooms = sharedPref.getBoolean("gen_rooms", false);
@@ -88,6 +103,9 @@ public class GeneratingActivity extends AppCompatActivity {
     private void generateMaze(int skill_lvl, String gen_method, Boolean rooms, int seed) {
         ProgressBar genProgress = findViewById(R.id.gen_progress);
 
+        /*
+         * Set the builder based on the generation method user chose.
+         */
         switch (gen_method) {
             case "Prim":
                 builder = Order.Builder.Prim;
@@ -97,6 +115,11 @@ public class GeneratingActivity extends AppCompatActivity {
                 builder = Order.Builder.DFS;
         }
 
+        /*
+         * Create a background thread that sends the maze order and generates it.
+         * This thread also wait for maze to be delivered and saves the maze in
+         * a separate class/file called MazeDataHolder.
+         */
         Thread gen_thread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -122,13 +145,18 @@ public class GeneratingActivity extends AppCompatActivity {
             }
         });
 
+        /*
+         * This new thread handles the progress bar update. By having this in a
+         * separate thread, the UI does not lag or become unresponsive and we get a
+         * smooth progress bar.
+         */
         thread = new Thread(() -> {
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-
+            // Update progress bar to the value returned by order.getProgress()
             while (order.getProgress() <= 100) {
                 genProgress.setProgress(order.getProgress());
                 if (order.getProgress() == 100) {break;}
@@ -149,8 +177,10 @@ public class GeneratingActivity extends AppCompatActivity {
      */
     @Override
     public void onBackPressed() {
+        touchmp.start();
         Intent intent = new Intent(GeneratingActivity.this, AMazeActivity.class);           // Create an intent to start the title screen
         thread.interrupt();
+        mp.stop();
         startActivity(intent);                                                                           // Start the title screen activity
     }
 
@@ -160,10 +190,15 @@ public class GeneratingActivity extends AppCompatActivity {
      * value of the spinners.
      */
     private void initSpinners() {
-        Spinner dmethodSpinner = findViewById(R.id.dmethod_spinner);                                                            // Get the drive method spinner
-        Spinner dskillSpinner  = findViewById(R.id.dskill_spinner);                                                             // Get the robot reliability spinner
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.dmethods, R.layout.custom_spinner);  // Create an adapter for the drive method spinner
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);                                         // Set the adapter for the drive method spinner   
+        /*
+         * Initialize variables and set them to the spinners from the XML file.
+         * Then by using an array adapter we can add in an array into the spinners
+         * while also setting the spinner layout, style, and dropdown layout.
+         */
+        Spinner dmethodSpinner = findViewById(R.id.dmethod_spinner);
+        Spinner dskillSpinner  = findViewById(R.id.dskill_spinner);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.dmethods, R.layout.custom_spinner);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         // Setting the ArrayAdapter data on the Driver Method Spinner
         dmethodSpinner.setAdapter(adapter);
@@ -171,16 +206,28 @@ public class GeneratingActivity extends AppCompatActivity {
             
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (i == 0)                                                                 // If the user selects the blank option do nothing
+                touchmp.start();
+
+                // If the default blank choice is selected ignore it
+                if (i == 0)
                     driveModeSelected = false;
                 else {
-                    String text = adapterView.getItemAtPosition(i).toString();              // Get the text of the selected item
-                    driveMode = text;                                                       // Set the drive mode variable to the selected item
-                    driveModeSelected = true;                                               // Set the drive mode selected variable to true
-                    MazeDataHolder.setDriver(driveMode);
-                    Log.v(LOG_TAG, "User selected driving method: " + text);                // Log the selected driving method
-                    
-                    if (mazeGenComplete)                                                    // If the maze generation is complete
+
+                    // If the first choice, which is Manual, is selected set driveModeSelected to true to move on.
+                    if (i == 1) {
+                        driveMode = adapterView.getItemAtPosition(i).toString();
+                        driveModeSelected = true;
+                        MazeDataHolder.setDriver(driveMode);
+                        Log.v(LOG_TAG, "User selected driving method: " + driveMode);
+                    } else {
+                        String text = adapterView.getItemAtPosition(i).toString();
+                        driveMode = text;
+                        MazeDataHolder.setDriver(driveMode);
+                        Log.v(LOG_TAG, "User selected driving method: " + text);
+                    }
+
+                    // Check if maze generation is complete if so show a snack bar to the user
+                    if (mazeGenComplete)
                         // Create a snack-bar to tell the user that the game will start shortly
                         Snackbar.make(view, "The game will start shortly.", Snackbar.LENGTH_SHORT).setDuration(LENGTH_SHORT).show();
                     else
@@ -197,20 +244,21 @@ public class GeneratingActivity extends AppCompatActivity {
         });
 
         // Setting the ArrayAdapter data on the Driver Skill Spinner
-        adapter = ArrayAdapter.createFromResource(this, R.array.dskills, R.layout.custom_spinner);                 // Create an adapter for the robot reliability spinner
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);                                   // Set the dropdown view for the robot reliability spinner
-        dskillSpinner.setAdapter(adapter);                                                                                // Set the adapter for the robot reliability spinner
-
+        adapter = ArrayAdapter.createFromResource(this, R.array.dskills, R.layout.custom_spinner);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        dskillSpinner.setAdapter(adapter);
         dskillSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l)  {
+                touchmp.start();
                 if (i == 0)
                     robotReliabilitySelected = false;
                 else {
                     String text = adapterView.getItemAtPosition(i).toString();
                     robotReliability = text;
                     robotReliabilitySelected = true;
+                    driveModeSelected = true;
                     MazeDataHolder.setDriverLvl(robotReliability);
                     Log.v(LOG_TAG, "User selected skill level: " + text);
                 }
@@ -232,22 +280,21 @@ public class GeneratingActivity extends AppCompatActivity {
      */
     private void hasUserSelected(Thread thread) {
 
-        if (driveModeSelected && robotReliabilitySelected) {                                                 // If the user has selected both
+        if (driveModeSelected || robotReliabilitySelected) {                                                 // If the user has selected both
             Intent intent;        
 
             if (driveMode.equals("Manual"))                                                                  // If the user selected manual
                 intent = new Intent(GeneratingActivity.this, PlayManuallyActivity.class);       // Create an intent to start the play manually activity
             else
                 intent = new Intent(GeneratingActivity.this, PlayAnimationActivity.class);      // Create an intent to start the play animation activity
-            
-            startActivity(intent);                                                                           // Start the play activity
-
+            mp.stop();
             thread.interrupt();                                                                              // Interrupt the generation thread now that the maze is generated
+            startActivity(intent);                                                                           // Start the play activity
         } else {
             Log.v(LOG_TAG, "User needs to select an option for driving method and skill.");             // Log that the user needs to select both
             
             try {
-                Thread.sleep(1000);                                                                    // Sleep the thread for 1 second
+                thread.sleep(4000);                                                                    // Sleep the thread for 4 second
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

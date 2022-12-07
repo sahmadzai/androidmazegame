@@ -4,6 +4,7 @@ import static edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation.MazeDataHolde
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -29,6 +30,7 @@ import edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation.StatePlaying;
 
 public class PlayManuallyActivity extends AppCompatActivity {
 
+    MediaPlayer mp;
     private static int distanceTravelled;
     private StatePlaying playState;
     private final int LENGTH_SHORT = 800;
@@ -38,6 +40,10 @@ public class PlayManuallyActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play_manually);
+
+        mp = MediaPlayer.create(this, R.raw.playmanualsound);
+        mp.setLooping(true);
+        mp.start();
 
         setUpButtons();
         setUpToggleButtons();
@@ -57,6 +63,7 @@ public class PlayManuallyActivity extends AppCompatActivity {
     public void onBackPressed() {
         // Handle the back button event by going back to the title page
         Intent intent = new Intent(PlayManuallyActivity.this, AMazeActivity.class);
+        mp.stop();
         startActivity(intent);
     }
 
@@ -67,12 +74,12 @@ public class PlayManuallyActivity extends AppCompatActivity {
      */
     private void setUpButtons() {
         // Setting up the jumpToLose button and adding a click listener
-        Button jumpToLose = findViewById(R.id.jumpToLose);
-        jumpToLose.setOnClickListener(view -> switchToLosing());
+//        Button jumpToLose = findViewById(R.id.jumpToLose);
+//        jumpToLose.setOnClickListener(view -> switchToLosing(distanceTravelled));
 
         // Setting up the jumpToWin and adding a click listener
-        Button jumpToWin = findViewById(R.id.jumpToWin);
-        jumpToWin.setOnClickListener(view -> switchToWinning());
+//        Button jumpToWin = findViewById(R.id.jumpToWin);
+//        jumpToWin.setOnClickListener(view -> switchToWinning(distanceTravelled));
 
         // Setting up the zoom in button and adding a click listener
         Button zoom_in = findViewById(R.id.zoom_in);
@@ -185,17 +192,19 @@ public class PlayManuallyActivity extends AppCompatActivity {
         });
     }
 
-    public void switchToWinning() {
+    public void switchToWinning(int pathLength) {
         Intent intent = new Intent(PlayManuallyActivity.this, WinningActivity.class);
-        intent.putExtra("distance", distanceTravelled);
+        intent.putExtra("distance", pathLength);
         Log.v(LOG_TAG, "Jumping to the winning screen.");
+        mp.stop();
         startActivity(intent);
     }
 
-    public void switchToLosing() {
+    public void switchToLosing(int pathLength) {
         Intent intent = new Intent(PlayManuallyActivity.this, LosingActivity.class);
-        intent.putExtra("distance", distanceTravelled);
+        intent.putExtra("distance", pathLength);
         Log.v(LOG_TAG, "Jumping to the losing screen.");
+        mp.stop();
         startActivity(intent);
     }
 

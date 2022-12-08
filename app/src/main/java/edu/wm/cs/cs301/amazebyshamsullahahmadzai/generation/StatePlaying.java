@@ -81,8 +81,10 @@ public class StatePlaying implements State {
     /**
      * Robot and robot driver that will be used throughout StatePlaying
      */
-    Robot robot;
+    public Robot robot;
     public RobotDriver driver;
+
+    private int pathlen = 0;
 
     /**
      * Maze holds the main information on where walls are.
@@ -389,10 +391,11 @@ public class StatePlaying implements State {
         case UP: // move forward
         	LOGGER.fine("Move 1 step forward");
             walk(1);
+            pathlen += 1;
             // check termination, did we leave the maze?
             if (isOutside(px,py)) {
             	// TODO: provide actual path length
-                switchFromPlayingToWinning(0);
+                switchFromPlayingToWinning(pathlen);
             }
             break;
         case LEFT: // turn left
@@ -406,14 +409,16 @@ public class StatePlaying implements State {
         case DOWN: // move backward
         	LOGGER.fine("Move 1 step backward");
             walk(-1);
+            pathlen += 1;
             // check termination, did we leave the maze?
             if (isOutside(px,py)) {
             	// TODO: provide actual path length
-                switchFromPlayingToWinning(0);
+                switchFromPlayingToWinning(pathlen);
             }
             break;
         case JUMP: // make a step forward even through a wall
         	LOGGER.fine("Jump 1 step forward");
+            pathlen += 1;
             // go to position if within maze
         	int[] tmpDxDy = cd.getDxDyDirection();
         	if (maze.isValidPosition(px + tmpDxDy[0], py + tmpDxDy[1])) {

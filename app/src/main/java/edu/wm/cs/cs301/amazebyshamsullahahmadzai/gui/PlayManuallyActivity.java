@@ -1,6 +1,7 @@
 package edu.wm.cs.cs301.amazebyshamsullahahmadzai.gui;
 
 import static edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation.MazeDataHolder.getMaze;
+import static edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation.MazeDataHolder.maze;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -195,6 +196,7 @@ public class PlayManuallyActivity extends AppCompatActivity {
     public void switchToWinning(int pathLength) {
         Intent intent = new Intent(PlayManuallyActivity.this, WinningActivity.class);
         intent.putExtra("distance", pathLength);
+        intent.putExtra("shortest_path", maze.getDistanceToExit(maze.getStartingPosition()[0], maze.getStartingPosition()[1]));
         Log.v(LOG_TAG, "Jumping to the winning screen.");
         mp.stop();
         startActivity(intent);
@@ -203,6 +205,7 @@ public class PlayManuallyActivity extends AppCompatActivity {
     public void switchToLosing(int pathLength) {
         Intent intent = new Intent(PlayManuallyActivity.this, LosingActivity.class);
         intent.putExtra("distance", pathLength);
+        intent.putExtra("shortest_path", maze.getDistanceToExit(maze.getStartingPosition()[0], maze.getStartingPosition()[1]));
         Log.v(LOG_TAG, "Jumping to the losing screen.");
         mp.stop();
         startActivity(intent);

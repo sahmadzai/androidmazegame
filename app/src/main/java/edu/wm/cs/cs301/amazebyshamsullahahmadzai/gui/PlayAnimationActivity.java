@@ -47,6 +47,7 @@ public class PlayAnimationActivity extends AppCompatActivity {
     private Robot robot;
     private RobotDriver driver;
     private float energyConsumed;
+    private int shortest_path;
 
     private ImageView forwardSensor;
     private ImageView leftSensor;
@@ -302,6 +303,7 @@ public class PlayAnimationActivity extends AppCompatActivity {
             @Override
             public void run() {
                 try {
+                    shortest_path = maze.getDistanceToExit(maze.getStartingPosition()[0], maze.getStartingPosition()[1]);
                     if (!robot.isAtExit()) {
                         driver.drive1Step2Exit();
                         updateVisualSensors(robot);
@@ -343,6 +345,7 @@ public class PlayAnimationActivity extends AppCompatActivity {
             @Override
             public void run() {
                 try {
+                    shortest_path = maze.getDistanceToExit(maze.getStartingPosition()[0], maze.getStartingPosition()[1]);
                     if (!robot.isAtExit()) {
                         driver.drive1Step2Exit();
                         updateVisualSensors(robot);
@@ -405,6 +408,7 @@ public class PlayAnimationActivity extends AppCompatActivity {
         Intent intent = new Intent(this, WinningActivity.class);
         intent.putExtra("distance", pathLength);
         intent.putExtra("energyConsumed", (3500 - battery_lvl));
+        intent.putExtra("shortest_path", shortest_path);
         Log.v(LOG_TAG, "Jumping to the winning screen. " + pathLength);
         mp.stop();
         startActivity(intent);
@@ -415,6 +419,7 @@ public class PlayAnimationActivity extends AppCompatActivity {
         Intent intent = new Intent(this, LosingActivity.class);
         intent.putExtra("distance", pathLength);
         intent.putExtra("energyConsumed", (3500 - battery_lvl));
+        intent.putExtra("shortest_path", shortest_path);
         Log.v(LOG_TAG, "Jumping to the losing screen. " + pathLength);
         mp.stop();
         startActivity(intent);

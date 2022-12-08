@@ -9,6 +9,8 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import org.w3c.dom.Text;
+
 import edu.wm.cs.cs301.amazebyshamsullahahmadzai.R;
 
 /**
@@ -37,16 +39,22 @@ public class WinningActivity extends AppCompatActivity {
 
         Intent intent = getIntent();                                                         // Get the intent that started this activity
         int distanceTraveled = intent.getIntExtra("distance", 0);                      // Get the distance traveled from the intent
-        float energyConsumed = intent.getFloatExtra("energyConsumed", 0);
+        int shortest_path = intent.getIntExtra("shortest_path", 0);
 
         String tempString = "Total Path Length: " + distanceTraveled;                        // Create a string that displays the total path length given by the Intent
         TextView path_len = findViewById(R.id.path_length);                                  // Get the text view that displays the total path length
         path_len.setText(tempString);                                                        // Set the text view to the string
 
-        TextView energyConsumption = findViewById(R.id.energy_consumption);                  // Get the text view that displays the energy consumption
-        tempString = "Total Energy Consumption: " + (energyConsumed);                          // Create a string that displays the total energy consumption given by the Intent
-        energyConsumption.setText(tempString);                                               // Set the text view to the string
+        TextView shortest_path_len = findViewById(R.id.shortest_path);
+        tempString = "Shortest Path Length: " + shortest_path;
+        shortest_path_len.setText(tempString);
 
+        if (intent.hasExtra("energyConsumed")) {
+            float energyConsumed = intent.getFloatExtra("energyConsumed", 0);
+            TextView energyConsumption = findViewById(R.id.energy_consumption);                  // Get the text view that displays the energy consumption
+            tempString = "Total Energy Consumption: " + energyConsumed;                          // Create a string that displays the total energy consumption given by the Intent
+            energyConsumption.setText(tempString);                                               // Set the text view to the string
+        }
         Button playAgain = findViewById(R.id.play_again);                                    // Get the button that allows the user to play again
         playAgain.setOnClickListener(view -> {                                               // Set the on click listener for the button
             onBackPressed();                                                                 // Call the onBackPressed method which takes the user back to the title page

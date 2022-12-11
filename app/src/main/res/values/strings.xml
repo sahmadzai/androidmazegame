@@ -62,6 +62,7 @@
     <string name="jumptowin_desc">Jump To Winning Screen</string>
     <string name="jumptolose_btn">JP2L</string>
     <string name="jumptolose_desc">Jump To Losing Screen</string>
+    <string name="voice_ctrl">Voice Control</string>
     <!-- PlayManuallyActivity Strings END -->
 
 

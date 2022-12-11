@@ -32,28 +32,28 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/jumpToWin"
-        android:layout_width="75dp"
-        android:layout_height="0dp"
-        android:layout_marginEnd="15dp"
-        android:backgroundTint="#404040"
-        android:text="@string/jumptowin_btn"
-        app:layout_constraintBottom_toBottomOf="@+id/materialToolbar"
-        app:layout_constraintEnd_toEndOf="@+id/materialToolbar"
-        app:layout_constraintStart_toEndOf="@+id/jumpToLose"
-        app:layout_constraintTop_toTopOf="parent" />
+<!--    <Button-->
+<!--        android:id="@+id/jumpToWin"-->
+<!--        android:layout_width="75dp"-->
+<!--        android:layout_height="0dp"-->
+<!--        android:layout_marginEnd="15dp"-->
+<!--        android:backgroundTint="#404040"-->
+<!--        android:text="@string/jumptowin_btn"-->
+<!--        app:layout_constraintBottom_toBottomOf="@+id/materialToolbar"-->
+<!--        app:layout_constraintEnd_toEndOf="@+id/materialToolbar"-->
+<!--        app:layout_constraintStart_toEndOf="@+id/jumpToLose"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
 
-    <Button
-        android:id="@+id/jumpToLose"
-        android:layout_width="75dp"
-        android:layout_height="0dp"
-        android:backgroundTint="#404040"
-        android:text="@string/jumptolose_btn"
-        app:layout_constraintBottom_toBottomOf="@+id/materialToolbar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/app_title"
-        app:layout_constraintTop_toTopOf="parent" />
+<!--    <Button-->
+<!--        android:id="@+id/jumpToLose"-->
+<!--        android:layout_width="75dp"-->
+<!--        android:layout_height="0dp"-->
+<!--        android:backgroundTint="#404040"-->
+<!--        android:text="@string/jumptolose_btn"-->
+<!--        app:layout_constraintBottom_toBottomOf="@+id/materialToolbar"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toEndOf="@+id/app_title"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/GeneratingMain"

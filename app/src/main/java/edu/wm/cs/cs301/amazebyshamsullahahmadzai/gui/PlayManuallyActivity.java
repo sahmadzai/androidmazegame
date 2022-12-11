@@ -3,17 +3,29 @@ package edu.wm.cs.cs301.amazebyshamsullahahmadzai.gui;
 import static edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation.MazeDataHolder.getMaze;
 import static edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation.MazeDataHolder.maze;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.speech.RecognitionListener;
+import android.speech.RecognizerIntent;
+import android.speech.SpeechRecognizer;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.material.snackbar.Snackbar;
+
+import java.util.ArrayList;
 
 import edu.wm.cs.cs301.amazebyshamsullahahmadzai.R;
 import edu.wm.cs.cs301.amazebyshamsullahahmadzai.generation.Constants;
@@ -36,11 +48,79 @@ public class PlayManuallyActivity extends AppCompatActivity {
     private StatePlaying playState;
     private final int LENGTH_SHORT = 800;
     private final String LOG_TAG = "PlayManuallyActivity";
+    private ConstraintLayout constraintLayout;
+    private SwipeListener swipeListener;
+
+    private SpeechRecognizer speechRecognizer;
+    private Intent intentRecognizer;
+    private boolean voiceOn;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play_manually);
+
+        constraintLayout = findViewById(R.id.constraint_manual);
+        swipeListener = new SwipeListener(constraintLayout);
+
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, PackageManager.PERMISSION_GRANTED);
+
+        intentRecognizer = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intentRecognizer.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+
+        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
+        speechRecognizer.setRecognitionListener(new RecognitionListener() {
+            @Override
+            public void onReadyForSpeech(Bundle bundle) {
+                Log.v(LOG_TAG, "Ready for speech");
+            }
+
+            @Override
+            public void onBeginningOfSpeech() {
+
+            }
+
+            @Override
+            public void onRmsChanged(float v) {
+
+            }
+
+            @Override
+            public void onBufferReceived(byte[] bytes) {
+
+            }
+
+            @Override
+            public void onEndOfSpeech() {
+
+            }
+
+            @Override
+            public void onError(int i) {
+
+            }
+
+            @Override
+            public void onResults(Bundle bundle) {
+                ArrayList<String> matches = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+                String string;
+                if (matches != null) {
+                    string = matches.get(0);
+                    parseSpeech(string);
+                }
+            }
+
+            @Override
+            public void onPartialResults(Bundle bundle) {
+
+            }
+
+            @Override
+            public void onEvent(int i, Bundle bundle) {
+
+            }
+        });
 
         mp = MediaPlayer.create(this, R.raw.playmanualsound);
         mp.setLooping(true);
@@ -54,7 +134,101 @@ public class PlayManuallyActivity extends AppCompatActivity {
         playState.setMaze(getMaze());
         MazePanel panel = findViewById(R.id.maze_view);
         playState.start(panel);
+
     }
+
+    public void startVoiceListener(View view) {
+        speechRecognizer.startListening(intentRecognizer);
+        Snackbar.make(view, "Speak your command", Snackbar.LENGTH_SHORT).setDuration(LENGTH_SHORT).show();
+
+    }
+
+    private void parseSpeech(String speechInput) {
+        String [] wordArr = speechInput.split("\\s+");
+        for (String word :
+                wordArr) {
+            switch (word) {
+                case "forward":
+                    Log.v(LOG_TAG, "VC - Moving forward");
+                    playState.handleUserInput(Constants.UserInput.UP, 0);
+                    break;
+                case "left":
+                    Log.v(LOG_TAG, "VC - Moving left");
+                    playState.handleUserInput(Constants.UserInput.LEFT, 0);
+                    break;
+                case "right":
+                    Log.v(LOG_TAG, "VC - Moving right");
+                    playState.handleUserInput(Constants.UserInput.RIGHT, 0);
+                    break;
+                case "jump":
+                    Log.v(LOG_TAG, "VC - Jumping forward");
+                    playState.handleUserInput(Constants.UserInput.JUMP, 0);
+                    break;
+                default:
+                    Log.v(LOG_TAG, "Invalid command, please try again.");
+            }
+        }
+    }
+
+    private class SwipeListener implements View.OnTouchListener {
+
+        GestureDetector gestureDetector;
+
+        SwipeListener(View view) {
+            int threshold = 100;
+            int velocity_threshold = 100;
+
+            GestureDetector.SimpleOnGestureListener listener = new GestureDetector.SimpleOnGestureListener(){
+                @Override
+                public boolean onDown(MotionEvent e) {
+                    return true;
+                }
+
+                @Override
+                public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+                    float xDiff = e2.getX() - e1.getX();
+                    float yDiff = e2.getY() - e1.getY();
+
+                    try {
+                        if (Math.abs(xDiff) > Math.abs(yDiff)) {
+                            if (Math.abs(xDiff) > threshold && Math.abs(velocityX) > velocity_threshold) {
+                                if (xDiff > 0) {
+                                    Log.v(LOG_TAG, "Swiped Right");
+                                    playState.handleUserInput(Constants.UserInput.RIGHT, 0);
+                                } else {
+                                    Log.v(LOG_TAG, "Swiped Left");
+                                    playState.handleUserInput(Constants.UserInput.LEFT, 0);
+                                }
+                                return true;
+                            }
+                        } else {
+                            if (Math.abs(yDiff) > threshold && Math.abs(velocityY) > velocity_threshold) {
+                                if (yDiff > 0) {
+                                    Log.v(LOG_TAG, "Swiped Down");
+                                    playState.handleUserInput(Constants.UserInput.JUMP, 0);
+                                } else {
+                                    Log.v(LOG_TAG, "Swiped Up");
+                                    playState.handleUserInput(Constants.UserInput.UP, 0);
+                                }
+                                return true;
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    return false;
+                }
+            };
+            gestureDetector = new GestureDetector(listener);
+            view.setOnTouchListener(this);
+        }
+
+        @Override
+        public boolean onTouch(View view, MotionEvent motionEvent) {
+            return gestureDetector.onTouchEvent(motionEvent);
+        }
+    }
+
 
     /**
      * This method overrides the default back button behavior to take the user 
@@ -63,6 +237,7 @@ public class PlayManuallyActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         // Handle the back button event by going back to the title page
+        speechRecognizer.stopListening();
         Intent intent = new Intent(PlayManuallyActivity.this, AMazeActivity.class);
         mp.stop();
         startActivity(intent);
